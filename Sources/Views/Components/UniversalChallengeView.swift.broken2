@@ -1,0 +1,1604 @@
+import SwiftUI
+
+struct UniversalChallengeView: View {
+    @EnvironmentObject var appState: AppState
+    @Environment(\.dismiss) var dismiss
+    let challenge: AllChallengeType
+    
+    @State private var score: Int = 0
+    @State private var isActive: Bool = false
+    @State private var timeRemaining: Double = 0
+    @State private var showResults: Bool = false
+    @State private var instruction: String = ""
+    @State private var challengeTime: Int = 0
+    @State private var targetPosition: CGPoint = CGPoint(x: 0.5, y: 0.5)
+    @State private var targets: [CGPoint] = []
+    @State private var level: Int = 1
+    @State private var breathPhase: BreathPhase = .inhale
+    @State private var breathProgress: Double = 0
+    @State private var gameState: ReactionState = .waiting
+    @State private var reactionTime: Double = 0
+    @State private var startTimeReact: Date = Date()
+    @State private var cycleCount: Int = 0
+    @State private var temptationLevel: Double = 0
+    @State private var combo: Int = 0
+    @State private var maxCombo: Int = 0
+    @State private var totalTaps: Int = 0
+    @State private var targetScale: CGFloat = 1.0
+    @State private var lastTapPosition: CGPoint = .zero
+    @State private var showRipple: Bool = false
+    @State private var showPulse: Bool = false
+    
+    enum BreathPhase: String {
+        case inhale = "Breathe In"
+        case hold = "Hold"
+        case exhale = "Breathe Out"
+    }
+    
+    enum ReactionState {
+        case waiting, ready, go, tooEarly
+    }
+    
+    var body: some View {
+        ZStack {
+            LinearGradient(
+                colors: [Color(hex: "0A0F1C"), Color(hex: "1E293B")],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+            
+            if showResults {
+                challengeResultsView
+            } else if isActive {
+                activeChallengeView
+            } else {
+                challengePreviewView
+            }
+        }
+    }
+    
+    var challengePreviewView: some View {
+        VStack(spacing: 24) {
+            Spacer()
+            ZStack {
+                Circle()
+                    .fill(challenge.color.opacity(0.3))
+                    .frame(width: 120, height: 120)
+                Image(systemName: challenge.icon)
+                    .font(.system(size: 50))
+                    .foregroundColor(challenge.color)
+            }
+            Text(challenge.rawValue)
+                .font(.system(size: 28, weight: .bold))
+                .foregroundColor(.white)
+            Text(challenge.description)
+                .font(.system(size: 16))
+                .foregroundColor(.gray)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+            HStack(spacing: 32) {
+                VStack {
+                    Text("\(challenge.duration)s").font(.system(size: 20, weight: .bold)).foregroundColor(.white)
+                    Text("Duration").font(.system(size: 12)).foregroundColor(.gray)
+                }
+                VStack {
+                    Text("\(challenge.xpReward)").font(.system(size: 20, weight: .bold)).foregroundColor(.yellow)
+                    Text("XP").font(.system(size: 12)).foregroundColor(.gray)
+                }
+            }
+            Spacer()
+            Button(action: { startChallenge() }) {
+                Text("Start").font(.headline).foregroundColor(.white).frame(maxWidth: .infinity).padding().background(challenge.color).cornerRadius(12)
+            }.padding(.horizontal, 24).padding(.bottom, 40)
+        }
+    }
+    
+    var activeChallengeView: some View {
+        VStack(spacing: 16) {
+            HStack {
+                Button(action: { endChallenge() }) { Image(systemName: "xmark").foregroundColor(.white).frame(width: 44, height: 44) }
+                Spacer()
+                HStack(spacing: 8) { Image(systemName: "clock"); Text("\(Int(timeRemaining))s") }
+                .foregroundColor(timeRemaining < 10 ? .red : .white)
+                Spacer()
+                HStack(spacing: 4) { Image(systemName: "star.fill"); Text("\(score)") }.foregroundColor(.yellow).frame(width: 44)
+            }.padding(.horizontal, 24).padding(.top, 20)
+            challengeContent.padding(.horizontal, 24)
+            Spacer()
+        }
+    }
+    
+    @ViewBuilder
+    var challengeContent: some View {
+        switch challenge.category {
+        case .focus: focusContent
+        case .memory: memoryContent
+        case .reaction: reactionContent
+        case .breathing: breathingContent
+        case .discipline: disciplineContent
+        }
+    }
+    
+    var focusContent: some View {
+        Group {
+            switch challenge {
+            case .movingTarget, .focusHold, .focusSprint:
+                movingTargetView
+            case .multiObjectTracking:
+                multiObjectTrackingView
+            case .gazeHold:
+                gazeHoldView
+            case .stillnessTest:
+                stillnessTestView
+            case .slowTracking:
+                slowTrackingView
+            default:
+                movingTargetView
+            }
+        }
+    }
+    
+    // MARK: - Focus Challenge Variants
+    
+    var movingTargetView: some View {
+        GeometryReader { geo in
+            ZStack {
+                // Background grid
+                ForEach(0..<4, id: \.self) { row in
+                    ForEach(0..<3, id: \.self) { col in
+                        Rectangle()
+                            .fill(Color.white.opacity(0.02))
+                            .frame(width: geo.size.width / 3, height: geo.size.width / 3)
+                            .position(x: geo.size.width / 6 + CGFloat(col) * geo.size.width / 3, y: geo.size.width / 6 + CGFloat(row) * geo.size.width / 3)
+                    }
+                }
+                
+                // Combo indicator
+                if combo > 1 {
+                    VStack {
+                        Text("\(combo)x COMBO!")
+                            .font(.system(size: 24, weight: .bold))
+                            .foregroundColor(.yellow)
+                        Text("+\(15 * min(combo, 10)) pts")
+                            .font(.system(size: 14))
+                            .foregroundColor(.green)
+                    }
+                    .position(x: geo.size.width / 2, y: 50)
+                }
+                
+                // Ripple effect
+                if showRipple {
+                    Circle()
+                        .stroke(challenge.color.opacity(0.5), lineWidth: 2)
+                        .frame(width: 80, height: 80)
+                        .position(lastTapPosition)
+                }
+                
+                // Pulsing target
+                ZStack {
+                    Circle()
+                        .fill(challenge.color.opacity(0.2))
+                        .frame(width: 70 + sin(Date().timeIntervalSinceReferenceDate * 3) * 10, height: 70 + sin(Date().timeIntervalSinceReferenceDate * 3) * 10)
+                        .position(targetPosition)
+                    
+                    Circle()
+                        .fill(
+                            RadialGradient(
+                                colors: [.white, challenge.color],
+                                center: .center,
+                                startRadius: 0,
+                                endRadius: 25
+                            )
+                        )
+                        .frame(width: 50, height: 50)
+                        .scaleEffect(targetScale)
+                        .position(targetPosition)
+                        .onTapGesture {
+                            totalTaps += 1
+                            lastTapPosition = targetPosition
+                            showRipple = true
+                            combo += 1
+                            maxCombo = max(maxCombo, combo)
+                            
+                            let difficulty = Double(challenge.duration - Int(timeRemaining)) / Double(challenge.duration)
+                            let baseScore = 15
+                            let comboMult = min(combo, 10)
+                            let diffBonus = Int(difficulty * 10)
+                            score += baseScore * comboMult + diffBonus
+                            
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { showRipple = false }
+                            
+                            withAnimation(.easeInOut(duration: max(0.2, 0.5 - difficulty * 0.3))) {
+                                targetPosition = CGPoint(
+                                    x: CGFloat.random(in: 0.1...0.9) * geo.size.width,
+                                    y: CGFloat.random(in: 0.1...0.7) * geo.size.height
+                                )
+                            }
+                        }
+                }
+            }
+            .onAppear {
+                withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
+                    targetScale = 1.15
+                }
+            }
+        }
+    }
+    
+    var multiObjectTrackingView: some View {
+        GeometryReader { geo in
+            ZStack {
+                // Track multiple targets
+                ForEach(0..<targets.count, id: \.self) { index in
+                    ZStack {
+                        Circle()
+                            .fill(challenge.color.opacity(0.2))
+                            .frame(width: 60, height: 60)
+                            .position(targets[index])
+                        
+                        Circle()
+                            .fill(challenge.color)
+                            .frame(width: 40, height: 40)
+                            .position(targets[index])
+                            .onTapGesture {
+                                combo += 1
+                                score += 10 * min(combo, 10)
+                                // Move tapped target to new position
+                                if index < targets.count {
+                                    targets[index] = CGPoint(
+                                        x: CGFloat.random(in: 0.1...0.9) * geo.size.width,
+                                        y: CGFloat.random(in: 0.1...0.7) * geo.size.height
+                                    )
+                                }
+                            }
+                    }
+                }
+                
+                // Counter
+                VStack {
+                    Text("Track \(targets.count) targets!")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                    Text("Tap each one")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+                .position(x: geo.size.width / 2, y: 40)
+            }
+            .onAppear {
+                targets = [
+                    CGPoint(x: geo.size.width * 0.25, y: geo.size.height * 0.4),
+                    CGPoint(x: geo.size.width * 0.5, y: geo.size.height * 0.6),
+                    CGPoint(x: geo.size.width * 0.75, y: geo.size.height * 0.4)
+                ]
+            }
+        }
+    }
+    
+    var gazeHoldView: some View {
+        VStack(spacing: 40) {
+            Spacer()
+            
+            ZStack {
+                Circle()
+                    .stroke(challenge.color.opacity(0.3), lineWidth: 4)
+                    .frame(width: 150, height: 150)
+                
+                Circle()
+                    .fill(challenge.color.opacity(0.5))
+                    .frame(width: 30, height: 30)
+                
+                // Concentric rings
+                ForEach(0..<3, id: \.self) { i in
+                    Circle()
+                        .stroke(challenge.color.opacity(0.2), lineWidth: 1)
+                        .frame(width: CGFloat(50 + i * 40), height: CGFloat(50 + i * 40))
+                }
+            }
+            
+            VStack(spacing: 12) {
+                Text("Focus on the center dot")
+                    .font(.title3)
+                    .foregroundColor(.white)
+                
+                Text("Don't look away!")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                
+                // Hold time indicator
+                Text("\(challengeTime)s held")
+                    .font(.headline)
+                    .foregroundColor(challenge.color)
+                    .padding(.top, 8)
+            }
+            
+            Spacer()
+            
+            // Tips
+            HStack {
+                Image(systemName: "eye.fill").foregroundColor(.purple)
+                Text("Keep your eyes steady")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            }
+            .padding(.bottom, 40)
+        }
+        .onAppear {
+            // Gradually increase score for holding gaze
+            Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+                if isActive && timeRemaining > 0 {
+                    score += 5
+                }
+            }
+        }
+    }
+    
+    var stillnessTestView: some View {
+        VStack(spacing: 40) {
+            Spacer()
+            
+            // Stillness meter
+            VStack(spacing: 16) {
+                Text("Stay Still!")
+                    .font(.title2)
+                    .foregroundColor(.white)
+                
+                Text("Minimize movement")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                
+                // Movement indicator (simulated)
+                GeometryReader { geo in
+                    ZStack {
+                        Circle()
+                            .fill(Color.white.opacity(0.1))
+                            .frame(width: 100, height: 100)
+                        
+                        Circle()
+                            .fill(Color.green.opacity(0.5))
+                            .frame(width: 30 + CGFloat(combo) * 2, height: 30 + CGFloat(combo) * 2)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .frame(height: 120)
+                
+                // Score based on stillness
+                VStack {
+                    Text("Stillness Score")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                    Text("\(max(0, 100 - combo * 5))%")
+                        .font(.title)
+                        .foregroundColor(combo < 10 ? .green : (combo < 20 ? .yellow : .red))
+                }
+            }
+            .padding()
+            .background(Color.white.opacity(0.05))
+            .cornerRadius(20)
+            .padding(.horizontal)
+            
+            Spacer()
+            
+            Text("Any movement reduces your score")
+                .font(.caption)
+                .foregroundColor(.gray)
+                .padding(.bottom, 40)
+        }
+    }
+    
+    var slowTrackingView: some View {
+        GeometryReader { geo in
+            ZStack {
+                // Slow moving target
+                Circle()
+                    .fill(
+                        RadialGradient(
+                            colors: [.white, challenge.color],
+                            center: .center,
+                            startRadius: 0,
+                            endRadius: 30
+                        )
+                    )
+                    .frame(width: 60, height: 60)
+                    .position(targetPosition)
+                    .onTapGesture {
+                        score += 20
+                        combo += 1
+                        moveSlowTarget(in: geo.size)
+                    }
+                
+                // Trail effect
+                ForEach(0..<3, id: \.self) { i in
+                    Circle()
+                        .fill(challenge.color.opacity(0.1 * Double(3 - i)))
+                        .frame(width: 60 + CGFloat(i * 20), height: 60 + CGFloat(i * 20))
+                        .position(targetPosition)
+                }
+                
+                VStack {
+                    Text("Track slowly...")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                    Text("Tap when aligned")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+                .position(x: geo.size.width / 2, y: 40)
+            }
+        }
+        .onAppear {
+            // Slow movement will be handled by a timer
+        }
+    
+    var memoryContent: some View {
+        Group {
+            switch challenge {
+            case .memoryFlash, .memoryPuzzle:
+                patternMemoryView
+            case .numberSequence:
+                numberSequenceView
+            case .patternMatching:
+                patternMatchingView
+            case .tapPattern:
+                tapPatternView
+            case .spatialPuzzle:
+                spatialPuzzleView
+            default:
+                patternMemoryView
+            }
+        }
+    }
+    
+    // MARK: - Memory Challenge Variants
+    
+    var patternMemoryView: some View {
+        VStack(spacing: 16) {
+            // Level and score header
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("Level \(level)")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.white)
+                    HStack(spacing: 4) {
+                        ForEach(0..<min(level + 1, 6), id: \.self) { i in
+                            Circle()
+                                .fill(i < level - 1 ? challenge.color : Color.white.opacity(0.3))
+                                .frame(width: 8, height: 8)
+                        }
+                    }
+                }
+                Spacer()
+                VStack(alignment: .trailing) {
+                    Text("\(score)")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.yellow)
+                    Text("points")
+                        .font(.system(size: 12))
+                        .foregroundColor(.gray)
+                }
+            }
+            
+            Text("Memorize the pattern!")
+                .font(.system(size: 16, weight: .medium))
+                .foregroundColor(challenge.color)
+                .padding(.vertical, 8)
+            
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                ForEach(0..<9, id: \.self) { index in
+                    Button(action: { handleMemoryTap(index) }) {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(index < level && index % 2 == 0 ? challenge.color : Color.white.opacity(0.1))
+                            .aspectRatio(1, contentMode: .fit)
+                            .overlay(RoundedRectangle(cornerRadius: 12).stroke(challenge.color.opacity(0.3), lineWidth: 1))
+                    }
+                }
+            }
+            .padding(.horizontal)
+            
+            HStack {
+                Text("Combo: \(combo)x").foregroundColor(.orange)
+                Spacer()
+                Text("Score: \(score)").foregroundColor(.yellow)
+            }
+            .padding(.horizontal)
+        }
+        .onAppear {
+            level = 1
+            score = 0
+            combo = 0
+        }
+    }
+    
+    var numberSequenceView: some View {
+        VStack(spacing: 20) {
+            Text("Remember the sequence!")
+                .font(.title2)
+                .foregroundColor(.white)
+            
+            Text("Numbers will flash, tap in order")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            
+            // Number grid 1-9
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                ForEach(1...9, id: \.self) { num in
+                    Button(action: { handleNumberTap(num) }) {
+                        Text("\(num)")
+                            .font(.system(size: 32, weight: .bold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .aspectRatio(1, contentMode: .fit)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(num <= level ? challenge.color : Color.white.opacity(0.1))
+                            )
+                    }
+                }
+            }
+            .padding(.horizontal)
+            
+            Text("Tap: \(combo)/\(level)")
+                .foregroundColor(.gray)
+        }
+    }
+    
+    var patternMatchingView: some View {
+        VStack(spacing: 20) {
+            Text("Match the pattern!")
+                .font(.title2)
+                .foregroundColor(.white)
+            
+            Text("Repeat the sequence")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            
+            // Pattern display
+            HStack(spacing: 8) {
+                ForEach(0..<4, id: \.self) { i in
+                    Circle()
+                        .fill(i < level % 4 ? challenge.color : Color.white.opacity(0.2))
+                        .frame(width: 40, height: 40)
+                }
+            }
+            .padding(.vertical, 20)
+            
+            // Color buttons
+            HStack(spacing: 16) {
+                ForEach(0..<4, id: \.self) { colorIndex in
+                    let colors: [Color] = [.red, .blue, .green, .yellow]
+                    Button(action: { handlePatternMatch(colorIndex) }) {
+                        Circle()
+                            .fill(colors[colorIndex])
+                            .frame(width: 60, height: 60)
+                    }
+                }
+            }
+        }
+    }
+    
+    var tapPatternView: some View {
+        VStack(spacing: 20) {
+            Text("Follow the path!")
+                .font(.title2)
+                .foregroundColor(.white)
+            
+            Text("Trace the pattern")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            
+            // Simple path - just tap in order
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                ForEach(0..<9, id: \.self) { index in
+                    Button(action: { handleMemoryTap(index) }) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.white.opacity(0.1))
+                                .aspectRatio(1, contentMode: .fit)
+                            
+                            if combo > index {
+                                Image(systemName: "\(index + 1).circle.fill")
+                                    .font(.title2)
+                                    .foregroundColor(challenge.color)
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal)
+            
+            Text("Tap in numerical order")
+                .foregroundColor(.gray)
+        }
+    }
+    
+    var spatialPuzzleView: some View {
+        VStack(spacing: 20) {
+            Text("Spatial Memory")
+                .font(.title2)
+                .foregroundColor(.white)
+            
+            Text("Remember positions")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            
+            // Show grid briefly then hide
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                ForEach(0..<9, id: \.self) { index in
+                    Button(action: { handleMemoryTap(index) }) {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(btnColor(for: index))
+                            .aspectRatio(1, contentMode: .fit)
+                    }
+                }
+            }
+            .padding(.horizontal)
+            
+            Text("Find all hidden tiles")
+                .foregroundColor(.gray)
+        }
+    }
+    
+    func btnColor(for index: Int) -> Color {
+        if index % 3 == 0 && index < level * 2 {
+            return challenge.color
+        }
+        return Color.white.opacity(0.1)
+    }
+    
+    func handleNumberTap(_ num: Int) {
+        if num == combo + 1 {
+            combo += 1
+            score += 10
+            if combo >= level {
+                level += 1
+                combo = 0
+            }
+        } else {
+            combo = 0
+            score = max(0, score - 5)
+        }
+    }
+    
+    func handlePatternMatch(_ index: Int) {
+        if index == level % 4 {
+            score += 15
+            level += 1
+        } else {
+            combo = 0
+            score = max(0, score - 10)
+        }
+    }
+    var reactionContent: some View {
+        Group {
+            switch challenge {
+            case .reactionInhibition, .impulseSpikeTest:
+                reactionTimeView
+            case .rhythmTap:
+                rhythmTapView
+            case .delayUnlock:
+                delayUnlockView
+            case .resetChallenge:
+                resetChallengeView
+            default:
+                reactionTimeView
+            }
+        }
+    }
+    
+    // MARK: - Reaction Challenge Variants
+    
+    var reactionTimeView: some View {
+        VStack(spacing: 24) {
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("Reaction Time")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.white)
+                    Text(reactionInstructionText)
+                        .font(.system(size: 14))
+                        .foregroundColor(.gray)
+                }
+                Spacer()
+                VStack(alignment: .trailing) {
+                    Text("\(score)")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.yellow)
+                    Text("score")
+                        .font(.system(size: 12))
+                        .foregroundColor(.gray)
+                }
+            }
+            
+            Spacer()
+            
+            ZStack {
+                Circle()
+                    .fill(reactionCircleColor.opacity(0.1))
+                    .frame(width: 250, height: 250)
+                Circle()
+                    .stroke(reactionCircleColor.opacity(0.3), lineWidth: 2)
+                    .frame(width: 220, height: 220)
+                Circle()
+                    .fill(RadialGradient(colors: [reactionCircleColor, reactionCircleColor.opacity(0.5)], center: .center, startRadius: 0, endRadius: 80))
+                    .frame(width: 180, height: 180)
+                
+                if gameState == .go {
+                    Circle()
+                        .stroke(Color.green, lineWidth: 4)
+                        .frame(width: 200, height: 200)
+                }
+                
+                VStack(spacing: 8) {
+                    Text(reactionCircleText)
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundColor(.white)
+                    if gameState == .go {
+                        Text("TAP NOW!")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(.white.opacity(0.8))
+                    }
+                }
+            }
+            .onTapGesture { handleReactionTap() }
+            
+            if reactionTime > 0 {
+                VStack(spacing: 4) {
+                    Text("\(Int(reactionTime * 1000))")
+                        .font(.system(size: 48, weight: .bold))
+                        .foregroundColor(reactionTimeColor)
+                    Text("milliseconds")
+                        .font(.system(size: 14))
+                        .foregroundColor(.gray)
+                    Text(reactionTimeRating)
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(reactionTimeColor)
+                }
+                .padding()
+                .background(Capsule().fill(reactionTimeColor.opacity(0.1)))
+            }
+            
+            Spacer()
+        }
+        .padding()
+    }
+    
+    var rhythmTapView: some View {
+        VStack(spacing: 30) {
+            Text("Rhythm Challenge")
+                .font(.title2)
+                .foregroundColor(.white)
+            
+            Text("Tap along to the beat!")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            
+            // Beat indicator
+            ZStack {
+                Circle()
+                    .stroke(challenge.color.opacity(0.3), lineWidth: 4)
+                    .frame(width: 200, height: 200)
+                
+                Circle()
+                    .fill(challenge.color.opacity(0.5))
+                    .frame(width: 60 + CGFloat(combo % 10) * 5, height: 60 + CGFloat(combo % 10) * 5)
+            }
+            
+            Text("Tap in rhythm!")
+                .foregroundColor(.white)
+                .padding(.vertical, 20)
+            
+            Button(action: { 
+                combo += 1
+                score += 10 + combo
+            }) {
+                Circle()
+                    .fill(challenge.color)
+                    .frame(width: 100, height: 100)
+                    .overlay(Text("TAP").font(.headline).foregroundColor(.white))
+            }
+            
+            Text("Score: \(score)")
+                .font(.title3)
+                .foregroundColor(.yellow)
+        }
+    }
+    
+    var delayUnlockView: some View {
+        VStack(spacing: 30) {
+            Text("Delay Gratification")
+                .font(.title2)
+                .foregroundColor(.white)
+            
+            Text("Wait for the unlock...")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            
+            // Countdown
+            ZStack {
+                Circle()
+                    .stroke(Color.white.opacity(0.1), lineWidth: 8)
+                    .frame(width: 200, height: 200)
+                
+                Circle()
+                    .trim(from: 0, to: CGFloat(timeRemaining) / CGFloat(challenge.duration))
+                    .stroke(challenge.color, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                    .frame(width: 200, height: 200)
+                    .rotationEffect(.degrees(-90))
+                
+                VStack {
+                    Text("\(Int(timeRemaining))")
+                        .font(.system(size: 48, weight: .bold))
+                        .foregroundColor(.white)
+                    Text("seconds")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+            }
+            
+            Text("Wait for the timer...")
+                .foregroundColor(.gray)
+            
+            // Manual unlock attempt
+            Button(action: {
+                if timeRemaining > 3 {
+                    score -= 20
+                } else {
+                    score += 100
+                }
+            }) {
+                Text("UNLOCK EARLY")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(Color.red.opacity(0.5))
+                    .cornerRadius(8)
+            }
+            
+            Text("Score: \(score)")
+                .foregroundColor(.yellow)
+        }
+    }
+    
+    var resetChallengeView: some View {
+        VStack(spacing: 30) {
+            Text("Reset Control")
+                .font(.title2)
+                .foregroundColor(.white)
+            
+            Text("Catch the reset moment!")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            
+            ZStack {
+                Circle()
+                    .fill(gameState == .go ? Color.green : Color.red)
+                    .frame(width: 150, height: 150)
+                
+                Text(gameState == .go ? "TAP!" : "WAIT")
+                    .font(.title)
+                    .foregroundColor(.white)
+            }
+            .onTapGesture {
+                if gameState == .ready {
+                    gameState = .go
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        if gameState == .go {
+                            gameState = .waiting
+                        }
+                    }
+                }
+            }
+            
+            Text("Score: \(score)")
+                .foregroundColor(.yellow)
+        }
+    }
+    
+    var reactionInstructionText: String {
+        switch gameState {
+        case .waiting: return "Wait for green..."
+        case .ready: return "Get ready..."
+        case .go: return "TAP NOW!"
+        case .tooEarly: return "Too early! Wait for green."
+        }
+    }
+    
+    var reactionCircleColor: Color {
+        switch gameState {
+        case .waiting, .ready: return .red
+        case .go: return .green
+        case .tooEarly: return .orange
+        }
+    }
+    
+    var reactionCircleText: String {
+        switch gameState {
+        case .waiting, .ready: return "Wait..."
+        case .go: return "TAP!"
+        case .tooEarly: return "Too Early!"
+        }
+    }
+    
+    var reactionTimeColor: Color {
+        if reactionTime < 0.15 { return .green }
+        if reactionTime < 0.25 { return .yellow }
+        if reactionTime < 0.35 { return .orange }
+        return .red
+    }
+    
+    var reactionTimeRating: String {
+        if reactionTime < 0.15 { return "⚡️ Lightning Fast!" }
+        if reactionTime < 0.25 { return "🔥 Great!" }
+        if reactionTime < 0.35 { return "💪 Good" }
+        return "🎯 Keep Practicing"
+    }
+    
+    var breathingContent: some View {
+        VStack(spacing: 20) {
+            // Header
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("Cycle \(cycleCount + 1)")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.white)
+                    Text("\(cycleCount) completed")
+                        .font(.system(size: 14))
+                        .foregroundColor(.gray)
+                }
+                Spacer()
+                VStack(alignment: .trailing) {
+                    Text("\(score)")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.green)
+                    Text("calmness")
+                        .font(.system(size: 12))
+                        .foregroundColor(.gray)
+                }
+            }
+            
+            // Animated breathing circle
+            ZStack {
+                // Outer ring
+                Circle()
+                    .stroke(Color.white.opacity(0.1), lineWidth: 4)
+                    .frame(width: 250, height: 250)
+                
+                // Progress ring with gradient
+                Circle()
+                    .trim(from: 0, to: breathProgress)
+                    .stroke(
+                        LinearGradient(
+                            colors: breathPhase == .inhale ? [.purple, .blue] :
+                                   breathPhase == .hold ? [.blue, .cyan] : [.cyan, .green],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        style: StrokeStyle(lineWidth: 12, lineCap: .round)
+                    )
+                    .frame(width: 250, height: 250)
+                    .rotationEffect(.degrees(-90))
+                
+                // Inner breathing guide
+                Circle()
+                    .fill(
+                        RadialGradient(
+                            colors: [
+                                breathPhase == .inhale ? .purple :
+                                breathPhase == .hold ? .blue : .green,
+                                breathPhase == .inhale ? .purple.opacity(0.3) :
+                                breathPhase == .hold ? .blue.opacity(0.3) : .green.opacity(0.3)
+                            ],
+                            center: .center,
+                            startRadius: 0,
+                            endRadius: 100
+                        )
+                    )
+                    .frame(width: 100 + breathProgress * 100, height: 100 + breathProgress * 100)
+                
+                VStack(spacing: 8) {
+                    Image(systemName: breathPhase == .inhale ? "arrow.up" : (breathPhase == .hold ? "pause.circle" : "arrow.down"))
+                        .font(.system(size: 40))
+                        .foregroundColor(.white)
+                    Text(breathPhase.rawValue)
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.white)
+                }
+            }
+            
+            // Instructions
+            VStack(spacing: 4) {
+                Text(breathInstruction)
+                    .font(.system(size: 14))
+                    .foregroundColor(.white.opacity(0.8))
+            }
+            
+            // Tip
+            HStack {
+                Image(systemName: "leaf.fill").foregroundColor(.green)
+                Text("Breathe naturally")
+                    .font(.system(size: 14))
+                    .foregroundColor(.gray)
+            }
+        }
+        .padding()
+    }
+    
+    var breathInstruction: String {
+        switch breathPhase {
+        case .inhale: return "Breathe in slowly through your nose"
+        case .hold: return "Hold your breath gently"
+        case .exhale: return "Release slowly through your mouth"
+        }
+    }
+    
+    var disciplineContent: some View {
+        Group {
+            switch challenge {
+            case .antiScrollSwipe, .appSwitchResistance:
+                scrollResistanceView
+            case .fakeNotifications, .popupIgnore:
+                notificationResistanceView
+            case .fingerHold:
+                fingerHoldView
+            case .impulseDelay:
+                impulseDelayView
+            case .distractionLog:
+                distractionLogView
+            case .notificationResistance:
+                notificationResistanceView
+            default:
+                disciplineBaseView
+            }
+        }
+    }
+    
+    // MARK: - Discipline Challenge Variants
+    
+    var disciplineBaseView: some View {
+        VStack(spacing: 20) {
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("Stay Focused")
+                        .font(.system(size: 24, weight: .bold))
+                    Text("\(combo) impulses resisted")
+                        .font(.system(size: 14))
+                        .foregroundColor(.gray)
+                }
+                Spacer()
+                VStack(alignment: .trailing) {
+                    Text("\(score)")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.yellow)
+                    Text("discipline")
+                        .font(.system(size: 12))
+                        .foregroundColor(.gray)
+                }
+            }
+            
+            // Temptation meter
+            VStack(spacing: 8) {
+                HStack {
+                    Image(systemName: "brain.head.profile").foregroundColor(.purple)
+                    Text("Temptation Level")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.gray)
+                    Spacer()
+                    Text("\(Int(temptationLevel * 100))%")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(temptationColor)
+                }
+                
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 8).fill(Color.white.opacity(0.1)).frame(height: 12)
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(LinearGradient(colors: [.green, .yellow, .orange, .red], startPoint: .leading, endPoint: .trailing))
+                            .frame(width: geo.size.width * temptationLevel, height: 12)
+                    }
+                }
+                .frame(height: 12)
+                
+                Text(disciplineEncouragement)
+                    .font(.system(size: 14))
+                    .foregroundColor(.white.opacity(0.8))
+            }
+            .padding(.horizontal)
+            
+            Spacer()
+            
+            VStack(spacing: 16) {
+                ZStack {
+                    Circle().fill(temptationColor.opacity(0.2)).frame(width: 180, height: 180)
+                    Circle().stroke(temptationColor, lineWidth: 3).frame(width: 160, height: 160)
+                    VStack(spacing: 12) {
+                        Image(systemName: disciplineIcon).font(.system(size: 50)).foregroundColor(temptationColor)
+                        Text("Don't tap!").font(.system(size: 16, weight: .bold)).foregroundColor(.white)
+                    }
+                }
+                Text("Let it pass...").font(.system(size: 14)).foregroundColor(.gray)
+            }
+            
+            Spacer()
+            
+            HStack(spacing: 32) {
+                VStack {
+                    Text("\(combo)").font(.system(size: 20, weight: .bold)).foregroundColor(.green)
+                    Text("Resisted").font(.system(size: 12)).foregroundColor(.gray)
+                }
+                VStack {
+                    Text("\(score)").font(.system(size: 20, weight: .bold)).foregroundColor(.yellow)
+                    Text("Score").font(.system(size: 12)).foregroundColor(.gray)
+                }
+            }
+        }
+        .padding()
+    }
+    
+    var scrollResistanceView: some View {
+        VStack(spacing: 30) {
+            Text("Scroll Resistance")
+                .font(.title2)
+                .foregroundColor(.white)
+            
+            Text("Don't give in to the urge!")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            
+            // Fake scroll indicator
+            VStack(spacing: 16) {
+                Rectangle()
+                    .fill(Color.white.opacity(0.1))
+                    .frame(height: 200)
+                    .overlay(
+                        VStack {
+                            Image(systemName: "arrow.down").font(.title)
+                            Text("Content below").font(.caption)
+                        }
+                        .foregroundColor(.gray)
+                    )
+                
+                // Temptation grows
+                Text("You want to scroll...")
+                    .foregroundColor(temptationColor)
+                    .padding(.vertical, 8)
+                
+                // Resist button (wrong action)
+                Button(action: {
+                    temptationLevel = min(1.0, temptationLevel + 0.2)
+                    score = max(0, score - 10)
+                    combo = 0
+                }) {
+                    Text("SCROLL DOWN")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.red.opacity(0.5))
+                        .cornerRadius(8)
+                }
+                
+                // Correct action - look away
+                Button(action: {
+                    combo += 1
+                    temptationLevel = max(0, temptationLevel - 0.1)
+                    score += 20
+                }) {
+                    Text("LOOK AWAY ✓")
+                        .font(.headline)
+                        .foregroundColor(.green)
+                        .padding()
+                        .background(Color.green.opacity(0.2))
+                        .cornerRadius(8)
+                }
+            }
+            .padding()
+            
+            HStack {
+                VStack {
+                    Text("\(combo)").foregroundColor(.green)
+                    Text("Resisted").font(.caption).foregroundColor(.gray)
+                }
+                Spacer()
+                VStack {
+                    Text("\(score)").foregroundColor(.yellow)
+                    Text("Score").font(.caption).foregroundColor(.gray)
+                }
+            }
+            .padding(.horizontal)
+        }
+    }
+    
+    var notificationResistanceView: some View {
+        VStack(spacing: 30) {
+            Text("Ignore the Notification")
+                .font(.title2)
+                .foregroundColor(.white)
+            
+            // Fake notification
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Image(systemName: "bell.badge.fill")
+                        .foregroundColor(.red)
+                    Text("New Message")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                    Spacer()
+                    Text("now")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+                Text("Hey! Check this out...")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                
+                HStack {
+                    Button(action: {
+                        temptationLevel = min(1.0, temptationLevel + 0.3)
+                        score = max(0, score - 20)
+                        combo = 0
+                    }) {
+                        Text("View").foregroundColor(.white).padding(.horizontal, 20).padding(.vertical, 10).background(Color.blue).cornerRadius(8)
+                    }
+                    Button(action: {
+                        combo += 1
+                        score += 30
+                        temptationLevel = max(0, temptationLevel - 0.2)
+                    }) {
+                        Text("Dismiss").foregroundColor(.white).padding(.horizontal, 20).padding(.vertical, 10).background(Color.gray).cornerRadius(8)
+                    }
+                }
+            }
+            .padding()
+            .background(Color.white.opacity(0.1))
+            .cornerRadius(16)
+            .padding(.horizontal)
+            
+            HStack {
+                Text("Temptation: \(Int(temptationLevel * 100))%").foregroundColor(temptationColor)
+                Spacer()
+                Text("Score: \(score)").foregroundColor(.yellow)
+            }
+            .padding(.horizontal)
+            
+            Text("Don't open notifications!")
+                .font(.caption)
+                .foregroundColor(.gray)
+        }
+    }
+    
+    var fingerHoldView: some View {
+        VStack(spacing: 30) {
+            Text("Finger Hold")
+                .font(.title2)
+                .foregroundColor(.white)
+            
+            Text("Hold your finger still!")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            
+            ZStack {
+                Circle()
+                    .stroke(Color.white.opacity(0.1), lineWidth: 8)
+                    .frame(width: 200, height: 200)
+                
+                Circle()
+                    .fill(combo > 20 ? Color.green.opacity(0.5) : (combo > 10 ? Color.yellow.opacity(0.5) : Color.red.opacity(0.5)))
+                    .frame(width: 100, height: 100)
+                
+                VStack {
+                    Text("\(combo)")
+                        .font(.system(size: 48, weight: .bold))
+                        .foregroundColor(.white)
+                    Text("seconds")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+            }
+            
+            Text(combo > 10 ? "Great hold!" : "Keep holding!")
+                .foregroundColor(.white)
+            
+            Button(action: {
+                temptationLevel = min(1.0, temptationLevel + 0.1)
+            }) {
+                Text("Release")
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(Color.red.opacity(0.5))
+                    .cornerRadius(8)
+            }
+        }
+    }
+    
+    var impulseDelayView: some View {
+        VStack(spacing: 30) {
+            Text("Impulse Delay")
+                .font(.title2)
+                .foregroundColor(.white)
+            
+            Text("Wait before acting...")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            
+            // Countdown
+            ZStack {
+                Circle()
+                    .stroke(Color.white.opacity(0.1), lineWidth: 8)
+                    .frame(width: 200, height: 200)
+                
+                Circle()
+                    .trim(from: 0, to: CGFloat(challengeTime) / CGFloat(challenge.duration))
+                    .stroke(challenge.color, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                    .frame(width: 200, height: 200)
+                    .rotationEffect(.degrees(-90))
+                
+                VStack {
+                    Text("\(challenge.duration - challengeTime)")
+                        .font(.system(size: 48, weight: .bold))
+                        .foregroundColor(.white)
+                }
+            }
+            
+            Button(action: {
+                score += 50
+                combo += 1
+            }) {
+                Text("ACT NOW!")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(challenge.color)
+                    .cornerRadius(8)
+            }
+            
+            Text("Wait longer for more points!")
+                .font(.caption)
+                .foregroundColor(.gray)
+        }
+    }
+    
+    var distractionLogView: some View {
+        VStack(spacing: 20) {
+            Text("Distraction Log")
+                .font(.title2)
+                .foregroundColor(.white)
+            
+            Text("Note what distracts you")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            
+            ScrollView {
+                VStack(spacing: 8) {
+                    ForEach(0..<5, id: \.self) { i in
+                        HStack {
+                            Image(systemName: ["app.badge", "bell.fill", "bubble.left", "envelope.fill", "phone.fill"][i])
+                                .foregroundColor(.gray)
+                            Text(["Social Media", "Notifications", "Messages", "Email", "Calls"][i])
+                                .foregroundColor(.white)
+                            Spacer()
+                            Button(action: {
+                                temptationLevel = min(1.0, temptationLevel + 0.1)
+                                combo = 0
+                            }) {
+                                Image(systemName: "plus.circle.fill").foregroundColor(.red)
+                            }
+                        }
+                        .padding()
+                        .background(Color.white.opacity(0.05))
+                        .cornerRadius(8)
+                    }
+                }
+            }
+            .frame(height: 200)
+            
+            HStack {
+                Text("Distractions: \(Int(temptationLevel * 10))").foregroundColor(.gray)
+                Spacer()
+                Text("Score: \(score)").foregroundColor(.yellow)
+            }
+        }
+    }
+                        .foregroundColor(.white)
+                    Text("\(combo) impulses resisted")
+                        .font(.system(size: 14))
+                        .foregroundColor(.gray)
+                }
+                Spacer()
+                VStack(alignment: .trailing) {
+                    Text("\(score)")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.yellow)
+                    Text("discipline")
+                        .font(.system(size: 12))
+                        .foregroundColor(.gray)
+                }
+            }
+            
+            // Temptation meter
+            VStack(spacing: 8) {
+                HStack {
+                    Image(systemName: "brain.head.profile").foregroundColor(.purple)
+                    Text("Temptation Level")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.gray)
+                    Spacer()
+                    Text("\(Int(temptationLevel * 100))%")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(temptationColor)
+                }
+                
+                // Progress bar
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 8).fill(Color.white.opacity(0.1)).frame(height: 12)
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(
+                                LinearGradient(
+                                    colors: [.green, .yellow, .orange, .red],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .frame(width: geo.size.width * temptationLevel, height: 12)
+                    }
+                }
+                .frame(height: 12)
+                
+                Text(disciplineEncouragement)
+                    .font(.system(size: 14))
+                    .foregroundColor(.white.opacity(0.8))
+            }
+            .padding(.horizontal)
+            
+            Spacer()
+            
+            // Main temptation scenario
+            VStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .fill(temptationColor.opacity(0.2))
+                        .frame(width: 180, height: 180)
+                    Circle()
+                        .stroke(temptationColor, lineWidth: 3)
+                        .frame(width: 160, height: 160)
+                    VStack(spacing: 12) {
+                        Image(systemName: disciplineIcon)
+                            .font(.system(size: 50))
+                            .foregroundColor(temptationColor)
+                        Text("Don't tap!")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                }
+                
+                Text("Let it pass...")
+                    .font(.system(size: 14))
+                    .foregroundColor(.gray)
+            }
+            
+            Spacer()
+            
+            // Stats
+            HStack(spacing: 32) {
+                VStack {
+                    Text("\(combo)")
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(.green)
+                    Text("Resisted")
+                        .font(.system(size: 12))
+                        .foregroundColor(.gray)
+                }
+                VStack {
+                    Text("\(score)")
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(.yellow)
+                    Text("Score")
+                        .font(.system(size: 12))
+                        .foregroundColor(.gray)
+                }
+            }
+        }
+        .padding()
+    }
+    
+    var temptationColor: Color {
+        if temptationLevel < 0.3 { return .green }
+        if temptationLevel < 0.6 { return .yellow }
+        if temptationLevel < 0.8 { return .orange }
+        return .red
+    }
+    
+    var disciplineIcon: String {
+        let icons = ["bell.badge.fill", "app.badge", "hand.tap.fill", "bubble.left.fill", "exclamationmark.triangle.fill"]
+        return icons[Int(timeRemaining) % icons.count]
+    }
+    
+    var disciplineEncouragement: String {
+        if temptationLevel < 0.3 { return "You're doing great! Stay calm." }
+        if temptationLevel < 0.6 { return "Keep resisting. You got this!" }
+        if temptationLevel < 0.8 { return "Focus on your breath. Don't react." }
+        return "Almost there! Ride the urge!"
+    }
+    
+    var challengeResultsView: some View {
+        VStack(spacing: 24) {
+            Spacer()
+            Image(systemName: score >= 50 ? "star.fill" : "arrow.clockwise").font(.system(size: 60)).foregroundColor(score >= 50 ? .yellow : .gray)
+            Text("Challenge Complete!").font(.title).foregroundColor(.white)
+            Text("Score: \(score)").font(.title2).foregroundColor(.yellow)
+            Text("+\(challenge.xpReward) XP").font(.headline).foregroundColor(.green)
+            Button(action: { dismiss() }) { Text("Continue").foregroundColor(.white).padding().background(Color.blue).cornerRadius(8) }
+            Spacer()
+        }
+    }
+    
+    func startChallenge() {
+        isActive = true
+        timeRemaining = Double(challenge.duration)
+        score = 0
+        combo = 0
+        level = 1
+        cycleCount = 0
+        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
+            if timeRemaining > 0 {
+                timeRemaining -= 0.1
+                challengeTime = challenge.duration - Int(timeRemaining)
+            } else {
+                timer.invalidate()
+                showResults = true
+            }
+        }
+    }
+    
+    func endChallenge() { isActive = false; showResults = true }
+    
+    func handleMemoryTap(_ index: Int) {
+        // Simple memory game - tap all lit tiles
+        if index % 2 == 0 && index < level * 2 {
+            combo += 1
+            score += 10 * min(combo, 5)
+        } else {
+            combo = 0
+            score = max(0, score - 5)
+        }
+        
+        // Progress to next level every 3 correct taps
+        if score > level * 30 {
+            level += 1
+            combo = 0
+        }
+    }
+    
+    func moveSlowTarget(in size: CGSize) {
+        withAnimation(.easeInOut(duration: 2.0)) {
+            targetPosition = CGPoint(
+                x: CGFloat.random(in: 0.15...0.85) * size.width,
+                y: CGFloat.random(in: 0.15...0.7) * size.height
+            )
+        }
+    }
+    
+    func handleReactionTap() {
+        if gameState == .waiting || gameState == .ready {
+            gameState = .tooEarly
+            return
+        }
+        if gameState == .go {
+            reactionTime = Date().timeIntervalSince(startTimeReact)
+            score = max(0, Int((0.3 - reactionTime) * 1000))
+            gameState = .waiting
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double.random(in: 1...3)) { startReaction() }
+        }
+    }
+    
+    func startReaction() {
+        guard isActive else { return }
+        gameState = .ready
+        DispatchQueue.main.asyncAfter(deadline: .now() + Double.random(in: 1...3)) {
+            gameState = .go
+            startTimeReact = Date()
+        }
+    }
+}
+
+#Preview { UniversalChallengeView(challenge: .movingTarget).environmentObject(AppState()) }
