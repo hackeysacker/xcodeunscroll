@@ -1,5 +1,43 @@
 import SwiftUI
 
+// Simple ChallengeType for Settings
+struct ChallengeType: Identifiable {
+    let id: String
+    let icon: String
+    let name: String
+    let color: Color
+    let category: ChallengeCategory
+    let description: String
+    let instructions: String
+    let hint: String
+    let difficulty: Int
+    
+    enum ChallengeCategory: String {
+        case mental, meditation, physical, learning, creative, reflection, social, rest
+    }
+}
+
+// Social challenges
+let socialChallenges: [ChallengeType] = [
+    ChallengeType(id: "call", icon: "phone.fill", name: "Call Someone", color: Color(hex: "EC4899"), category: .social, description: "Connect", instructions: "Call a friend or family member.", hint: "FaceTime counts!", difficulty: 1),
+    ChallengeType(id: " compliment", icon: "hand.thumbsup.fill", name: " compliment", color: Color(hex: "DB2777"), category: .social, description: "Be kind", instructions: "Give a genuine compliment.", hint: "Specific is better.", difficulty: 1),
+    ChallengeType(id: "listen", icon: "ear.fill", name: "Deep Listen", color: Color(hex: "BE185D"), category: .social, description: "Active listening", instructions: "Have a conversation without interrupting.", hint: "Ask questions.", difficulty: 2),
+    ChallengeType(id: "share", icon: "square.and.arrow.up", name: "Share", color: Color(hex: "9D174D"), category: .social, description: "Share knowledge", instructions: "Share something helpful with someone.", hint: "Articles count!", difficulty: 1),
+    ChallengeType(id: "ask", icon: "questionmark.circle.fill", name: "Ask", color: Color(hex: "831843"), category: .social, description: "Learn about someone", instructions: "Ask someone about their life.", hint: "Be curious!", difficulty: 1),
+    ChallengeType(id: "appreciate", icon: "heart.fill", name: "Appreciate", color: Color(hex: "701c37"), category: .social, description: "Express gratitude", instructions: "Tell someone why you appreciate them.", hint: "Be specific.", difficulty: 1),
+    ChallengeType(id: "help", icon: "handshake.fill", name: "Help", color: Color(hex: "500724"), category: .social, description: "Assist others", instructions: "Help someone with something.", hint: "Small acts count!", difficulty: 1)
+]
+
+// Rest challenges
+let restChallenges: [ChallengeType] = [
+    ChallengeType(id: "nap", icon: "moon.zzz.fill", name: "Power Nap", color: Color(hex: "6366F1"), category: .rest, description: "Rest your mind", instructions: "Close your eyes for 10-20 minutes.", hint: "Set an alarm.", difficulty: 1),
+    ChallengeType(id: "relax", icon: "leaf.fill", name: "Relax", color: Color(hex: "4F46E5"), category: .rest, description: "Do nothing", instructions: "Sit quietly. No phone. Just be.", hint: "Stare out the window.", difficulty: 1),
+    ChallengeType(id: "daydream", icon: "cloud.fill", name: "Daydream", color: Color(hex: "4338CA"), category: .rest, description: "Use your imagination", instructions: "Imagine your ideal day.", hint: "Be detailed!", difficulty: 1),
+    ChallengeType(id: "stretch", icon: "figure.flexibility", name: "Gentle Stretch", color: Color(hex: "3730A3"), category: .rest, description: "Light movement", instructions: "Do gentle stretches.", hint: "No intense workout.", difficulty: 1),
+    ChallengeType(id: "music", icon: "music.note", name: "Listen", color: Color(hex: "312E81"), category: .rest, description: "Enjoy music", instructions: "Listen to your favorite songs.", hint: "No podcasts, just music.", difficulty: 1),
+    ChallengeType(id: "nature", icon: "tree.fill", name: "Nature", color: Color(hex: "1E1B4B"), category: .rest, description: "Connect with nature", instructions: "Spend time outside.", hint: "Even 5 minutes counts!", difficulty: 1)
+]
+
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) var dismiss
@@ -615,18 +653,4 @@ let reflectionChallenges: [ChallengeType] = [
     ChallengeType(id: "strengths", icon: "star.circle", name: "Strengths", color: Color(hex: "065F46"), category: .reflection, description: "Know yourself", instructions: "List 5 strengths. How can you use them?", hint: "Ask friends too.", difficulty: 1),
     ChallengeType(id: "values", icon: "scale.3d", name: "Values", color: Color(hex: "064E3B"), category: .reflection, description: "Identify values", instructions: "What matters most? Rank top 5.", hint: "Think what you'd fight for.", difficulty: 2),
     ChallengeType(id: "meditation_journal", icon: "book.closed.fill", name: "Meditation Journal", color: Color(hex: "022C22"), category: .reflection, description: "Meditative writing", instructions: "Write whatever comes to mind for 5 min.", hint: "Don't filter.", difficulty: 2)
-]
-
-let socialChallenges: [ChallengeType] = [
-    ChallengeType(id: "social", icon: "person.2.fill", name: "Connect", color: Color(hex: "EC4899"), category: .social, description: "Connect with others", instructions: "Send a kind message to someone.", hint: "'Thinking of you' means a lot.", difficulty: 1),
-    ChallengeType(id: "listen", icon: "ear", name: "Deep Listen", color: Color(hex: "DB2777"), category: .social, description: "Truly listen", instructions: "Have a conversation where you only listen.", hint: "Focus on understanding.", difficulty: 3),
-    ChallengeType(id: "compliment", icon: "heart.circle", name: "Compliment", color: Color(hex: "BE185D"), category: .social, description: "Give praise", instructions: "Give a genuine compliment. Be specific.", hint: "Notice what others miss.", difficulty: 1),
-    ChallengeType(id: "call", icon: "phone.fill", name: "Call", color: Color(hex: "9D174D"), category: .social, description: "Phone a friend", instructions: "Call someone you haven't talked to.", hint: "Ask open-ended questions.", difficulty: 2)
-]
-
-let restChallenges: [ChallengeType] = [
-    ChallengeType(id: "sleep", icon: "moon.fill", name: "Sleep", color: Color(hex: "6366F1"), category: .rest, description: "Rest properly", instructions: "Close eyes. Practice deep breathing.", hint: "Start from toes.", difficulty: 1),
-    ChallengeType(id: "nap", icon: "zzz", name: "Power Nap", color: Color(hex: "4F46E5"), category: .rest, description: "Quick recharge", instructions: "Set 20 min alarm. Lie down and rest.", hint: "Eyes closed helps.", difficulty: 1),
-    ChallengeType(id: "eyes_closed", icon: "eye.slash.fill", name: "Eyes Rest", color: Color(hex: "4338CA"), category: .rest, description: "Relax eyes", instructions: "Close eyes in dark room. No screens.", hint: "Use a cloth over eyes.", difficulty: 1),
-    ChallengeType(id: "sound_bath", icon: "waveform", name: "Sound Bath", color: Color(hex: "3730A3"), category: .rest, description: "Healing sounds", instructions: "Listen to binaural beats or nature sounds.", hint: "Use headphones.", difficulty: 1)
 ]
