@@ -95,7 +95,7 @@
 ## Priority 4: Features
 
 ### Gamification
-- [ ] Daily challenges (3 per day)
+- [x] Daily challenges (3 per day) - DONE Feb 28, 2026
 - [ ] Streak rewards (7-day, 30-day, 100-day)
 - [ ] Achievement badges with icons
 - [ ] Level-up celebrations

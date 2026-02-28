@@ -202,7 +202,9 @@ struct UniversalChallengeView: View {
     
     // MARK: - Results
     var resultsView: some View {
-        VStack(spacing: 24) {
+        let gemsEarned = max(1, score / 10)
+        
+        return VStack(spacing: 24) {
             Spacer()
             
             Image(systemName: score >= 50 ? "star.fill" : "arrow.clockwise")
@@ -217,9 +219,39 @@ struct UniversalChallengeView: View {
                 .font(.title2)
                 .foregroundColor(.yellow)
             
-            Text("+\(challenge.xpReward) XP")
-                .font(.headline)
-                .foregroundColor(.green)
+            HStack(spacing: 24) {
+                VStack {
+                    Text("+\(challenge.xpReward)")
+                        .font(.headline)
+                        .foregroundColor(.green)
+                    Text("XP")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+                
+                VStack {
+                    Text("+\(gemsEarned)")
+                        .font(.headline)
+                        .foregroundColor(.purple)
+                    Text("Gems")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+            }
+            
+            // Gem animation indicator
+            if score >= 50 {
+                HStack(spacing: 4) {
+                    Image(systemName: "gem.fill")
+                        .foregroundColor(.purple)
+                    Text("+\(gemsEarned + 2) Bonus!")
+                        .font(.caption)
+                        .foregroundColor(.purple)
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(Capsule().fill(Color.purple.opacity(0.2)))
+            }
             
             Button(action: { dismiss() }) {
                 Text("Continue")
@@ -886,6 +918,15 @@ struct UniversalChallengeView: View {
     func endChallenge() {
         isActive = false
         showResults = true
+        
+        // Play completion sounds
+        if score >= 50 {
+            AppAudioManager.shared.playPerfect()
+        } else if score > 0 {
+            AppAudioManager.shared.playChallengeComplete()
+        } else {
+            AppAudioManager.shared.playError()
+        }
     }
 }
 
