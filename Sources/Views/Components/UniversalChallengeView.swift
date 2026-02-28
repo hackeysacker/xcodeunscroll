@@ -376,11 +376,10 @@ struct UniversalChallengeView: View {
         } else {
             HapticManager.shared.lightTap()
         }
-        AppAudioManager.shared.playTap()
         
         // Milestone sounds
         if combo == 10 || combo == 25 || combo == 50 {
-            AppAudioManager.shared.playLevelUp()
+            HapticManager.shared.success()
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -931,11 +930,11 @@ struct UniversalChallengeView: View {
         
         // Play completion sounds
         if score >= 50 {
-            AppAudioManager.shared.playPerfect()
+            HapticManager.shared.success()
         } else if score > 0 {
-            AppAudioManager.shared.playChallengeComplete()
+            HapticManager.shared.lightTap()
         } else {
-            AppAudioManager.shared.playError()
+            HapticManager.shared.error()
         }
     }
 }
