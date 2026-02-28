@@ -278,33 +278,57 @@ struct HomeView: View {
     
     // MARK: - Daily Goal
     var dailyGoalCard: some View {
-        GlassCard(tint: .blue, cornerRadius: 16) {
+        VStack(spacing: 12) {
+            // Daily Challenges Header
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Daily Goal")
-                        .font(.system(size: 14, weight: .semibold))
+                    Text("Daily Challenges")
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(.white)
-                    Text("Complete 3 challenges today")
+                    Text("Complete all 3 for bonus rewards!")
                         .font(.system(size: 12))
                         .foregroundColor(.gray)
                 }
                 
                 Spacer()
                 
-                // Progress - show completed count
-                Text("\(dailyGoalCompleted)/3")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(dailyGoalCompleted >= 3 ? .green : .white)
+                // Progress
+                HStack(spacing: 4) {
+                    Image(systemName: appState.allDailyChallengesCompleted ? "checkmark.circle.fill" : "circle")
+                        .foregroundColor(appState.allDailyChallengesCompleted ? .green : .gray)
+                    Text("\(appState.dailyChallengeProgress.completed)/3")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(appState.allDailyChallengesCompleted ? .green : .white)
+                }
+            }
+            
+            // Daily Challenges List
+            let dailyChallenges = appState.getDailyChallenges()
+            ForEach(dailyChallenges) { challenge in
+                DailyChallengeRow(challenge: challenge) {
+                    appState.selectedChallenge = challenge.challengeType
+                    appState.startChallengeFromPath = true
+                    appState.selectedTab = .practice
+                }
             }
         }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(hex: "1E293B").opacity(0.6))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(appState.allDailyChallengesCompleted ? Color.green.opacity(0.5) : Color.purple.opacity(0.3), lineWidth: 1)
+        )
     }
     
     var dailyGoalCompleted: Int {
-        min(appState.progress?.completedChallenges.count ?? 0, 3)
+        appState.dailyChallengeProgress.completed
     }
     
     var dailyGoalProgress: Double {
-        let completed = appState.progress?.completedChallenges.count ?? 0
+        let completed = appState.dailyChallengeProgress.completed
         return min(Double(completed) / 3.0, 1.0)
     }
     
@@ -438,6 +462,105 @@ struct RecentActivityRow: View {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .abbreviated
         return formatter.localizedString(for: challenge.attemptedAt, relativeTo: Date())
+    }
+}
+
+// MARK: - Daily Challenge Row
+
+struct DailyChallengeRow: View {
+    let challenge: DailyChallenge
+    let onTap: () -> Void
+    
+    var body: some View {
+        Button(action: onTap) {
+            HStack(spacing: 12) {
+                // Icon
+                ZStack {
+                    Circle()
+                        .fill(challenge.isCompleted ? Color.green.opacity(0.2) : categoryColor.opacity(0.2))
+                        .frame(width: 44, height: 44)
+                    
+                    if challenge.isCompleted {
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(.green)
+                    } else {
+                        Image(systemName: challenge.icon)
+                            .font(.system(size: 18))
+                            .foregroundColor(categoryColor)
+                    }
+                }
+                
+                // Info
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(challenge.title)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(challenge.isCompleted ? .gray : .white)
+                    
+                    HStack(spacing: 8) {
+                        // Difficulty badge
+                        Text(challenge.difficulty.rawValue.capitalized)
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundColor(difficultyColor)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(difficultyColor.opacity(0.2))
+                            .cornerRadius(4)
+                        
+                        // Rewards
+                        HStack(spacing: 4) {
+                            Image(systemName: "star.fill")
+                                .font(.system(size: 8))
+                                .foregroundColor(.yellow)
+                            Text("+\(challenge.xpReward)")
+                                .font(.system(size: 10))
+                                .foregroundColor(.yellow)
+                        }
+                        
+                        HStack(spacing: 2) {
+                            Image(systemName: "gem.fill")
+                                .font(.system(size: 8))
+                                .foregroundColor(.cyan)
+                            Text("+\(challenge.gemReward)")
+                                .font(.system(size: 10))
+                                .foregroundColor(.cyan)
+                        }
+                    }
+                }
+                
+                Spacer()
+                
+                // Arrow or check
+                Image(systemName: challenge.isCompleted ? "checkmark.circle.fill" : "chevron.right")
+                    .font(.system(size: 16))
+                    .foregroundColor(challenge.isCompleted ? .green : .gray)
+            }
+            .padding(10)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(challenge.isCompleted ? Color.green.opacity(0.1) : Color.white.opacity(0.05))
+            )
+        }
+        .disabled(challenge.isCompleted)
+    }
+    
+    var categoryColor: Color {
+        switch challenge.category {
+        case .focus: return .blue
+        case .memory: return .purple
+        case .reaction: return .orange
+        case .breathing: return .cyan
+        case .discipline: return .red
+        }
+    }
+    
+    var difficultyColor: Color {
+        switch challenge.difficulty {
+        case .easy: return .green
+        case .medium: return .yellow
+        case .hard: return .orange
+        case .extreme: return .red
+        }
     }
 }
 

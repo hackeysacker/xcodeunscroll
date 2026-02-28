@@ -1,7 +1,7 @@
 import SwiftUI
 
 // MARK: - All Challenge Types
-enum AllChallengeType: String, CaseIterable, Identifiable {
+enum AllChallengeType: String, CaseIterable, Identifiable, Codable {
     // Focus & Attention
     case movingTarget = "Moving Target"
     case multiObjectTracking = "Multi-Object Tracking"

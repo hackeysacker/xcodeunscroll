@@ -386,4 +386,63 @@ class AppState: ObservableObject {
             }
         }
     }
+    
+    // MARK: - Daily Challenges
+    
+    func generateDailyChallengesIfNeeded() {
+        guard var prog = progress else { return }
+        prog.generateDailyChallenges()
+        progress = prog
+        saveData()
+    }
+    
+    func getDailyChallenges() -> [DailyChallenge] {
+        generateDailyChallengesIfNeeded()
+        return progress?.dailyChallenges ?? []
+    }
+    
+    func completeDailyChallenge(_ challengeType: AllChallengeType, score: Int) {
+        guard var prog = progress else { return }
+        
+        // Find and complete the daily challenge
+        if let index = prog.dailyChallenges?.firstIndex(where: { $0.challengeType == challengeType && !$0.isCompleted }) {
+            prog.dailyChallenges?[index].isCompleted = true
+            prog.dailyChallenges?[index].score = score
+            
+            let xpReward = prog.dailyChallenges?[index].xpReward ?? 20
+            let gemReward = prog.dailyChallenges?[index].gemReward ?? 2
+            
+            prog.dailyChallenges?[index].xpEarned = xpReward
+            prog.totalXP += xpReward
+            prog.gems += gemReward
+            
+            // Check level up
+            if prog.totalXP >= prog.xpForNextLevel {
+                prog.level += 1
+                prog.gems += 10
+            }
+            
+            // Update streak
+            updateStreak()
+            
+            progress = prog
+            saveData()
+            
+            // Sync to cloud
+            if isAuthenticated, let userId = currentUser?.id {
+                Task {
+                    await syncToCloud(userId: userId)
+                }
+            }
+        }
+    }
+    
+    var dailyChallengeProgress: (completed: Int, total: Int) {
+        guard let prog = progress else { return (0, 0) }
+        return (prog.dailyChallengesCompleted, prog.dailyChallengesTotal)
+    }
+    
+    var allDailyChallengesCompleted: Bool {
+        progress?.allDailyChallengesCompleted ?? false
+    }
 }
