@@ -80,6 +80,7 @@ struct UniversalChallengeView: View {
     @State private var targetScale: CGFloat = 1.0
     @State private var lastTapPosition: CGPoint = .zero
     @State private var showRipple: Bool = false
+    @State private var difficulty: Double = 0.0  // Increases with score for harder challenges
     
     enum BreathPhase: String {
         case inhale = "Breathe In"
@@ -320,11 +321,11 @@ struct UniversalChallengeView: View {
                         .position(lastTapPosition)
                 }
                 
-                // Target
+                // Target - gets smaller as difficulty increases
                 ZStack {
                     Circle()
                         .fill(challenge.color.opacity(0.2))
-                        .frame(width: 70 + sin(Date().timeIntervalSinceReferenceDate * 3) * 10, height: 70 + sin(Date().timeIntervalSinceReferenceDate * 3) * 10)
+                        .frame(width: (70 + sin(Date().timeIntervalSinceReferenceDate * 3) * 10) * targetScale, height: (70 + sin(Date().timeIntervalSinceReferenceDate * 3) * 10) * targetScale)
                         .position(targetPosition)
                     
                     Circle()
@@ -336,7 +337,7 @@ struct UniversalChallengeView: View {
                                 endRadius: 25
                             )
                         )
-                        .frame(width: 50, height: 50)
+                        .frame(width: 50 * targetScale, height: 50 * targetScale)
                         .scaleEffect(targetScale)
                         .position(targetPosition)
                         .onTapGesture {
@@ -359,8 +360,15 @@ struct UniversalChallengeView: View {
         combo += 1
         maxCombo = max(maxCombo, combo)
         
-        let difficulty = Double(challenge.duration - Int(timeRemaining)) / Double(challenge.duration)
+        // Update difficulty based on time and score
+        let timeDifficulty = Double(challenge.duration - Int(timeRemaining)) / Double(challenge.duration)
+        let scoreDifficulty = min(Double(score) / 500.0, 1.0)  // Max difficulty at 500 points
+        difficulty = (timeDifficulty + scoreDifficulty) / 2
+        
         score += 15 * min(combo, 10) + Int(difficulty * 10)
+        
+        // Decrease target size as difficulty increases (harder)
+        targetScale = max(0.6, 1.0 - difficulty * 0.4)
         
         // Haptics
         if combo > 5 {
@@ -368,18 +376,20 @@ struct UniversalChallengeView: View {
         } else {
             HapticManager.shared.lightTap()
         }
-        SoundManager.shared.playTap()
+        AppAudioManager.shared.playTap()
         
         // Milestone sounds
         if combo == 10 || combo == 25 || combo == 50 {
-            SoundManager.shared.playLevelUp()
+            AppAudioManager.shared.playLevelUp()
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             showRipple = false
         }
         
-        withAnimation(.easeInOut(duration: max(0.2, 0.5 - difficulty * 0.3))) {
+        // Speed increases with difficulty
+        let animDuration = max(0.15, 0.5 - difficulty * 0.35)
+        withAnimation(.easeInOut(duration: animDuration)) {
             targetPosition = CGPoint(
                 x: CGFloat.random(in: 0.1...0.9) * size.width,
                 y: CGFloat.random(in: 0.1...0.7) * size.height
