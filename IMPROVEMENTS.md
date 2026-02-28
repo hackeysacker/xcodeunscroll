@@ -13,9 +13,9 @@
 ### Gems System
 - [ ] Add gem balance display in header (already has gem icon in UniversalHeader)
 - [ ] Connect gems to Supabase profile
-- [ ] Add gem rewards for completing challenges
+- [x] Add gem rewards for completing challenges
 - [ ] Implement gem purchases (boosts, streak freeze, etc.)
-- [ ] Add gem earning animations
+- [x] Add gem earning animations
 
 ### Hearts System
 - [ ] Implement 5-heart system
@@ -35,9 +35,9 @@
 
 ### Focus Challenges
 - [ ] Add target variety (shapes, numbers, letters)
-- [ ] Difficulty progression (speed increases over time)
-- [ ] Sound effects on tap
-- [ ] Haptic feedback
+- [x] Difficulty progression (speed increases over time)
+- [x] Sound effects on tap
+- [x] Haptic feedback
 - [ ] Multi-object tracking (track 3+ objects simultaneously)
 
 ### Memory Challenges  
@@ -218,12 +218,12 @@ Tables created:
 
 ## Quick Wins (Can Do Now)
 
-1. Add haptic feedback to challenges
-2. Add sound effects
-3. Connect gems to header
-4. Test heart system
-5. Set up TestFlight
-6. Add daily challenge rotation
+1. [x] Add haptic feedback to challenges
+2. [x] Add sound effects
+3. [x] Connect gems to header
+4. [ ] Test heart system
+5. [ ] Set up TestFlight
+6. [x] Add daily challenge rotation
 
 ---
 
@@ -235,4 +235,4 @@ Tables created:
 
 ---
 
-Last Updated: February 20, 2026
+Last Updated: February 28, 2026
