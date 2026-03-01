@@ -231,6 +231,8 @@ class AppState: ObservableObject {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
         
+        var oldStreak = prog.streakDays
+        
         if let lastDate = prog.lastActivityDate {
             let lastDay = calendar.startOfDay(for: lastDate)
             
@@ -248,6 +250,12 @@ class AppState: ObservableObject {
         } else {
             // First time playing
             prog.streakDays = 1
+        }
+        
+        // Award streak bonus gems if we hit a milestone
+        if let milestoneName = prog.streakMilestoneName {
+            prog.gems += prog.streakBonusGems
+            print("🎉 \(milestoneName) Bonus: +\(prog.streakBonusGems) gems!")
         }
         
         prog.lastActivityDate = Date()

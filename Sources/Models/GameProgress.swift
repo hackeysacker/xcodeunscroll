@@ -170,4 +170,37 @@ extension GameProgress {
         guard let challenges = dailyChallenges else { return false }
         return !challenges.isEmpty && challenges.allSatisfy { $0.isCompleted }
     }
+    
+    // MARK: - Streak Rewards
+    
+    /// Returns bonus gems for reaching streak milestones
+    var streakBonusGems: Int {
+        switch streakDays {
+        case 7: return 50   // 1 week
+        case 14: return 75  // 2 weeks
+        case 30: return 150 // 1 month
+        case 60: return 200 // 2 months
+        case 100: return 500 // 100 days
+        case 365: return 2000 // 1 year
+        default: return 0
+        }
+    }
+    
+    /// Check if a streak milestone was just reached (call after incrementing streak)
+    var justReachedMilestone: Bool {
+        [7, 14, 30, 60, 100, 365].contains(streakDays)
+    }
+    
+    /// Streak milestone name if at a milestone
+    var streakMilestoneName: String? {
+        switch streakDays {
+        case 7: return "1 Week Streak!"
+        case 14: return "2 Week Streak!"
+        case 30: return "1 Month Streak!"
+        case 60: return "2 Month Streak!"
+        case 100: return "100 Day Streak!"
+        case 365: return "1 Year Streak!"
+        default: return nil
+        }
+    }
 }

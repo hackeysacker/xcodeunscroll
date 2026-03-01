@@ -96,7 +96,7 @@
 
 ### Gamification
 - [x] Daily challenges (3 per day) - DONE Feb 28, 2026
-- [ ] Streak rewards (7-day, 30-day, 100-day)
+- [x] Streak rewards (7-day, 30-day, 100-day) - DONE Feb 28, 2026
 - [ ] Achievement badges with icons
 - [ ] Level-up celebrations
 - [ ] Daily login rewards
