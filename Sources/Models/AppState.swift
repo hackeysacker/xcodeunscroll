@@ -259,6 +259,15 @@ class AppState: ObservableObject {
            let user = try? JSONDecoder().decode(User.self, from: data) {
             currentUser = user
             isOnboarded = user.goal != nil
+            
+            // If we have a user, check if authenticated and sync from cloud
+            if let userId = currentUser?.id, !userId.isEmpty {
+                isAuthenticated = true
+                // Sync from cloud in background
+                Task {
+                    await syncFullProgressFromCloud(userId: userId)
+                }
+            }
         }
         
         if let progressData = UserDefaults.standard.data(forKey: "focusflow_progress"),
@@ -267,6 +276,113 @@ class AppState: ObservableObject {
         }
         
         isLoading = false
+    }
+    
+    /// Full sync from cloud - fetches all progress data and merges with local
+    func syncFullProgressFromCloud(userId: String) async {
+        guard let supabase = supabase else { return }
+        isSyncing = true
+        
+        do {
+            // Fetch all data from cloud in parallel
+            async let progressTask = fetchGameProgressRecord(userId: userId)
+            async let profileTask = fetchProfile(userId: userId)
+            async let skillTask = fetchSkillProgressRecord(userId: userId)
+            async let heartTask = fetchHeartStateRecord(userId: userId)
+            
+            let (cloudProgress, cloudProfile, cloudSkills, cloudHearts) = try await (
+                progressTask, profileTask, skillTask, heartTask
+            )
+            
+            // Merge with local progress
+            if var localProgress = progress {
+                // Merge game progress - prefer higher values
+                if let cloud = cloudProgress {
+                    localProgress.totalXP = max(localProgress.totalXP, cloud.totalXp)
+                    localProgress.streakDays = max(localProgress.streakDays, cloud.streak)
+                    localProgress.level = max(localProgress.level, cloud.level)
+                }
+                
+                // Merge gems - prefer higher
+                if let profile = cloudProfile, let cloudGems = profile.gems {
+                    localProgress.gems = max(localProgress.gems, cloudGems)
+                }
+                
+                // Merge skills - prefer higher scores
+                if let skills = cloudSkills {
+                    localProgress.focusScore = max(localProgress.focusScore, skills.focusScore)
+                    localProgress.impulseControlScore = max(localProgress.impulseControlScore, skills.impulseControlScore)
+                    localProgress.distractionResistanceScore = max(localProgress.distractionResistanceScore, skills.distractionResistanceScore)
+                }
+                
+                // Merge hearts - prefer higher
+                if let hearts = cloudHearts {
+                    localProgress.hearts = max(localProgress.hearts, hearts.currentHearts)
+                }
+                
+                progress = localProgress
+                saveData()
+            }
+            
+            isSyncing = false
+        } catch {
+            isSyncing = false
+            syncError = error.localizedDescription
+        }
+    }
+    
+    // MARK: - Cloud Fetch Helpers
+    
+    private func fetchGameProgressRecord(userId: String) async throws -> GameProgressRecord? {
+        guard let supabase = supabase else { return nil }
+        
+        let records: [GameProgressRecord] = try await supabase
+            .from("game_progress")
+            .select()
+            .eq("user_id", value: userId)
+            .execute()
+            .value
+        
+        return records.first
+    }
+    
+    private func fetchProfile(userId: String) async throws -> Profile? {
+        guard let supabase = supabase else { return nil }
+        
+        let records: [Profile] = try await supabase
+            .from("profiles")
+            .select()
+            .eq("id", value: userId)
+            .execute()
+            .value
+        
+        return records.first
+    }
+    
+    private func fetchSkillProgressRecord(userId: String) async throws -> SkillProgressRecord? {
+        guard let supabase = supabase else { return nil }
+        
+        let records: [SkillProgressRecord] = try await supabase
+            .from("skill_progress")
+            .select()
+            .eq("user_id", value: userId)
+            .execute()
+            .value
+        
+        return records.first
+    }
+    
+    private func fetchHeartStateRecord(userId: String) async throws -> HeartStateRecord? {
+        guard let supabase = supabase else { return nil }
+        
+        let records: [HeartStateRecord] = try await supabase
+            .from("heart_state")
+            .select()
+            .eq("user_id", value: userId)
+            .execute()
+            .value
+        
+        return records.first
     }
     
     func completeOnboarding(goal: GoalType) {
