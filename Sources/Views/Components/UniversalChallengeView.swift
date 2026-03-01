@@ -201,6 +201,19 @@ struct UniversalChallengeView: View {
         }
     }
     
+    // MARK: - Save and Dismiss
+    func saveAndDismiss() {
+        // Calculate rewards
+        let gemsEarned = max(1, score / 10)
+        let xpEarned = challenge.xpReward
+        
+        // Save progress to AppState (which handles cloud sync)
+        appState.completeChallenge(type: challenge, score: score, xpEarned: xpEarned)
+        
+        // Dismiss the challenge view
+        dismiss()
+    }
+    
     // MARK: - Results
     var resultsView: some View {
         let gemsEarned = max(1, score / 10)
@@ -254,7 +267,7 @@ struct UniversalChallengeView: View {
                 .background(Capsule().fill(Color.purple.opacity(0.2)))
             }
             
-            Button(action: { dismiss() }) {
+            Button(action: saveAndDismiss) {
                 Text("Continue")
                     .foregroundColor(.white)
                     .padding()
