@@ -105,48 +105,49 @@ class AppState: ObservableObject {
     private func createUserProfile(userId: String, email: String) async throws {
         guard let supabase = supabase else { return }
         
-        let profile = [
-            "id": userId,
-            "email": email,
-            "gems": 0,
-            "is_premium": false
-        ] as [String: Any]
+        let profile = Profile(id: userId, email: email, isPremium: false, gems: 0)
         
-        try await supabase.database.from("profiles").insert(profile).execute()
+        try await supabase.from("profiles").insert(profile).execute()
     }
     
     private func initializeGameProgress(userId: String) async {
         guard let supabase = supabase else { return }
         
-        let progress = [
-            "user_id": userId,
-            "level": 1,
-            "xp": 0,
-            "total_xp": 0,
-            "streak": 0,
-            "longest_streak": 0,
-            "total_sessions_completed": 0,
-            "total_challenges_completed": 0
-        ] as [String: Any]
+        let progress = GameProgressRecord(
+            userId: userId,
+            level: 1,
+            xp: 0,
+            totalXp: 0,
+            streak: 0,
+            longestStreak: 0,
+            lastSessionDate: nil,
+            streakFreezeUsed: false,
+            totalSessionsCompleted: 0,
+            totalChallengesCompleted: 0,
+            updatedAt: Date()
+        )
         
         do {
-            try await supabase.database.from("game_progress").insert(progress).execute()
+            try await supabase.from("game_progress").insert(progress).execute()
         } catch {
             print("Error initializing game progress: \(error)")
         }
         
         // Initialize heart state
-        let heartState = [
-            "user_id": userId,
-            "current_hearts": 5,
-            "max_hearts": 5,
-            "perfect_streak_count": 0,
-            "total_lost": 0,
-            "total_gained": 0
-        ] as [String: Any]
+        let heartState = HeartStateRecord(
+            userId: userId,
+            currentHearts: 5,
+            maxHearts: 5,
+            lastHeartLost: nil,
+            lastMidnightReset: nil,
+            perfectStreakCount: 0,
+            totalLost: 0,
+            totalGained: 0,
+            updatedAt: Date()
+        )
         
         do {
-            try await supabase.database.from("heart_state").insert(heartState).execute()
+            try await supabase.from("heart_state").insert(heartState).execute()
         } catch {
             print("Error initializing heart state: \(error)")
         }
@@ -202,7 +203,6 @@ class AppState: ObservableObject {
         do {
             // Fetch profile
             let profiles: [Profile] = try await supabase
-                .database
                 .from("profiles")
                 .select()
                 .eq("id", value: userId)
@@ -235,7 +235,6 @@ class AppState: ObservableObject {
         do {
             // Update profile (gems)
             try await supabase
-                .database
                 .from("profiles")
                 .update(["gems": progress?.gems ?? 0])
                 .eq("id", value: userId)

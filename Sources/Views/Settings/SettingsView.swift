@@ -899,9 +899,8 @@ struct AuthSheet: View {
                             .foregroundColor(.gray)
                         Text(isSignUp ? "Sign In" : "Sign Up")
                             .foregroundColor(.purple)
-                            .font(.weight(.semibold))
                     }
-                    .font(.system(size: 14))
+                    .font(.system(size: 14, weight: .semibold))
                 }
                 
                 Spacer()
