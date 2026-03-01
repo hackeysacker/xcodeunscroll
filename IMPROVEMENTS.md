@@ -4,7 +4,7 @@
 
 ### Backend Integration
 - [ ] Connect Swift app to Supabase (SupabaseService already created)
-- [ ] Implement user authentication flow (sign up, sign in, sign out)
+- [x] Implement user authentication flow (sign up, sign in, sign out) - IMPLEMENTED Mar 1, 2026
 - [ ] Sync game progress to cloud on app launch
 - [ ] Sync progress after each challenge completion
 - [ ] Handle offline mode gracefully

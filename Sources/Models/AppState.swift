@@ -72,12 +72,83 @@ class AppState: ObservableObject {
         isLoading = true
         
         do {
-            _ = try await supabase.auth.signUp(email: email, password: password)
+            let response = try await supabase.auth.signUp(email: email, password: password)
             isLoading = false
-            // Note: User needs to verify email before signing in
+            
+            // If sign up successful and we have a session, create profile
+            if let session = response.session {
+                isAuthenticated = true
+                currentUser = User(
+                    id: session.user.id.uuidString,
+                    email: email,
+                    createdAt: Date(),
+                    goal: nil,
+                    isPremium: false,
+                    onboardingData: nil
+                )
+                
+                // Create profile in Supabase
+                try await createUserProfile(userId: session.user.id.uuidString, email: email)
+                
+                // Initialize game progress in Supabase
+                await initializeGameProgress(userId: session.user.id.uuidString)
+                
+                // Save locally
+                saveData()
+            }
         } catch {
             isLoading = false
             syncError = error.localizedDescription
+        }
+    }
+    
+    private func createUserProfile(userId: String, email: String) async throws {
+        guard let supabase = supabase else { return }
+        
+        let profile = [
+            "id": userId,
+            "email": email,
+            "gems": 0,
+            "is_premium": false
+        ] as [String: Any]
+        
+        try await supabase.database.from("profiles").insert(profile).execute()
+    }
+    
+    private func initializeGameProgress(userId: String) async {
+        guard let supabase = supabase else { return }
+        
+        let progress = [
+            "user_id": userId,
+            "level": 1,
+            "xp": 0,
+            "total_xp": 0,
+            "streak": 0,
+            "longest_streak": 0,
+            "total_sessions_completed": 0,
+            "total_challenges_completed": 0
+        ] as [String: Any]
+        
+        do {
+            try await supabase.database.from("game_progress").insert(progress).execute()
+        } catch {
+            print("Error initializing game progress: \(error)")
+        }
+        
+        // Initialize heart state
+        let heartState = [
+            "user_id": userId,
+            "current_hearts": 5,
+            "max_hearts": 5,
+            "perfect_streak_count": 0,
+            "total_lost": 0,
+            "total_gained": 0
+        ] as [String: Any]
+        
+        do {
+            try await supabase.database.from("heart_state").insert(heartState).execute()
+        } catch {
+            print("Error initializing heart state: \(error)")
         }
     }
     

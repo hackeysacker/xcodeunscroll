@@ -47,6 +47,14 @@ struct SettingsView: View {
     @State private var darkModeEnabled: Bool = true
     @State private var showDeleteAlert: Bool = false
     
+    // Auth state
+    @State private var showAuthSheet: Bool = false
+    @State private var authEmail: String = ""
+    @State private var authPassword: String = ""
+    @State private var isSignUp: Bool = false
+    @State private var authError: String?
+    @State private var isAuthLoading: Bool = false
+    
     var body: some View {
         ZStack {
             LinearGradient(colors: [Color(hex: "0A0F1C"), Color(hex: "1E293B")], startPoint: .top, endPoint: .bottom)
@@ -65,6 +73,9 @@ struct SettingsView: View {
                         Color.clear.frame(width: 44, height: 44)
                     }
                     .padding(.top, 16)
+                    
+                    // Account section
+                    accountSection
                     
                     // Profile section
                     profileSection
@@ -120,6 +131,21 @@ struct SettingsView: View {
                         .font(.system(size: 20, weight: .bold)).foregroundColor(.white)
                     Text(appState.currentUser?.goal?.rawValue ?? "Building focus")
                         .font(.system(size: 14)).foregroundColor(.gray)
+                    
+                    // Auth status badge
+                    if appState.isAuthenticated {
+                        HStack(spacing: 4) {
+                            Image(systemName: "checkmark.circle.fill").font(.system(size: 10))
+                            Text("Synced").font(.system(size: 10))
+                        }
+                        .foregroundColor(.green)
+                    } else {
+                        HStack(spacing: 4) {
+                            Image(systemName: "person.crop.circle.badge.xmark").font(.system(size: 10))
+                            Text("Local").font(.system(size: 10))
+                        }
+                        .foregroundColor(.gray)
+                    }
                 }
                 
                 Spacer()
@@ -128,6 +154,116 @@ struct SettingsView: View {
             }
         }
         .padding(.horizontal, 16)
+    }
+    
+    // Account section for auth
+    var accountSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            SectionHeader(title: "Account")
+            
+            VStack(spacing: 0) {
+                if appState.isAuthenticated {
+                    // Signed in state
+                    HStack {
+                        Image(systemName: "person.badge.checkmark").foregroundColor(.green).frame(width: 24)
+                        Text("Signed in")
+                            .foregroundColor(.white)
+                        Spacer()
+                        Button {
+                            Task {
+                                await appState.signOut()
+                            }
+                        } label: {
+                            Text("Sign Out")
+                                .font(.system(size: 12))
+                                .foregroundColor(.red)
+                        }
+                    }
+                    .padding()
+                } else {
+                    // Not signed in
+                    Button {
+                        showAuthSheet = true
+                        isSignUp = false
+                    } label: {
+                        HStack {
+                            Image(systemName: "person.crop.circle.badge.plus").foregroundColor(.purple).frame(width: 24)
+                            Text("Sign In or Create Account")
+                                .foregroundColor(.white)
+                            Spacer()
+                            Image(systemName: "chevron.right").foregroundColor(.gray)
+                        }
+                        .padding()
+                    }
+                }
+            }
+            .background(RoundedRectangle(cornerRadius: 16).fill(Color.white.opacity(0.05)))
+            
+            if appState.isAuthenticated {
+                // Sync button
+                Button {
+                    Task {
+                        if let userId = appState.currentUser?.id {
+                            await appState.syncFromCloud(userId: userId)
+                        }
+                    }
+                } label: {
+                    HStack {
+                        if appState.isSyncing {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .purple))
+                                .scaleEffect(0.8)
+                        } else {
+                            Image(systemName: "arrow.clockwise").foregroundColor(.purple)
+                        }
+                        Text(appState.isSyncing ? "Syncing..." : "Sync Now")
+                            .foregroundColor(.white)
+                        Spacer()
+                    }
+                    .padding()
+                }
+                .background(RoundedRectangle(cornerRadius: 16).fill(Color.white.opacity(0.05)))
+            }
+            
+            Text("Sign in to sync your progress across devices and backup your data.")
+                .font(.system(size: 12))
+                .foregroundColor(.gray)
+                .padding(.horizontal, 4)
+        }
+        .padding(.horizontal, 16)
+        .sheet(isPresented: $showAuthSheet) {
+            AuthSheet(
+                email: $authEmail,
+                password: $authPassword,
+                isSignUp: $isSignUp,
+                error: $authError,
+                isLoading: $isAuthLoading,
+                onDismiss: { showAuthSheet = false },
+                onAuth: performAuth
+            )
+        }
+    }
+    
+    func performAuth() {
+        authError = nil
+        isAuthLoading = true
+        
+        Task {
+            do {
+                if isSignUp {
+                    await appState.signUp(email: authEmail, password: authPassword)
+                } else {
+                    await appState.signIn(email: authEmail, password: authPassword)
+                }
+                isAuthLoading = false
+                showAuthSheet = false
+                authEmail = ""
+                authPassword = ""
+            } catch {
+                isAuthLoading = false
+                authError = error.localizedDescription
+            }
+        }
     }
     
     var preferencesSection: some View {
@@ -654,3 +790,122 @@ let reflectionChallenges: [ChallengeType] = [
     ChallengeType(id: "values", icon: "scale.3d", name: "Values", color: Color(hex: "064E3B"), category: .reflection, description: "Identify values", instructions: "What matters most? Rank top 5.", hint: "Think what you'd fight for.", difficulty: 2),
     ChallengeType(id: "meditation_journal", icon: "book.closed.fill", name: "Meditation Journal", color: Color(hex: "022C22"), category: .reflection, description: "Meditative writing", instructions: "Write whatever comes to mind for 5 min.", hint: "Don't filter.", difficulty: 2)
 ]
+
+// MARK: - Auth Sheet
+
+struct AuthSheet: View {
+    @Binding var email: String
+    @Binding var password: String
+    @Binding var isSignUp: Bool
+    @Binding var error: String?
+    @Binding var isLoading: Bool
+    let onDismiss: () -> Void
+    let onAuth: () -> Void
+    
+    var body: some View {
+        ZStack {
+            Color(hex: "0A0F1C").ignoresSafeArea()
+            
+            VStack(spacing: 24) {
+                // Header
+                HStack {
+                    Button("Cancel") {
+                        onDismiss()
+                    }
+                    .foregroundColor(.gray)
+                    
+                    Spacer()
+                    
+                    Text(isSignUp ? "Create Account" : "Sign In")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.white)
+                    
+                    Spacer()
+                    Color.clear.frame(width: 50)
+                }
+                .padding()
+                
+                // Email field
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Email")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.gray)
+                    TextField("your@email.com", text: $email)
+                        .textFieldStyle(.plain)
+                        .padding()
+                        .background(Color.white.opacity(0.1))
+                        .cornerRadius(12)
+                        .foregroundColor(.white)
+                        .autocapitalization(.none)
+                        .keyboardType(.emailAddress)
+                }
+                .padding(.horizontal)
+                
+                // Password field
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Password")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.gray)
+                    SecureField("••••••••", text: $password)
+                        .textFieldStyle(.plain)
+                        .padding()
+                        .background(Color.white.opacity(0.1))
+                        .cornerRadius(12)
+                        .foregroundColor(.white)
+                }
+                .padding(.horizontal)
+                
+                // Error message
+                if let error = error {
+                    Text(error)
+                        .font(.system(size: 12))
+                        .foregroundColor(.red)
+                        .padding(.horizontal)
+                }
+                
+                // Submit button
+                Button {
+                    onAuth()
+                } label: {
+                    HStack {
+                        if isLoading {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                .scaleEffect(0.8)
+                        } else {
+                            Text(isSignUp ? "Create Account" : "Sign In")
+                                .font(.system(size: 16, weight: .bold))
+                        }
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(
+                        LinearGradient(colors: [.purple, .indigo], startPoint: .leading, endPoint: .trailing)
+                    )
+                    .cornerRadius(12)
+                }
+                .disabled(isLoading || email.isEmpty || password.isEmpty)
+                .opacity(email.isEmpty || password.isEmpty ? 0.5 : 1)
+                .padding(.horizontal)
+                
+                // Toggle sign up / sign in
+                Button {
+                    isSignUp.toggle()
+                    error = nil
+                } label: {
+                    HStack {
+                        Text(isSignUp ? "Already have an account?" : "Don't have an account?")
+                            .foregroundColor(.gray)
+                        Text(isSignUp ? "Sign In" : "Sign Up")
+                            .foregroundColor(.purple)
+                            .font(.weight(.semibold))
+                    }
+                    .font(.system(size: 14))
+                }
+                
+                Spacer()
+            }
+        }
+    }
+}
