@@ -18,9 +18,9 @@
 - [x] Add gem earning animations
 
 ### Hearts System
-- [ ] Implement 5-heart system
-- [ ] Heart loss on failed challenges
-- [ ] Heart refill over time (3 slots)
+- [x] Implement 5-heart system
+- [x] Heart loss on failed challenges
+- [x] Heart refill over time (3 slots) - IMPLEMENTED Feb 28, 2026
 - [ ] Heart purchase with gems
 
 ### User Progress
@@ -53,9 +53,9 @@
 - [ ] Personal best tracking
 
 ### Breathing Exercises
-- [ ] Multiple breathing patterns (4-7-8, box breathing, etc.)
+- [x] Multiple breathing7-8, patterns (4- box breathing, etc.) - IMPLEMENTED Feb 28, 2026
 - [ ] Guided breathing audio
-- [ ] Session duration customization
+- [x] Session duration customization - IMPLEMENTED Feb 28, 2026
 - [ ] Mood tracking before/after
 
 ### Discipline Challenges
