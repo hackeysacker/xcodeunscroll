@@ -56,7 +56,19 @@ struct OnboardingFlowView: View {
         user.displayName = displayName.isEmpty ? username : displayName
         appState.currentUser = user
         appState.isOnboarded = true
-        appState.progress = GameProgress(level: 1, totalXP: 100, streakDays: 0, lastActivityDate: nil, hearts: 5, gems: 10, completedChallenges: [], skills: [:])
+        appState.progress = GameProgress(
+            level: 1,
+            totalXP: 100,
+            streakDays: 0,
+            lastActivityDate: nil,
+            hearts: 5,
+            gems: 10,
+            completedChallenges: [],
+            skills: [:],
+            focusScore: GameProgress.defaultFocusScore,
+            impulseControlScore: GameProgress.defaultImpulseControlScore,
+            distractionResistanceScore: GameProgress.defaultDistractionResistanceScore
+        )
         appState.saveData()
     }
 }

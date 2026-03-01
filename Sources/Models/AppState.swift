@@ -8,6 +8,7 @@ class AppState: ObservableObject {
     @Published var isLoading: Bool = true
     @Published var currentUser: User?
     @Published var progress: GameProgress?
+    @Published var achievementStore = AchievementStore()
     @Published var selectedTab: Tab = .home
     @Published var showSettings: Bool = false
     @Published var showLeaderboard: Bool = false
@@ -289,7 +290,10 @@ class AppState: ObservableObject {
             hearts: 5,
             gems: 0,
             completedChallenges: [],
-            skills: [:]
+            skills: [:],
+            focusScore: GameProgress.defaultFocusScore,
+            impulseControlScore: GameProgress.defaultImpulseControlScore,
+            distractionResistanceScore: GameProgress.defaultDistractionResistanceScore
         )
         
         saveData()
@@ -401,6 +405,28 @@ class AppState: ObservableObject {
         saveData()
     }
     
+    // MARK: - Skill Progress
+    
+    func updateSkillProgress(_ prog: inout GameProgress, type: AllChallengeType, score: Int) {
+        // Map challenge categories to skills
+        switch type.category {
+        case .focus:
+            prog.incrementSkill(.focus, performanceScore: score)
+            prog.incrementSkill(.distractionResistance, performanceScore: score)
+        case .memory:
+            prog.incrementSkill(.focus, performanceScore: score)
+        case .reaction:
+            prog.incrementSkill(.focus, performanceScore: score)
+            prog.incrementSkill(.impulseControl, performanceScore: score)
+        case .breathing:
+            prog.incrementSkill(.impulseControl, performanceScore: score)
+            prog.incrementSkill(.distractionResistance, performanceScore: score)
+        case .discipline:
+            prog.incrementSkill(.impulseControl, performanceScore: score)
+            prog.incrementSkill(.distractionResistance, performanceScore: score)
+        }
+    }
+    
     // MARK: - XP & Leveling
     
     func addXP(_ amount: Int) {
@@ -447,6 +473,9 @@ class AppState: ObservableObject {
         )
         prog.completedChallenges.append(attempt)
         
+        // Update skill progress based on challenge type
+        updateSkillProgress(&prog, type: type, score: score)
+        
         // Update streak
         updateStreak()
         
@@ -456,6 +485,9 @@ class AppState: ObservableObject {
         
         progress = prog
         saveData()
+        
+        // Check and unlock achievements
+        achievementStore.checkAndUnlock(progress: prog)
         
         // Sync to cloud if authenticated
         if isAuthenticated, let userId = currentUser?.id {
@@ -505,6 +537,9 @@ class AppState: ObservableObject {
             
             progress = prog
             saveData()
+            
+            // Check and unlock achievements
+            achievementStore.checkAndUnlock(progress: prog)
             
             // Sync to cloud
             if isAuthenticated, let userId = currentUser?.id {

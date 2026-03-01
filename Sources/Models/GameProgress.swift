@@ -10,9 +10,19 @@ struct GameProgress: Codable {
     var completedChallenges: [ChallengeAttempt]
     var skills: [String: Int]
     
+    // Skill scores (0-100)
+    var focusScore: Int
+    var impulseControlScore: Int
+    var distractionResistanceScore: Int
+    
     // Daily challenges
     var dailyChallenges: [DailyChallenge]?
     var lastDailyRefreshDate: Date?
+    
+    // Default skill values
+    static let defaultFocusScore = 10
+    static let defaultImpulseControlScore = 10
+    static let defaultDistractionResistanceScore = 10
     
     var xpForNextLevel: Int {
         return level * 100 + (level - 1) * 50
@@ -201,6 +211,96 @@ extension GameProgress {
         case 100: return "100 Day Streak!"
         case 365: return "1 Year Streak!"
         default: return nil
+        }
+    }
+    
+    // MARK: - Skill Progress
+    
+    /// Update skill score with a new value, capped at 100
+    mutating func updateSkill(_ skillType: SkillType, score: Int) {
+        let cappedScore = min(max(score, 0), 100)
+        switch skillType {
+        case .focus:
+            focusScore = cappedScore
+        case .impulseControl:
+            impulseControlScore = cappedScore
+        case .distractionResistance:
+            distractionResistanceScore = cappedScore
+        }
+    }
+    
+    /// Increment skill score based on performance (0-100 score maps to 1-5 skill points)
+    mutating func incrementSkill(_ skillType: SkillType, performanceScore: Int) {
+        let currentScore: Int
+        switch skillType {
+        case .focus:
+            currentScore = focusScore
+        case .impulseControl:
+            currentScore = impulseControlScore
+        case .distractionResistance:
+            currentScore = distractionResistanceScore
+        }
+        
+        // Score 80+ = +5, 60+ = +3, 40+ = +2, <40 = +1
+        let increment: Int
+        if performanceScore >= 80 {
+            increment = 5
+        } else if performanceScore >= 60 {
+            increment = 3
+        } else if performanceScore >= 40 {
+            increment = 2
+        } else {
+            increment = 1
+        }
+        
+        let newScore = min(currentScore + increment, 100)
+        updateSkill(skillType, score: newScore)
+    }
+    
+    /// Get skill score for a specific type
+    func getSkillScore(_ skillType: SkillType) -> Int {
+        switch skillType {
+        case .focus:
+            return focusScore
+        case .impulseControl:
+            return impulseControlScore
+        case .distractionResistance:
+            return distractionResistanceScore
+        }
+    }
+    
+    /// Get skill level description
+    func getSkillLevel(_ skillType: SkillType) -> String {
+        let score = getSkillScore(skillType)
+        switch score {
+        case 0..<20: return "Beginner"
+        case 20..<40: return "Developing"
+        case 40..<60: return "Intermediate"
+        case 60..<80: return "Advanced"
+        case 80..<100: return "Expert"
+        default: return "Master"
+        }
+    }
+}
+
+enum SkillType: String, CaseIterable {
+    case focus = "Focus"
+    case impulseControl = "Impulse Control"
+    case distractionResistance = "Distraction Resistance"
+    
+    var description: String {
+        switch self {
+        case .focus: return "Your ability to concentrate on tasks"
+        case .impulseControl: return "Your ability to resist urges"
+        case .distractionResistance: return "Your ability to stay on task"
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .focus: return "target"
+        case .impulseControl: return "hand.raised.fill"
+        case .distractionResistance: return "shield.fill"
         }
     }
 }

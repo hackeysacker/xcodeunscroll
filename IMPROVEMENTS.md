@@ -6,7 +6,7 @@
 - [ ] Connect Swift app to Supabase (SupabaseService already created)
 - [x] Implement user authentication flow (sign up, sign in, sign out) - IMPLEMENTED Mar 1, 2026
 - [ ] Sync game progress to cloud on app launch
-- [ ] Sync progress after each challenge completion
+- [x] Sync progress after each challenge completion - IMPLEMENTED Mar 1, 2026
 - [ ] Handle offline mode gracefully
 - [ ] Implement RLS policies for all tables
 
