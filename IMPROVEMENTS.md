@@ -11,7 +11,7 @@
 - [ ] Implement RLS policies for all tables
 
 ### Gems System
-- [ ] Add gem balance display in header (already has gem icon in UniversalHeader)
+- [x] Add gem balance display in header (already has gem icon in UniversalHeader) - DONE Mar 2, 2026
 - [ ] Connect gems to Supabase profile
 - [x] Add gem rewards for completing challenges
 - [ ] Implement gem purchases (boosts, streak freeze, etc.)
