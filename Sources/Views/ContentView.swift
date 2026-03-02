@@ -81,6 +81,20 @@ struct UniversalHeader: View {
             .padding(.vertical, 6)
             .background(Color.yellow.opacity(0.15))
             .cornerRadius(16)
+            
+            // Gems
+            HStack(spacing: 6) {
+                Image(systemName: "diamond.fill")
+                    .foregroundColor(.cyan)
+                    .font(.system(size: 14))
+                Text("\(appState.progress?.gems ?? 0)")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(.white)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(Color.cyan.opacity(0.15))
+            .cornerRadius(16)
         }
         .padding(.horizontal, 16)
         .padding(.top, 12)
