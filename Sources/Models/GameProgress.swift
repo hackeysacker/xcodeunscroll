@@ -19,6 +19,9 @@ struct GameProgress: Codable {
     var dailyChallenges: [DailyChallenge]?
     var lastDailyRefreshDate: Date?
     
+    // Streak protection
+    var streakFreezeUsed: Bool  // True if streak freeze was used today
+    
     // Default skill values
     static let defaultFocusScore = 10
     static let defaultImpulseControlScore = 10

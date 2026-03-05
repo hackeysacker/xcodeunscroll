@@ -35,6 +35,14 @@ enum AllChallengeType: String, CaseIterable, Identifiable, Codable {
     case fiveSenses = "Five Senses"
     case urgeSurfing = "Urge Surfing"
     case calmVisual = "Calm Visual"
+    case breathingBasics = "Breathing Basics"
+    case calmFocus = "Calm Focus"
+    case stressRelief = "Stress Relief"
+    case energyBoost = "Energy Boost"
+    case deepBreath = "Deep Breath"
+    case breathingAdvanced = "Breathing Advanced"
+    case focusEndurance = "Focus Endurance"
+    case meditationMaster = "Meditation Master"
     
     // Discipline & Resistance
     case antiScrollSwipe = "Anti-Scroll Swipe"
@@ -56,13 +64,13 @@ enum AllChallengeType: String, CaseIterable, Identifiable, Codable {
     
     var category: ChallengeCategory {
         switch self {
-        case .movingTarget, .multiObjectTracking, .gazeHold, .focusHold, .focusSprint, .stillnessTest, .slowTracking:
+        case .movingTarget, .multiObjectTracking, .gazeHold, .focusHold, .focusSprint, .stillnessTest, .slowTracking, .focusEndurance:
             return .focus
         case .memoryFlash, .memoryPuzzle, .numberSequence, .patternMatching, .tapPattern, .spatialPuzzle:
             return .memory
         case .reactionInhibition, .impulseSpikeTest, .rhythmTap, .delayUnlock, .resetChallenge:
             return .reaction
-        case .boxBreathing, .controlledBreathing, .breathPacing, .slowBreathing, .bodyScan, .fiveSenses, .urgeSurfing, .calmVisual:
+        case .boxBreathing, .controlledBreathing, .breathPacing, .slowBreathing, .bodyScan, .fiveSenses, .urgeSurfing, .calmVisual, .breathingBasics, .calmFocus, .stressRelief, .energyBoost, .deepBreath, .breathingAdvanced, .meditationMaster:
             return .breathing
         case .antiScrollSwipe, .appSwitchResistance, .fakeNotifications, .fingerHold, .fingerTracing, .impulseDelay, .distractionLog, .lookAway, .multiTaskTap, .notificationResistance, .popupIgnore, .tapOnlyCorrect, .wordPuzzle, .logicPuzzle:
             return .discipline
@@ -97,6 +105,14 @@ enum AllChallengeType: String, CaseIterable, Identifiable, Codable {
         case .fiveSenses: return "sensor.tag.radiowaves.forward"
         case .urgeSurfing: return "water.waves"
         case .calmVisual: return "sparkles"
+        case .breathingBasics: return "wind"
+        case .calmFocus: return "leaf.fill"
+        case .stressRelief: return "water.drop.fill"
+        case .energyBoost: return "bolt.fill"
+        case .deepBreath: return "lungs.fill"
+        case .breathingAdvanced: return "wind.circle.fill"
+        case .focusEndurance: return "hourglass"
+        case .meditationMaster: return "brain.head.profile"
         case .antiScrollSwipe: return "hand.swipe.left"
         case .appSwitchResistance: return "app.badge"
         case .fakeNotifications: return "bell.badge.fill"
@@ -121,6 +137,9 @@ enum AllChallengeType: String, CaseIterable, Identifiable, Codable {
         case .reaction: return .orange
         case .breathing: return .green
         case .discipline: return .red
+        case .speed: return .yellow
+        case .impulse: return .pink
+        case .calm: return .teal
         }
     }
     
@@ -152,6 +171,14 @@ enum AllChallengeType: String, CaseIterable, Identifiable, Codable {
         case .fiveSenses: return "Ground with 5 senses"
         case .urgeSurfing: return "Ride the urge waves"
         case .calmVisual: return "Calming visual meditation"
+        case .breathingBasics: return "Learn the basics of breathing"
+        case .calmFocus: return "Calm your mind and focus"
+        case .stressRelief: return "Release tension and stress"
+        case .energyBoost: return "Boost your energy with breath"
+        case .deepBreath: return "Deep breathing exercise"
+        case .breathingAdvanced: return "Advanced breathing techniques"
+        case .focusEndurance: return "Build focus stamina"
+        case .meditationMaster: return "Master meditation practices"
         case .antiScrollSwipe: return "Resist scrolling"
         case .appSwitchResistance: return "Don't switch apps"
         case .fakeNotifications: return "Ignore fake notifications"
@@ -189,6 +216,14 @@ enum AllChallengeType: String, CaseIterable, Identifiable, Codable {
         case .fiveSenses: return 60
         case .urgeSurfing: return 120
         case .calmVisual: return 90
+        case .breathingBasics: return 60
+        case .calmFocus: return 90
+        case .stressRelief: return 120
+        case .energyBoost: return 60
+        case .deepBreath: return 90
+        case .breathingAdvanced: return 150
+        case .focusEndurance: return 120
+        case .meditationMaster: return 180
         case .antiScrollSwipe: return 30
         case .appSwitchResistance: return 60
         case .fakeNotifications: return 45
@@ -226,6 +261,14 @@ enum AllChallengeType: String, CaseIterable, Identifiable, Codable {
         case .fiveSenses: return 15
         case .urgeSurfing: return 25
         case .calmVisual: return 20
+        case .breathingBasics: return 10
+        case .calmFocus: return 15
+        case .stressRelief: return 20
+        case .energyBoost: return 15
+        case .deepBreath: return 20
+        case .breathingAdvanced: return 25
+        case .focusEndurance: return 25
+        case .meditationMaster: return 30
         case .antiScrollSwipe: return 15
         case .appSwitchResistance: return 20
         case .fakeNotifications: return 25
@@ -250,6 +293,9 @@ enum ChallengeCategory: String, CaseIterable {
     case reaction = "Reaction"
     case breathing = "Breathing"
     case discipline = "Discipline"
+    case speed = "Speed"
+    case impulse = "Impulse"
+    case calm = "Calm"
     
     var icon: String {
         switch self {
@@ -258,6 +304,22 @@ enum ChallengeCategory: String, CaseIterable {
         case .reaction: return "bolt.fill"
         case .breathing: return "wind"
         case .discipline: return "hand.raised.fill"
+        case .speed: return "hare.fill"
+        case .impulse: return "waveform.path.ecg"
+        case .calm: return "leaf.fill"
+        }
+    }
+    
+    var categoryColor: Color {
+        switch self {
+        case .focus: return .purple
+        case .memory: return .blue
+        case .reaction: return .orange
+        case .breathing: return .green
+        case .discipline: return .red
+        case .speed: return .yellow
+        case .impulse: return .pink
+        case .calm: return .teal
         }
     }
 }

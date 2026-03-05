@@ -170,6 +170,9 @@ struct MainTabView: View {
                 
                 ProfileView()
                     .tag(AppState.Tab.profile)
+                
+                SettingsView()
+                    .tag(AppState.Tab.settings)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             

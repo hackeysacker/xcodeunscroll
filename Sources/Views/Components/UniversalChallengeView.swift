@@ -293,6 +293,13 @@ struct UniversalChallengeView: View {
             breathingContent
         case .discipline:
             disciplineContent
+        case .speed:
+            focusContent
+        case .impulse:
+            disciplineContent
+        case .calm:
+            breathingContent
+            disciplineContent
         }
     }
     

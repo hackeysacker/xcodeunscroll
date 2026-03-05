@@ -112,6 +112,11 @@ class SupabaseService: ObservableObject {
     
     private init() {}
     
+    /// Get the Supabase client (instance or global)
+    private var client: SupabaseClient {
+        return supabase // Uses global
+    }
+    
     // MARK: - User Management
     
     /// Sign up a new user
@@ -240,15 +245,18 @@ class SupabaseService: ObservableObject {
     
     /// Update skill progress
     func updateSkillProgress(userId: String, focusScore: Int, impulseControlScore: Int, distractionResistanceScore: Int) async throws {
+        let skillData: [String: Any] = [
+            "user_id": userId,
+            "focus_score": focusScore,
+            "impulse_control_score": impulseControlScore,
+            "distraction_resistance_score": distractionResistanceScore,
+            "updated_at": ISO8601DateFormatter().string(from: Date())
+        ]
+        
         try await supabase
             .database
             .from("skill_progress")
-            .update([
-                "focus_score": focusScore,
-                "impulse_control_score": impulseControlScore,
-                "distraction_resistance_score": distractionResistanceScore
-            ])
-            .eq("user_id", value: userId)
+            .upsert(skillData, onConflict: "user_id")
             .execute()
     }
     

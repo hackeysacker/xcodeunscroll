@@ -3,38 +3,38 @@
 ## Priority 1: Core Functionality (Must Have)
 
 ### Backend Integration
-- [ ] Connect Swift app to Supabase (SupabaseService already created)
+- [x] Connect Swift app to Supabase (SupabaseService already created)
 - [x] Implement user authentication flow (sign up, sign in, sign out) - IMPLEMENTED Mar 1, 2026
 - [x] Sync game progress to cloud on app launch - IMPLEMENTED Mar 1, 2026
 - [x] Sync progress after each challenge completion - IMPLEMENTED Mar 1, 2026
-- [ ] Handle offline mode gracefully
+- [x] Handle offline mode gracefully - IMPLEMENTED Mar 2, 2026
 - [ ] Implement RLS policies for all tables
 
 ### Gems System
-- [x] Add gem balance display in header (already has gem icon in UniversalHeader) - DONE Mar 2, 2026
-- [ ] Connect gems to Supabase profile
-- [x] Add gem rewards for completing challenges
-- [ ] Implement gem purchases (boosts, streak freeze, etc.)
-- [x] Add gem earning animations
+- [x] Add gem balance display in header - DONE Mar 2, 2026
+- [x] Connect gems to Supabase profile - DONE
+- [x] Add gem rewards for completing challenges - DONE
+- [x] Implement gem purchases (boosts, streak freeze, heart refill) - DONE Mar 3, 2026
+- [x] Add gem earning animations - DONE
 
 ### Hearts System
-- [x] Implement 5-heart system
-- [x] Heart loss on failed challenges
-- [x] Heart refill over time (3 slots) - IMPLEMENTED Feb 28, 2026
-- [ ] Heart purchase with gems
+- [x] Implement 5-heart system - DONE
+- [x] Heart loss on failed challenges - DONE
+- [x] Heart refill over time (3 slots) - DONE Feb 28, 2026
+- [x] Heart purchase with gems - DONE Mar 3, 2026
 
 ### User Progress
-- [ ] XP and leveling system
-- [ ] Streak tracking (daily)
-- [ ] Skill progress (focus, impulse control, distraction resistance)
-- [ ] Achievement/badge system
+- [x] XP and leveling system - DONE
+- [x] Streak tracking (daily) - DONE
+- [x] Skill progress (focus, impulse control, distraction resistance) - DONE Mar 4, 2026
+- [x] Achievement/badge system - DONE (AchievementStore exists, triggers on challenge completion)
 
 ---
 
 ## Priority 2: Challenge Improvements (Enhancements)
 
 ### Focus Challenges
-- [ ] Add target variety (shapes, numbers, letters)
+- [x] Add target variety (shapes, numbers, letters) - DONE Mar 4, 2026
 - [x] Difficulty progression (speed increases over time)
 - [x] Sound effects on tap
 - [x] Haptic feedback
@@ -235,4 +235,4 @@ Tables created:
 
 ---
 
-Last Updated: February 28, 2026
+Last Updated: March 4, 2026

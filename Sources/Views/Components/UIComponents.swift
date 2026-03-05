@@ -61,16 +61,17 @@ struct HapticButton: View {
         }
     }
     
-    var background: some ShapeStyle {
+    @ViewBuilder
+    var background: some View {
         switch style {
         case .primary:
-            return AnyView(LinearGradient(colors: [.purple, .indigo], startPoint: .leading, endPoint: .trailing))
+            LinearGradient(colors: [.purple, .indigo], startPoint: .leading, endPoint: .trailing)
         case .secondary:
-            return AnyView(Color.white.opacity(0.1))
+            Color.white.opacity(0.1)
         case .ghost:
-            return AnyView(Color.clear)
+            Color.clear
         case .destructive:
-            return AnyView(Color.red.opacity(0.2))
+            Color.red.opacity(0.2)
         }
     }
 }

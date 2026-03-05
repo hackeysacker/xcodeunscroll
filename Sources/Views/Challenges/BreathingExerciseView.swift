@@ -44,22 +44,42 @@ struct BreathingExerciseView: View {
         func phaseTime(for phase: BreathPhase) -> Int {
             switch self {
             case .box:
-                switch phase { case .inhale: return 4, .holdAfterInhale: return 4, .exhale: return 4, .holdAfterExhale: return 4 }
+                switch phase {
+                case .inhale: return 4
+                case .holdAfterInhale: return 4
+                case .exhale: return 4
+                case .holdAfterExhale: return 4
+                }
             case .relaxing:
-                switch phase { case .inhale: return 4, .holdAfterInhale: return 7, .exhale: return 8, .holdAfterExhale: return 0 }
+                switch phase {
+                case .inhale: return 4
+                case .holdAfterInhale: return 7
+                case .exhale: return 8
+                case .holdAfterExhale: return 0
+                }
             case .energizing:
-                switch phase { case .inhale: return 4, .holdAfterInhale: return 2, .exhale: return 4, .holdAfterExhale: return 0 }
+                switch phase {
+                case .inhale: return 4
+                case .holdAfterInhale: return 2
+                case .exhale: return 4
+                case .holdAfterExhale: return 0
+                }
             case .coherent:
-                switch phase { case .inhale: return 5, .holdAfterInhale: return 0, .exhale: return 5, .holdAfterExhale: return 0 }
+                switch phase {
+                case .inhale: return 5
+                case .holdAfterInhale: return 0
+                case .exhale: return 5
+                case .holdAfterExhale: return 0
+                }
             }
         }
     }
     
     enum BreathPhase: String {
         case inhale = "Breathe In"
-        case holdAfterInhale = "Hold"
+        case holdAfterInhale = "Hold after inhale"
         case exhale = "Breathe Out"
-        case holdAfterExhale = "Hold"
+        case holdAfterExhale = "Hold after exhale"
     }
     
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
@@ -500,32 +520,6 @@ struct PatternCard: View {
                     .stroke(isSelected ? Color.purple : Color.white.opacity(0.1), lineWidth: 1)
             )
         }
-    }
-}
-
-// MARK: - Glass Progress Bar
-
-struct GlassProgressBar: View {
-    let progress: Double
-    let height: CGFloat
-    var gradientColors: [Color] = [.purple, .cyan]
-    
-    var body: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .leading) {
-                // Background
-                RoundedRectangle(cornerRadius: height / 2)
-                    .fill(Color.white.opacity(0.1))
-                
-                // Progress
-                RoundedRectangle(cornerRadius: height / 2)
-                    .fill(
-                        LinearGradient(colors: gradientColors, startPoint: .leading, endPoint: .trailing)
-                    )
-                    .frame(width: geometry.size.width * min(1, progress))
-            }
-        }
-        .frame(height: height)
     }
 }
 

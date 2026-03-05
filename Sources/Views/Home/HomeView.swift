@@ -551,6 +551,9 @@ struct DailyChallengeRow: View {
         case .reaction: return .orange
         case .breathing: return .cyan
         case .discipline: return .red
+        case .speed: return .yellow
+        case .impulse: return .pink
+        case .calm: return .teal
         }
     }
     

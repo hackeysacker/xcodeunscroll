@@ -625,6 +625,9 @@ extension ChallengeCategory {
         case .reaction: return .orange
         case .breathing: return .cyan
         case .discipline: return .green
+        case .speed: return .yellow
+        case .impulse: return .pink
+        case .calm: return .teal
         }
     }
 }

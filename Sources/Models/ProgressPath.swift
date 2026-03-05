@@ -8,12 +8,12 @@ struct ProgressPath {
     static let levelsPerRealm = 25
     static let totalRealms = 10
     
-    static func realm(for level: Int) -> Realm {
+    static func realm(for level: Int) -> ProgressRealm {
         let realmIndex = min((level - 1) / levelsPerRealm, totalRealms - 1)
-        return Realm.allRealms[realmIndex]
+        return ProgressRealm.allRealms[realmIndex]
     }
     
-    static func levelInRealm(for level: Int) -> Int {
+    static func levelInProgressRealm(for level: Int) -> Int {
         return ((level - 1) % levelsPerRealm) + 1
     }
     
@@ -31,32 +31,32 @@ struct ProgressPath {
     }
 }
 
-// MARK: - Realm
-struct Realm: Identifiable, Codable {
+// MARK: - ProgressRealm
+struct ProgressRealm: Identifiable, Codable {
     let id: Int
     let name: String
     let description: String
     let icon: String
     let color: String
-    let theme: RealmTheme
+    let theme: ProgressRealmTheme
     let levels: ClosedRange<Int>
-    let challenges: [RealmChallenge]
+    let challenges: [ProgressRealmChallenge]
     let bossChallenge: AllChallengeType?
-    let rewards: RealmRewards
+    let rewards: ProgressRealmRewards
     
-    struct RealmTheme {
+    struct ProgressRealmTheme: Codable {
         let primary: String
         let secondary: String
         let gradient: [String]
     }
     
-    struct RealmRewards {
+    struct ProgressRealmRewards: Codable {
         let gems: Int
         let xp: Int
         let badge: String?
     }
     
-    struct RealmChallenge: Identifiable {
+    struct ProgressRealmChallenge: Identifiable, Codable {
         let id = UUID()
         let type: AllChallengeType
         let requiredScore: Int
@@ -64,245 +64,245 @@ struct Realm: Identifiable, Codable {
     }
 }
 
-extension Realm {
-    static let allRealms: [Realm] = [
+extension ProgressRealm {
+    static let allRealms: [ProgressRealm] = [
         // Realm 1: Beginner - Foundation (Levels 1-25)
-        Realm(
+        ProgressRealm(
             id: 1,
             name: "Mindful Beginnings",
             description: "Train your focus muscles. Learn the basics of attention control.",
             icon: "brain",
             color: "#4CAF50",
-            theme: RealmTheme(
+            theme: ProgressRealmTheme(
                 primary: "#4CAF50",
                 secondary: "#81C784",
                 gradient: ["#4CAF50", "#8BC34A"]
             ),
             levels: 1...25,
             challenges: [
-                RealmChallenge(type: .movingTarget, requiredScore: 100, isBoss: false),
-                RealmChallenge(type: .memoryFlash, requiredScore: 80, isBoss: false),
-                RealmChallenge(type: .reactionInhibition, requiredScore: 100, isBoss: false),
-                RealmChallenge(type: .breathingBasics, requiredScore: 50, isBoss: false)
+                ProgressRealmChallenge(type: .movingTarget, requiredScore: 100, isBoss: false),
+                ProgressRealmChallenge(type: .memoryFlash, requiredScore: 80, isBoss: false),
+                ProgressRealmChallenge(type: .reactionInhibition, requiredScore: 100, isBoss: false),
+                ProgressRealmChallenge(type: .breathingBasics, requiredScore: 50, isBoss: false)
             ],
             bossChallenge: .focusHold,
-            rewards: RealmRewards(gems: 50, xp: 500, badge: "realm1")
+            rewards: ProgressRealmRewards(gems: 50, xp: 500, badge: "realm1")
         ),
         
         // Realm 2: Focus Fortress (Levels 26-50)
-        Realm(
+        ProgressRealm(
             id: 2,
             name: "Focus Fortress",
             description: "Build mental strength. Resist distractions with unwavering resolve.",
             icon: "shield.fill",
             color: "#2196F3",
-            theme: RealmTheme(
+            theme: ProgressRealmTheme(
                 primary: "#2196F3",
                 secondary: "#64B5F6",
                 gradient: ["#2196F3", "#1976D2"]
             ),
             levels: 26...50,
             challenges: [
-                RealmChallenge(type: .movingTarget, requiredScore: 200, isBoss: false),
-                RealmChallenge(type: .antiScrollSwipe, requiredScore: 150, isBoss: false),
-                RealmChallenge(type: .gazeHold, requiredScore: 120, isBoss: false),
-                RealmChallenge(type: .fakeNotifications, requiredScore: 100, isBoss: false)
+                ProgressRealmChallenge(type: .movingTarget, requiredScore: 200, isBoss: false),
+                ProgressRealmChallenge(type: .antiScrollSwipe, requiredScore: 150, isBoss: false),
+                ProgressRealmChallenge(type: .gazeHold, requiredScore: 120, isBoss: false),
+                ProgressRealmChallenge(type: .fakeNotifications, requiredScore: 100, isBoss: false)
             ],
             bossChallenge: .multiObjectTracking,
-            rewards: RealmRewards(gems: 100, xp: 1000, badge: "realm2")
+            rewards: ProgressRealmRewards(gems: 100, xp: 1000, badge: "realm2")
         ),
         
         // Realm 3: Memory Palace (Levels 51-75)
-        Realm(
+        ProgressRealm(
             id: 3,
             name: "Memory Palace",
             description: "Forge an unshakeable memory. Train pattern recognition.",
             icon: "memorychip",
             color: "#9C27B0",
-            theme: RealmTheme(
+            theme: ProgressRealmTheme(
                 primary: "#9C27B0",
                 secondary: "#BA68C8",
                 gradient: ["#9C27B0", "#7B1FA2"]
             ),
             levels: 51...75,
             challenges: [
-                RealmChallenge(type: .numberSequence, requiredScore: 200, isBoss: false),
-                RealmChallenge(type: .patternMatching, requiredScore: 180, isBoss: false),
-                RealmChallenge(type: .spatialPuzzle, requiredScore: 150, isBoss: false),
-                RealmChallenge(type: .tapPattern, requiredScore: 120, isBoss: false)
+                ProgressRealmChallenge(type: .numberSequence, requiredScore: 200, isBoss: false),
+                ProgressRealmChallenge(type: .patternMatching, requiredScore: 180, isBoss: false),
+                ProgressRealmChallenge(type: .spatialPuzzle, requiredScore: 150, isBoss: false),
+                ProgressRealmChallenge(type: .tapPattern, requiredScore: 120, isBoss: false)
             ],
             bossChallenge: .memoryPuzzle,
-            rewards: RealmRewards(gems: 150, xp: 1500, badge: "realm3")
+            rewards: ProgressRealmRewards(gems: 150, xp: 1500, badge: "realm3")
         ),
         
         // Realm 4: Reaction Temple (Levels 76-100)
-        Realm(
+        ProgressRealm(
             id: 4,
             name: "Reaction Temple",
             description: "Achieve lightning-fast reflexes. Perfect your response time.",
             icon: "bolt.fill",
             color: "#FF9800",
-            theme: RealmTheme(
+            theme: ProgressRealmTheme(
                 primary: "#FF9800",
                 secondary: "#FFB74D",
                 gradient: ["#FF9800", "#F57C00"]
             ),
             levels: 76...100,
             challenges: [
-                RealmChallenge(type: .reactionInhibition, requiredScore: 300, isBoss: false),
-                RealmChallenge(type: .rhythmTap, requiredScore: 250, isBoss: false),
-                RealmChallenge(type: .delayUnlock, requiredScore: 200, isBoss: false),
-                RealmChallenge(type: .resetChallenge, requiredScore: 180, isBoss: false)
+                ProgressRealmChallenge(type: .reactionInhibition, requiredScore: 300, isBoss: false),
+                ProgressRealmChallenge(type: .rhythmTap, requiredScore: 250, isBoss: false),
+                ProgressRealmChallenge(type: .delayUnlock, requiredScore: 200, isBoss: false),
+                ProgressRealmChallenge(type: .resetChallenge, requiredScore: 180, isBoss: false)
             ],
             bossChallenge: .impulseSpikeTest,
-            rewards: RealmRewards(gems: 200, xp: 2000, badge: "realm4")
+            rewards: ProgressRealmRewards(gems: 200, xp: 2000, badge: "realm4")
         ),
         
         // Realm 5: Discipline Dunes (Levels 101-125)
-        Realm(
+        ProgressRealm(
             id: 5,
             name: "Discipline Dunes",
             description: "Master self-control. Resist the urge to succumb to distractions.",
             icon: "figure.walk",
             color: "#F44336",
-            theme: RealmTheme(
+            theme: ProgressRealmTheme(
                 primary: "#F44336",
                 secondary: "#EF5350",
                 gradient: ["#F44336", "#D32F2F"]
             ),
             levels: 101...125,
             challenges: [
-                RealmChallenge(type: .antiScrollSwipe, requiredScore: 300, isBoss: false),
-                RealmChallenge(type: .appSwitchResistance, requiredScore: 250, isBoss: false),
-                RealmChallenge(type: .notificationResistance, requiredScore: 200, isBoss: false),
-                RealmChallenge(type: .fingerHold, requiredScore: 180, isBoss: false)
+                ProgressRealmChallenge(type: .antiScrollSwipe, requiredScore: 300, isBoss: false),
+                ProgressRealmChallenge(type: .appSwitchResistance, requiredScore: 250, isBoss: false),
+                ProgressRealmChallenge(type: .notificationResistance, requiredScore: 200, isBoss: false),
+                ProgressRealmChallenge(type: .fingerHold, requiredScore: 180, isBoss: false)
             ],
             bossChallenge: .impulseDelay,
-            rewards: RealmRewards(gems: 250, xp: 2500, badge: "realm5")
+            rewards: ProgressRealmRewards(gems: 250, xp: 2500, badge: "realm5")
         ),
         
         // Realm 6: Breath Mountain (Levels 126-150)
-        Realm(
+        ProgressRealm(
             id: 6,
             name: "Breath Mountain",
             description: "Find inner peace. Master the art of controlled breathing.",
             icon: "wind",
             color: "#00BCD4",
-            theme: RealmTheme(
+            theme: ProgressRealmTheme(
                 primary: "#00BCD4",
                 secondary: "#4DD0E1",
                 gradient: ["#00BCD4", "#0097A7"]
             ),
             levels: 126...150,
             challenges: [
-                RealmChallenge(type: .breathingBasics, requiredScore: 150, isBoss: false),
-                RealmChallenge(type: .calmFocus, requiredScore: 200, isBoss: false),
-                RealmChallenge(type: .stressRelief, requiredScore: 250, isBoss: false),
-                RealmChallenge(type: .energyBoost, requiredScore: 200, isBoss: false)
+                ProgressRealmChallenge(type: .breathingBasics, requiredScore: 150, isBoss: false),
+                ProgressRealmChallenge(type: .calmFocus, requiredScore: 200, isBoss: false),
+                ProgressRealmChallenge(type: .stressRelief, requiredScore: 250, isBoss: false),
+                ProgressRealmChallenge(type: .energyBoost, requiredScore: 200, isBoss: false)
             ],
             bossChallenge: .deepBreath,
-            rewards: RealmRewards(gems: 300, xp: 3000, badge: "realm6")
+            rewards: ProgressRealmRewards(gems: 300, xp: 3000, badge: "realm6")
         ),
         
         // Realm 7: Focus Fusion (Levels 151-175)
-        Realm(
+        ProgressRealm(
             id: 7,
             name: "Focus Fusion",
             description: "Combine all skills. Multi-task with precision and clarity.",
             icon: "sparkles",
             color: "#E91E63",
-            theme: RealmTheme(
+            theme: ProgressRealmTheme(
                 primary: "#E91E63",
                 secondary: "#F06292",
                 gradient: ["#E91E63", "#C2185B"]
             ),
             levels: 151...175,
             challenges: [
-                RealmChallenge(type: .multiObjectTracking, requiredScore: 400, isBoss: false),
-                RealmChallenge(type: .patternMatching, requiredScore: 350, isBoss: false),
-                RealmChallenge(type: .rhythmTap, requiredScore: 300, isBoss: false),
-                RealmChallenge(type: .stillnessTest, requiredScore: 250, isBoss: false)
+                ProgressRealmChallenge(type: .multiObjectTracking, requiredScore: 400, isBoss: false),
+                ProgressRealmChallenge(type: .patternMatching, requiredScore: 350, isBoss: false),
+                ProgressRealmChallenge(type: .rhythmTap, requiredScore: 300, isBoss: false),
+                ProgressRealmChallenge(type: .stillnessTest, requiredScore: 250, isBoss: false)
             ],
             bossChallenge: .slowTracking,
-            rewards: RealmRewards(gems: 350, xp: 3500, badge: "realm7")
+            rewards: ProgressRealmRewards(gems: 350, xp: 3500, badge: "realm7")
         ),
         
         // Realm 8: Mind Mastery (Levels 176-200)
-        Realm(
+        ProgressRealm(
             id: 8,
             name: "Mind Mastery",
             description: "Ultimate mental training. Push your cognitive limits.",
             icon: "crown.fill",
             color: "#FFD700",
-            theme: RealmTheme(
+            theme: ProgressRealmTheme(
                 primary: "#FFD700",
                 secondary: "#FFECB3",
                 gradient: ["#FFD700", "#FFC107"]
             ),
             levels: 176...200,
             challenges: [
-                RealmChallenge(type: .gazeHold, requiredScore: 500, isBoss: false),
-                RealmChallenge(type: .spatialPuzzle, requiredScore: 450, isBoss: false),
-                RealmChallenge(type: .distractionLog, requiredScore: 400, isBoss: false),
-                RealmChallenge(type: .deepBreath, requiredScore: 350, isBoss: false)
+                ProgressRealmChallenge(type: .gazeHold, requiredScore: 500, isBoss: false),
+                ProgressRealmChallenge(type: .spatialPuzzle, requiredScore: 450, isBoss: false),
+                ProgressRealmChallenge(type: .distractionLog, requiredScore: 400, isBoss: false),
+                ProgressRealmChallenge(type: .deepBreath, requiredScore: 350, isBoss: false)
             ],
             bossChallenge: .focusSprint,
-            rewards: RealmRewards(gems: 400, xp: 4000, badge: "realm8")
+            rewards: ProgressRealmRewards(gems: 400, xp: 4000, badge: "realm8")
         ),
         
         // Realm 9: Zen Master (Levels 201-225)
-        Realm(
+        ProgressRealm(
             id: 9,
             name: "Zen Master",
             description: "Achieve perfect balance. Total mind-body synchronization.",
             icon: "moon.stars.fill",
             color: "#3F51B5",
-            theme: RealmTheme(
+            theme: ProgressRealmTheme(
                 primary: "#3F51B5",
                 secondary: "#7986CB",
                 gradient: ["#3F51B5", "#303F9F"]
             ),
             levels: 201...225,
             challenges: [
-                RealmChallenge(type: .stillnessTest, requiredScore: 600, isBoss: false),
-                RealmChallenge(type: .breathingAdvanced, requiredScore: 500, isBoss: false),
-                RealmChallenge(type: .impulseDelay, requiredScore: 450, isBoss: false),
-                RealmChallenge(type: .focusEndurance, requiredScore: 400, isBoss: false)
+                ProgressRealmChallenge(type: .stillnessTest, requiredScore: 600, isBoss: false),
+                ProgressRealmChallenge(type: .breathingAdvanced, requiredScore: 500, isBoss: false),
+                ProgressRealmChallenge(type: .impulseDelay, requiredScore: 450, isBoss: false),
+                ProgressRealmChallenge(type: .focusEndurance, requiredScore: 400, isBoss: false)
             ],
             bossChallenge: .meditationMaster,
-            rewards: RealmRewards(gems: 500, xp: 5000, badge: "realm9")
+            rewards: ProgressRealmRewards(gems: 500, xp: 5000, badge: "realm9")
         ),
         
         // Realm 10: Legendary (Levels 226-250)
-        Realm(
+        ProgressRealm(
             id: 10,
             name: "Legendary Focus",
             description: "Become a legend. Your focus is unmatched. The ultimate mastery.",
             icon: "star.circle.fill",
             color: "#FF00FF",
-            theme: RealmTheme(
+            theme: ProgressRealmTheme(
                 primary: "#FF00FF",
                 secondary: "#E040FB",
                 gradient: ["#FF00FF", "#AA00FF"]
             ),
             levels: 226...250,
             challenges: [
-                RealmChallenge(type: .focusSprint, requiredScore: 800, isBoss: false),
-                RealmChallenge(type: .memoryMaster, requiredScore: 700, isBoss: false),
-                RealmChallenge(type: .reactionMaster, requiredScore: 600, isBoss: false),
-                RealmChallenge(type: .ultimateDiscipline, requiredScore: 500, isBoss: false)
+                ProgressRealmChallenge(type: .focusSprint, requiredScore: 800, isBoss: false),
+                ProgressRealmChallenge(type: .memoryPuzzle, requiredScore: 700, isBoss: false),
+                ProgressRealmChallenge(type: .reactionInhibition, requiredScore: 600, isBoss: false),
+                ProgressRealmChallenge(type: .delayUnlock, requiredScore: 500, isBoss: false)
             ],
-            bossChallenge: .legendaryTrial,
-            rewards: RealmRewards(gems: 1000, xp: 10000, badge: "legend")
+            bossChallenge: .focusSprint,
+            rewards: ProgressRealmRewards(gems: 1000, xp: 10000, badge: "legend")
         )
     ]
     
     static func realmName(for level: Int) -> String {
-        return realm(for: level).name
+        return ProgressPath.realm(for: level).name
     }
     
     static func realmDescription(for level: Int) -> String {
-        return realm(for: level).description
+        return ProgressPath.realm(for: level).description
     }
 }
 
@@ -318,9 +318,9 @@ struct ProgressNode: Identifiable, Codable {
     var bestScore: Int
     
     var stars: Int {
-        if bestScore >= requiredScore * 1.5 { return 3 }
+        if bestScore >= Int(Double(requiredScore) * 1.5) { return 3 }
         if bestScore >= requiredScore { return 2 }
-        if bestScore >= requiredScore * 0.5 { return 1 }
+        if bestScore >= requiredScore / 2 { return 1 }
         return 0
     }
 }
@@ -343,7 +343,7 @@ struct UserProgressPath: Codable {
         
         // Create all 250 nodes
         for level in 1...250 {
-            let realm = Realm.realm(for: level)
+            let realm = ProgressPath.realm(for: level)
             let realmChallenges = realm.challenges
             let challengeIdx = (level - 1) % realmChallenges.count
             let challenge = realmChallenges[challengeIdx]
@@ -386,7 +386,7 @@ struct UserProgressPath: Codable {
         var realmGems = 0
         var realmXp = 0
         
-        let realm = Realm.allRealms[currentRealm - 1]
+        let realm = ProgressRealm.allRealms[currentRealm - 1]
         let realmLevels = realm.levels
         let realmEndLevel = realmLevels.upperBound
         

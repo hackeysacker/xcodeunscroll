@@ -1,6 +1,7 @@
 import SwiftUI
 import Combine
 import Supabase
+import Network
 
 @MainActor
 class AppState: ObservableObject {
@@ -28,11 +29,18 @@ class AppState: ObservableObject {
     @Published var isSyncing: Bool = false
     @Published var syncError: String?
     
+    // Network & Offline support
+    @Published var isOnline: Bool = true
+    @Published var pendingSyncCount: Int = 0
+    
     // Supabase client
     private let supabaseUrl = "https://sxgpcsfwbzptlmwfddda.supabase.co"
     private let supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4Z3Bjc2Z3YnpwdGxtd2ZkZGRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM3NTI0NzYsImV4cCI6MjA3OTMyODQ3Nn0.kkQc632Gu8ozuCD5HoZVS35yGbxA4l2kmuq96bCBg4w"
     
     private var supabase: SupabaseClient?
+    private let networkMonitor = NetworkMonitor.shared
+    private let syncQueue = SyncQueue.shared
+    private var cancellables = Set<AnyCancellable>()
     
     enum Tab: String, CaseIterable {
         case home = "Home"
@@ -41,6 +49,7 @@ class AppState: ObservableObject {
         case screenTime = "Focus"
         case practice = "Practice"
         case profile = "Profile"
+        case settings = "Settings"
         
         var icon: String {
             switch self {
@@ -50,12 +59,14 @@ class AppState: ObservableObject {
             case .screenTime: return "hourglass"
             case .practice: return "brain.head.profile"
             case .profile: return "person.fill"
+            case .settings: return "gearshape.fill"
             }
         }
     }
     
     init() {
         setupSupabase()
+        setupNetworkMonitoring()
         loadUserData()
     }
     
@@ -64,6 +75,35 @@ class AppState: ObservableObject {
             supabaseURL: URL(string: supabaseUrl)!,
             supabaseKey: supabaseKey
         )
+    }
+    
+    private func setupNetworkMonitoring() {
+        // Monitor network changes
+        networkMonitor.$isConnected
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isConnected in
+                self?.isOnline = isConnected
+                if isConnected {
+                    // Try to sync when back online
+                    Task { @MainActor in
+                        await self?.processSyncQueue()
+                    }
+                }
+            }
+            .store(in: &cancellables)
+        
+        // Monitor pending sync count
+        syncQueue.$pendingOperations
+            .receive(on: DispatchQueue.main)
+            .map { $0.count }
+            .assign(to: &$pendingSyncCount)
+    }
+    
+    /// Process queued sync operations
+    func processSyncQueue() async {
+        guard isOnline, isAuthenticated, let userId = currentUser?.id else { return }
+        
+        await syncQueue.processQueue(supabaseService: SupabaseService.shared, userId: userId)
     }
     
     // MARK: - Authentication
@@ -229,7 +269,31 @@ class AppState: ObservableObject {
         }
     }
     
+    /// Queue a sync operation for later (when offline)
+    func queueSyncOperation(_ operation: SyncOperation) {
+        syncQueue.enqueue(operation)
+    }
+    
     func syncToCloud(userId: String) async {
+        // If offline, queue the operation for later
+        guard isOnline else {
+            // Queue gems update
+            if let gems = progress?.gems {
+                let operation = SyncOperation(type: .updateGems(gems: gems))
+                queueSyncOperation(operation)
+            }
+            // Queue skill progress update
+            if let prog = progress {
+                let skillOp = SyncOperation(type: .updateSkillProgress(
+                    focus: prog.focusScore,
+                    impulse: prog.impulseControlScore,
+                    distraction: prog.distractionResistanceScore
+                ))
+                queueSyncOperation(skillOp)
+            }
+            return
+        }
+        
         guard let supabase = supabase else { return }
         isSyncing = true
         
@@ -241,12 +305,40 @@ class AppState: ObservableObject {
                 .eq("id", value: userId)
                 .execute()
             
-            // Note: Full game progress sync requires proper Codable structs
-            // For now, we sync gems only
+            // Sync skill progress to cloud
+            if let prog = progress {
+                let skillData: [String: Any] = [
+                    "user_id": userId,
+                    "focus_score": prog.focusScore,
+                    "impulse_control_score": prog.impulseControlScore,
+                    "distraction_resistance_score": prog.distractionResistanceScore,
+                    "updated_at": ISO8601DateFormatter().string(from: Date())
+                ]
+                
+                // Upsert skill progress
+                try await supabase
+                    .from("skill_progress")
+                    .upsert(skillData, onConflict: "user_id")
+                    .execute()
+            }
             
             isSyncing = false
         } catch {
             isSyncing = false
+            // Queue for retry when back online
+            if let gems = progress?.gems {
+                let operation = SyncOperation(type: .updateGems(gems: gems))
+                queueSyncOperation(operation)
+            }
+            // Queue skill progress for retry
+            if let prog = progress {
+                let skillOp = SyncOperation(type: .updateSkillProgress(
+                    focus: prog.focusScore,
+                    impulse: prog.impulseControlScore,
+                    distraction: prog.distractionResistanceScore
+                ))
+                queueSyncOperation(skillOp)
+            }
             syncError = error.localizedDescription
         }
     }
@@ -409,7 +501,8 @@ class AppState: ObservableObject {
             skills: [:],
             focusScore: GameProgress.defaultFocusScore,
             impulseControlScore: GameProgress.defaultImpulseControlScore,
-            distractionResistanceScore: GameProgress.defaultDistractionResistanceScore
+            distractionResistanceScore: GameProgress.defaultDistractionResistanceScore,
+            streakFreezeUsed: false
         )
         
         saveData()
@@ -494,6 +587,51 @@ class AppState: ObservableObject {
         return false
     }
     
+    // MARK: - Gem Purchases
+    
+    /// Purchase streak freeze (protects streak for one day even if user doesn't play)
+    func purchaseStreakFreeze() -> Bool {
+        let cost = 25
+        guard spendGems(cost) else { return false }
+        
+        guard var prog = progress else { return false }
+        prog.streakFreezeUsed = false  // Reset for new use
+        progress = prog
+        saveData()
+        return true
+    }
+    
+    /// Purchase hearts with gems
+    func purchaseHeart() -> Bool {
+        let cost = 15
+        guard spendGems(cost) else { return false }
+        
+        addHeart()  // Uses existing addHeart method
+        return true
+    }
+    
+    /// Purchase full heart refill (restore to 5 hearts)
+    func purchaseHeartRefill() -> Bool {
+        let cost = 50
+        guard var prog = progress else { return false }
+        
+        let heartsNeeded = 5 - prog.hearts
+        guard heartsNeeded > 0 else { return false }  // Already full
+        
+        let costTotal = cost  // Flat rate for full refill
+        guard spendGems(costTotal) else { return false }
+        
+        prog.hearts = 5
+        progress = prog
+        saveData()
+        return true
+    }
+    
+    /// Get gem balance
+    var gemBalance: Int {
+        progress?.gems ?? 0
+    }
+    
     // MARK: - Hearts System
     
     func loseHeart() {
@@ -539,6 +677,12 @@ class AppState: ObservableObject {
             prog.incrementSkill(.distractionResistance, performanceScore: score)
         case .discipline:
             prog.incrementSkill(.impulseControl, performanceScore: score)
+        case .speed:
+            prog.incrementSkill(.focus, performanceScore: score)
+        case .impulse:
+            prog.incrementSkill(.impulseControl, performanceScore: score)
+        case .calm:
+            prog.incrementSkill(.distractionResistance, performanceScore: score)
             prog.incrementSkill(.distractionResistance, performanceScore: score)
         }
     }

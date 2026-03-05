@@ -67,7 +67,8 @@ struct OnboardingFlowView: View {
             skills: [:],
             focusScore: GameProgress.defaultFocusScore,
             impulseControlScore: GameProgress.defaultImpulseControlScore,
-            distractionResistanceScore: GameProgress.defaultDistractionResistanceScore
+            distractionResistanceScore: GameProgress.defaultDistractionResistanceScore,
+            streakFreezeUsed: false
         )
         appState.saveData()
     }

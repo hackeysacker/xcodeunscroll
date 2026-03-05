@@ -12,9 +12,26 @@ struct RapidTargetView: View {
     @State private var maxCombo: Int = 0
     @State private var isGameOver: Bool = false
     @State private var showResults: Bool = false
+    @State private var targetType: TargetType = .shape
     
     // Audio/Haptics
     @State private var audioManager = AppAudioManager.shared
+    
+    enum TargetType: String, CaseIterable {
+        case shape = "Shapes"
+        case number = "Numbers"
+        case letter = "Letters"
+        case emoji = "Emoji"
+        
+        var icon: String {
+            switch self {
+            case .shape: return "square.on.circle"
+            case .number: return "number"
+            case .letter: return "textformat"
+            case .emoji: return "face.smiling"
+            }
+        }
+    }
     
     struct Target: Identifiable {
         let id = UUID()
@@ -22,6 +39,9 @@ struct RapidTargetView: View {
         var y: CGFloat
         var scale: CGFloat = 0
         var createdAt: Date = Date()
+        var targetType: TargetType
+        var targetValue: String
+        var color: Color
     }
     
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
@@ -119,7 +139,12 @@ struct RapidTargetView: View {
             
             // Targets
             ForEach(targets) { target in
-                TargetBubble(scale: target.scale) {
+                TargetBubble(
+                    scale: target.scale,
+                    targetType: target.targetType,
+                    targetValue: target.targetValue,
+                    targetColor: target.color
+                ) {
                     handleTap(target)
                 }
                 .position(x: target.x, y: target.y)
@@ -275,13 +300,14 @@ struct RapidTargetView: View {
         guard targets.count < 5 else { return }
         
         let padding: CGFloat = 80
-        let screenW = UIScreen.main.bounds.width - padding * 2
-        let screenH = UIScreen.main.bounds.height - 300
         
         let x = CGFloat.random(in: padding...(UIScreen.main.bounds.width - padding))
-        let y = CGFloat.random(in: (150 + padding)...(screenH + 150))
+        let y = CGFloat.random(in: 200...(UIScreen.main.bounds.height - 250))
         
-        var newTarget = Target(x: x, y: y)
+        let type = TargetType.allCases.randomElement() ?? .shape
+        let (value, color) = generateTargetContent(type: type)
+        
+        var newTarget = Target(x: x, y: y, targetType: type, targetValue: value, color: color)
         newTarget.scale = 0
         targets.append(newTarget)
         
@@ -293,6 +319,26 @@ struct RapidTargetView: View {
         }
     }
     
+    func generateTargetContent(type: TargetType) -> (String, Color) {
+        switch type {
+        case .shape:
+            let shapes = [("circle", "target"), ("square", "square.fill"), ("triangle", "triangle.fill"), ("star", "star.fill"), ("heart", "heart.fill")]
+            let shape = shapes.randomElement()!
+            return (shape.1, [.purple, .blue, .pink, .orange, .red].randomElement()!)
+        case .number:
+            let num = Int.random(in: 1...9)
+            return (String(num), [.green, .cyan, .yellow].randomElement()!)
+        case .letter:
+            let letters = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "M", "N", "P", "R", "S", "T", "V", "W", "X", "Y"]
+            let letter = letters.randomElement()!
+            return (letter, [.purple, .blue, .pink].randomElement()!)
+        case .emoji:
+            let emojis = ["🔥", "⭐", "💎", "🎯", "⚡", "💫", "🌟", "✨", "💜", "🧡"]
+            let emoji = emojis.randomElement()!
+            return (emoji, .yellow)
+        }
+    }
+    
     func cleanupOldTargets() {
         targets.removeAll { Date().timeIntervalSince($0.createdAt) > 2.5 }
     }
@@ -301,6 +347,9 @@ struct RapidTargetView: View {
 // MARK: - Target Bubble
 struct TargetBubble: View {
     let scale: CGFloat
+    let targetType: RapidTargetView.TargetType
+    let targetValue: String
+    let targetColor: Color
     let onTap: () -> Void
     
     var body: some View {
@@ -310,28 +359,47 @@ struct TargetBubble: View {
                 Circle()
                     .fill(
                         RadialGradient(
-                            colors: [.purple, .indigo],
+                            colors: [targetColor, targetColor.opacity(0.5)],
                             center: .center,
                             startRadius: 0,
                             endRadius: 50
                         )
                     )
                     .frame(width: 80, height: 80)
-                    .shadow(color: .purple.opacity(0.6), radius: 20, x: 0, y: 5)
+                    .shadow(color: targetColor.opacity(0.6), radius: 20, x: 0, y: 5)
                 
                 // Inner ring
                 Circle()
                     .stroke(Color.white.opacity(0.5), lineWidth: 3)
                     .frame(width: 55, height: 55)
                 
-                // Target icon
-                Image(systemName: "target")
-                    .font(.system(size: 28, weight: .bold))
-                    .foregroundColor(.white)
+                // Target content
+                targetContent
             }
         }
         .scaleEffect(scale)
         .animation(.spring(response: 0.3, dampingFraction: 0.6), value: scale)
+    }
+    
+    @ViewBuilder
+    var targetContent: some View {
+        switch targetType {
+        case .shape:
+            Image(systemName: targetValue)
+                .font(.system(size: 32, weight: .bold))
+                .foregroundColor(.white)
+        case .number:
+            Text(targetValue)
+                .font(.system(size: 32, weight: .bold, design: .rounded))
+                .foregroundColor(.white)
+        case .letter:
+            Text(targetValue)
+                .font(.system(size: 32, weight: .bold))
+                .foregroundColor(.white)
+        case .emoji:
+            Text(targetValue)
+                .font(.system(size: 36))
+        }
     }
 }
 
