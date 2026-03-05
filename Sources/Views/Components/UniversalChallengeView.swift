@@ -10,7 +10,7 @@ class HapticManager {
     private let heavy = UIImpactFeedbackGenerator(style: .heavy)
     private let selection = UISelectionFeedbackGenerator()
     private let notification = UINotificationFeedbackGenerator()
-    
+
     func prepare() {
         light.prepare()
         medium.prepare()
@@ -18,7 +18,7 @@ class HapticManager {
         selection.prepare()
         notification.prepare()
     }
-    
+
     func lightTap() { light.impactOccurred() }
     func mediumTap() { medium.impactOccurred() }
     func heavyTap() { heavy.impactOccurred() }
@@ -32,22 +32,22 @@ class HapticManager {
 class SoundManager {
     static let shared = SoundManager()
     var isEnabled: Bool = true
-    
+
     func playTap() {
         guard isEnabled else { return }
         AudioServicesPlaySystemSound(1104)
     }
-    
+
     func playSuccess() {
         guard isEnabled else { return }
         AudioServicesPlaySystemSound(1025)
     }
-    
+
     func playFail() {
         guard isEnabled else { return }
         AudioServicesPlaySystemSound(1053)
     }
-    
+
     func playLevelUp() {
         guard isEnabled else { return }
         AudioServicesPlaySystemSound(1026)
@@ -58,13 +58,13 @@ struct UniversalChallengeView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) var dismiss
     let challenge: AllChallengeType
-    
+
     @State private var score: Int = 0
     @State private var isActive: Bool = false
     @State private var timeRemaining: Double = 0
     @State private var showResults: Bool = false
     @State private var challengeTime: Int = 0
-    
+
     @State private var targetPosition: CGPoint = CGPoint(x: 0.5, y: 0.5)
     @State private var level: Int = 1
     @State private var breathPhase: BreathPhase = .inhale
@@ -72,6 +72,9 @@ struct UniversalChallengeView: View {
     @State private var gameState: ReactionState = .waiting
     @State private var startTimeReact: Date = Date()
     @State private var reactionTime: Double = 0
+    @State private var personalBestTime: Double = 0
+    @State private var reactionTimes: [Double] = []
+    @State private var averageReactionTime: Double = 0
     @State private var cycleCount: Int = 0
     @State private var temptationLevel: Double = 0
     @State private var combo: Int = 0
@@ -81,17 +84,17 @@ struct UniversalChallengeView: View {
     @State private var lastTapPosition: CGPoint = .zero
     @State private var showRipple: Bool = false
     @State private var difficulty: Double = 0.0  // Increases with score for harder challenges
-    
+
     enum BreathPhase: String {
         case inhale = "Breathe In"
         case hold = "Hold"
         case exhale = "Breathe Out"
     }
-    
+
     enum ReactionState {
         case waiting, ready, go, tooEarly
     }
-    
+
     var body: some View {
         ZStack {
             LinearGradient(
@@ -100,7 +103,7 @@ struct UniversalChallengeView: View {
                 endPoint: .bottom
             )
             .ignoresSafeArea()
-            
+
             if showResults {
                 resultsView
             } else if isActive {
@@ -110,12 +113,12 @@ struct UniversalChallengeView: View {
             }
         }
     }
-    
+
     // MARK: - Preview
     var previewView: some View {
         VStack(spacing: 24) {
             Spacer()
-            
+
             ZStack {
                 Circle()
                     .fill(challenge.color.opacity(0.3))
@@ -124,17 +127,17 @@ struct UniversalChallengeView: View {
                     .font(.system(size: 50))
                     .foregroundColor(challenge.color)
             }
-            
+
             Text(challenge.rawValue)
                 .font(.system(size: 28, weight: .bold))
                 .foregroundColor(.white)
-            
+
             Text(challenge.description)
                 .font(.system(size: 16))
                 .foregroundColor(.gray)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
-            
+
             HStack(spacing: 32) {
                 VStack {
                     Text("\(challenge.duration)s")
@@ -153,9 +156,9 @@ struct UniversalChallengeView: View {
                         .foregroundColor(.gray)
                 }
             }
-            
+
             Spacer()
-            
+
             Button(action: { startChallenge() }) {
                 Text("Start")
                     .font(.headline)
@@ -169,7 +172,7 @@ struct UniversalChallengeView: View {
             .padding(.bottom, 40)
         }
     }
-    
+
     // MARK: - Active Challenge
     var activeChallengeView: some View {
         VStack(spacing: 16) {
@@ -195,44 +198,44 @@ struct UniversalChallengeView: View {
             }
             .padding(.horizontal, 24)
             .padding(.top, 20)
-            
+
             challengeContent.padding(.horizontal, 24)
             Spacer()
         }
     }
-    
+
     // MARK: - Save and Dismiss
     func saveAndDismiss() {
         // Calculate rewards
         let gemsEarned = max(1, score / 10)
         let xpEarned = challenge.xpReward
-        
+
         // Save progress to AppState (which handles cloud sync)
         appState.completeChallenge(type: challenge, score: score, xpEarned: xpEarned)
-        
+
         // Dismiss the challenge view
         dismiss()
     }
-    
+
     // MARK: - Results
     var resultsView: some View {
         let gemsEarned = max(1, score / 10)
-        
+
         return VStack(spacing: 24) {
             Spacer()
-            
+
             Image(systemName: score >= 50 ? "star.fill" : "arrow.clockwise")
                 .font(.system(size: 60))
                 .foregroundColor(score >= 50 ? .yellow : .gray)
-            
+
             Text("Challenge Complete!")
                 .font(.title)
                 .foregroundColor(.white)
-            
+
             Text("Score: \(score)")
                 .font(.title2)
                 .foregroundColor(.yellow)
-            
+
             HStack(spacing: 24) {
                 VStack {
                     Text("+\(challenge.xpReward)")
@@ -242,7 +245,7 @@ struct UniversalChallengeView: View {
                         .font(.caption)
                         .foregroundColor(.gray)
                 }
-                
+
                 VStack {
                     Text("+\(gemsEarned)")
                         .font(.headline)
@@ -252,7 +255,7 @@ struct UniversalChallengeView: View {
                         .foregroundColor(.gray)
                 }
             }
-            
+
             // Gem animation indicator
             if score >= 50 {
                 HStack(spacing: 4) {
@@ -266,7 +269,7 @@ struct UniversalChallengeView: View {
                 .padding(.vertical, 6)
                 .background(Capsule().fill(Color.purple.opacity(0.2)))
             }
-            
+
             Button(action: saveAndDismiss) {
                 Text("Continue")
                     .foregroundColor(.white)
@@ -274,11 +277,11 @@ struct UniversalChallengeView: View {
                     .background(Color.blue)
                     .cornerRadius(8)
             }
-            
+
             Spacer()
         }
     }
-    
+
     // MARK: - Challenge Content
     @ViewBuilder
     var challengeContent: some View {
@@ -302,7 +305,7 @@ struct UniversalChallengeView: View {
             disciplineContent
         }
     }
-    
+
     // MARK: - Focus
     var focusContent: some View {
         GeometryReader { geo in
@@ -319,7 +322,7 @@ struct UniversalChallengeView: View {
                             )
                     }
                 }
-                
+
                 // Combo
                 if combo > 1 {
                     VStack {
@@ -332,7 +335,7 @@ struct UniversalChallengeView: View {
                     }
                     .position(x: geo.size.width / 2, y: 50)
                 }
-                
+
                 // Ripple
                 if showRipple {
                     Circle()
@@ -340,14 +343,14 @@ struct UniversalChallengeView: View {
                         .frame(width: 80, height: 80)
                         .position(lastTapPosition)
                 }
-                
+
                 // Target - gets smaller as difficulty increases
                 ZStack {
                     Circle()
                         .fill(challenge.color.opacity(0.2))
                         .frame(width: (70 + sin(Date().timeIntervalSinceReferenceDate * 3) * 10) * targetScale, height: (70 + sin(Date().timeIntervalSinceReferenceDate * 3) * 10) * targetScale)
                         .position(targetPosition)
-                    
+
                     Circle()
                         .fill(
                             RadialGradient(
@@ -372,40 +375,42 @@ struct UniversalChallengeView: View {
             }
         }
     }
-    
+
     func handleFocusTap(in size: CGSize) {
         totalTaps += 1
         lastTapPosition = targetPosition
         showRipple = true
         combo += 1
         maxCombo = max(maxCombo, combo)
-        
+
         // Update difficulty based on time and score
         let timeDifficulty = Double(challenge.duration - Int(timeRemaining)) / Double(challenge.duration)
         let scoreDifficulty = min(Double(score) / 500.0, 1.0)  // Max difficulty at 500 points
         difficulty = (timeDifficulty + scoreDifficulty) / 2
-        
+
         score += 15 * min(combo, 10) + Int(difficulty * 10)
-        
+
         // Decrease target size as difficulty increases (harder)
         targetScale = max(0.6, 1.0 - difficulty * 0.4)
-        
-        // Haptics
+
+        // Haptics and Sound
         if combo > 5 {
             HapticManager.shared.success()
+            SoundManager.shared.playSuccess()
         } else {
             HapticManager.shared.lightTap()
+            SoundManager.shared.playTap()
         }
-        
+
         // Milestone sounds
         if combo == 10 || combo == 25 || combo == 50 {
             HapticManager.shared.success()
         }
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             showRipple = false
         }
-        
+
         // Speed increases with difficulty
         let animDuration = max(0.15, 0.5 - difficulty * 0.35)
         withAnimation(.easeInOut(duration: animDuration)) {
@@ -415,7 +420,7 @@ struct UniversalChallengeView: View {
             )
         }
     }
-    
+
     // MARK: - Memory
     var memoryContent: some View {
         VStack(spacing: 16) {
@@ -442,12 +447,12 @@ struct UniversalChallengeView: View {
                         .foregroundColor(.gray)
                 }
             }
-            
+
             Text("Memorize!")
                 .font(.system(size: 16, weight: .medium))
                 .foregroundColor(challenge.color)
                 .padding(.vertical, 8)
-            
+
             LazyVGrid(columns: [
                 GridItem(.flexible()),
                 GridItem(.flexible()),
@@ -462,7 +467,7 @@ struct UniversalChallengeView: View {
                 }
             }
             .padding(.horizontal)
-            
+
             HStack {
                 Text("Combo: \(combo)x")
                     .foregroundColor(.orange)
@@ -478,7 +483,7 @@ struct UniversalChallengeView: View {
             combo = 0
         }
     }
-    
+
     func handleMemoryTap(_ index: Int) {
         if index % 2 == 0 && index < level * 2 {
             combo += 1
@@ -491,7 +496,7 @@ struct UniversalChallengeView: View {
             HapticManager.shared.error()
             SoundManager.shared.playFail()
         }
-        
+
         if score > level * 30 {
             level += 1
             combo = 0
@@ -499,7 +504,7 @@ struct UniversalChallengeView: View {
             SoundManager.shared.playLevelUp()
         }
     }
-    
+
     // MARK: - Reaction
     var reactionContent: some View {
         VStack(spacing: 24) {
@@ -522,18 +527,18 @@ struct UniversalChallengeView: View {
                         .foregroundColor(.gray)
                 }
             }
-            
+
             Spacer()
-            
+
             ZStack {
                 Circle()
                     .fill(reactionCircleColor.opacity(0.1))
                     .frame(width: 250, height: 250)
-                
+
                 Circle()
                     .stroke(reactionCircleColor.opacity(0.3), lineWidth: 2)
                     .frame(width: 220, height: 220)
-                
+
                 Circle()
                     .fill(
                         RadialGradient(
@@ -544,7 +549,7 @@ struct UniversalChallengeView: View {
                         )
                     )
                     .frame(width: 180, height: 180)
-                
+
                 VStack(spacing: 8) {
                     Text(reactionCircleText)
                         .font(.system(size: 28, weight: .bold))
@@ -559,7 +564,7 @@ struct UniversalChallengeView: View {
             .onTapGesture {
                 handleReactionTap()
             }
-            
+
             if reactionTime > 0 {
                 VStack {
                     Text("\(Int(reactionTime * 1000))")
@@ -571,16 +576,43 @@ struct UniversalChallengeView: View {
                     Text(reactionTimeRating)
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(reactionTimeColor)
+                    
+                    // Personal Best & Average
+                    if personalBestTime > 0 || averageReactionTime > 0 {
+                        HStack(spacing: 24) {
+                            if personalBestTime > 0 {
+                                VStack {
+                                    Text("\(Int(personalBestTime * 1000))")
+                                        .font(.system(size: 18, weight: .bold))
+                                        .foregroundColor(.yellow)
+                                    Text("Best")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                            if averageReactionTime > 0 && reactionTimes.count > 1 {
+                                VStack {
+                                    Text("\(Int(averageReactionTime * 1000))")
+                                        .font(.system(size: 18, weight: .bold))
+                                        .foregroundColor(.blue)
+                                    Text("Avg")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                        }
+                        .padding(.top, 8)
+                    }
                 }
                 .padding()
                 .background(Capsule().fill(reactionTimeColor.opacity(0.1)))
             }
-            
+
             Spacer()
         }
         .padding()
     }
-    
+
     var reactionInstructionText: String {
         switch gameState {
         case .waiting: return "Wait..."
@@ -589,7 +621,7 @@ struct UniversalChallengeView: View {
         case .tooEarly: return "Too early!"
         }
     }
-    
+
     var reactionCircleColor: Color {
         switch gameState {
         case .waiting, .ready: return .red
@@ -597,7 +629,7 @@ struct UniversalChallengeView: View {
         case .tooEarly: return .orange
         }
     }
-    
+
     var reactionCircleText: String {
         switch gameState {
         case .waiting, .ready: return "Wait..."
@@ -605,21 +637,21 @@ struct UniversalChallengeView: View {
         case .tooEarly: return "Early!"
         }
     }
-    
+
     var reactionTimeColor: Color {
         if reactionTime < 0.15 { return .green }
         if reactionTime < 0.25 { return .yellow }
         if reactionTime < 0.35 { return .orange }
         return .red
     }
-    
+
     var reactionTimeRating: String {
         if reactionTime < 0.15 { return "⚡️ Lightning!" }
         if reactionTime < 0.25 { return "🔥 Great!" }
         if reactionTime < 0.35 { return "💪 Good" }
         return "🎯 Practice"
     }
-    
+
     func handleReactionTap() {
         if gameState == .waiting || gameState == .ready {
             gameState = .tooEarly
@@ -627,11 +659,20 @@ struct UniversalChallengeView: View {
             SoundManager.shared.playFail()
             return
         }
-        
+
         if gameState == .go {
             reactionTime = Date().timeIntervalSince(startTimeReact)
             score = max(0, Int((0.3 - reactionTime) * 1000))
             
+            // Track personal best
+            if personalBestTime == 0 || reactionTime < personalBestTime {
+                personalBestTime = reactionTime
+            }
+            
+            // Track reaction times for average
+            reactionTimes.append(reactionTime)
+            averageReactionTime = reactionTimes.reduce(0, +) / Double(reactionTimes.count)
+
             if reactionTime < 0.15 {
                 HapticManager.shared.success()
                 SoundManager.shared.playLevelUp()
@@ -640,15 +681,16 @@ struct UniversalChallengeView: View {
                 SoundManager.shared.playSuccess()
             } else {
                 HapticManager.shared.lightTap()
+                SoundManager.shared.playTap()
             }
-            
+
             gameState = .waiting
             DispatchQueue.main.asyncAfter(deadline: .now() + Double.random(in: 1...3)) {
                 startReaction()
             }
         }
     }
-    
+
     func startReaction() {
         guard isActive else { return }
         gameState = .ready
@@ -657,7 +699,7 @@ struct UniversalChallengeView: View {
             startTimeReact = Date()
         }
     }
-    
+
     // MARK: - Breathing
     var breathingContent: some View {
         VStack(spacing: 20) {
@@ -680,18 +722,18 @@ struct UniversalChallengeView: View {
                         .foregroundColor(.gray)
                 }
             }
-            
+
             ZStack {
                 Circle()
                     .stroke(Color.white.opacity(0.1), lineWidth: 4)
                     .frame(width: 250, height: 250)
-                
+
                 Circle()
                     .trim(from: 0, to: breathProgress)
                     .stroke(breathGradient, style: StrokeStyle(lineWidth: 12, lineCap: .round))
                     .frame(width: 250, height: 250)
                     .rotationEffect(.degrees(-90))
-                
+
                 Circle()
                     .fill(
                         RadialGradient(
@@ -702,7 +744,7 @@ struct UniversalChallengeView: View {
                         )
                     )
                     .frame(width: 100 + breathProgress * 100, height: 100 + breathProgress * 100)
-                
+
                 VStack(spacing: 8) {
                     Image(systemName: breathIcon)
                         .font(.system(size: 40))
@@ -712,11 +754,11 @@ struct UniversalChallengeView: View {
                         .foregroundColor(.white)
                 }
             }
-            
+
             Text(breathText)
                 .font(.system(size: 14))
                 .foregroundColor(.white.opacity(0.8))
-            
+
             HStack {
                 Image(systemName: "leaf.fill")
                     .foregroundColor(.green)
@@ -727,7 +769,7 @@ struct UniversalChallengeView: View {
         }
         .padding()
     }
-    
+
     var breathColor: Color {
         switch breathPhase {
         case .inhale: return .purple
@@ -735,7 +777,7 @@ struct UniversalChallengeView: View {
         case .exhale: return .green
         }
     }
-    
+
     var breathGradient: LinearGradient {
         switch breathPhase {
         case .inhale:
@@ -746,7 +788,7 @@ struct UniversalChallengeView: View {
             return LinearGradient(colors: [.cyan, .green], startPoint: .topLeading, endPoint: .bottomTrailing)
         }
     }
-    
+
     var breathIcon: String {
         switch breathPhase {
         case .inhale: return "arrow.up"
@@ -754,7 +796,7 @@ struct UniversalChallengeView: View {
         case .exhale: return "arrow.down"
         }
     }
-    
+
     var breathText: String {
         switch breathPhase {
         case .inhale: return "Breathe in slowly"
@@ -762,7 +804,7 @@ struct UniversalChallengeView: View {
         case .exhale: return "Release slowly"
         }
     }
-    
+
     // MARK: - Discipline
     var disciplineContent: some View {
         VStack(spacing: 20) {
@@ -785,7 +827,7 @@ struct UniversalChallengeView: View {
                         .foregroundColor(.gray)
                 }
             }
-            
+
             VStack(spacing: 8) {
                 HStack {
                     Image(systemName: "brain.head.profile")
@@ -796,7 +838,7 @@ struct UniversalChallengeView: View {
                     Text("\(Int(temptationLevel * 100))%")
                         .foregroundColor(temptColor)
                 }
-                
+
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         RoundedRectangle(cornerRadius: 8)
@@ -808,15 +850,15 @@ struct UniversalChallengeView: View {
                     }
                 }
                 .frame(height: 12)
-                
+
                 Text(encouragementText)
                     .font(.system(size: 14))
                     .foregroundColor(.white.opacity(0.8))
             }
             .padding(.horizontal)
-            
+
             Spacer()
-            
+
             ZStack {
                 Circle()
                     .fill(temptColor.opacity(0.2))
@@ -833,9 +875,9 @@ struct UniversalChallengeView: View {
                         .foregroundColor(.white)
                 }
             }
-            
+
             Spacer()
-            
+
             HStack(spacing: 32) {
                 VStack {
                     Text("\(combo)")
@@ -857,26 +899,26 @@ struct UniversalChallengeView: View {
         }
         .padding()
     }
-    
+
     var temptColor: Color {
         if temptationLevel < 0.3 { return .green }
         if temptationLevel < 0.6 { return .yellow }
         if temptationLevel < 0.8 { return .orange }
         return .red
     }
-    
+
     var temptIcon: String {
         let icons = ["bell.badge.fill", "app.badge", "hand.tap.fill", "bubble.left.fill", "exclamationmark.triangle.fill"]
         return icons[Int(timeRemaining) % icons.count]
     }
-    
+
     var encouragementText: String {
         if temptationLevel < 0.3 { return "You're doing great!" }
         if temptationLevel < 0.6 { return "Keep resisting!" }
         if temptationLevel < 0.8 { return "Focus on breath!" }
         return "Almost there!"
     }
-    
+
     // MARK: - Timer
     func startChallenge() {
         isActive = true
@@ -886,21 +928,25 @@ struct UniversalChallengeView: View {
         level = 1
         cycleCount = 0
         temptationLevel = 0.3
-        
+        personalBestTime = 0
+        reactionTimes = []
+        averageReactionTime = 0
+
         HapticManager.shared.prepare()
-        
+        SoundManager.shared.playSuccess()  // Start sound
+
         Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
             if self.timeRemaining > 0 {
                 self.timeRemaining -= 0.1
                 self.challengeTime = self.challenge.duration - Int(self.timeRemaining)
-                
+
                 let difficultyProgress = 1.0 - (self.timeRemaining / Double(self.challenge.duration))
-                
+
                 // Focus: time bonus
                 if self.challenge.category == .focus && Int(self.timeRemaining * 10) % 5 == 0 {
                     self.score += Int(difficultyProgress * 2)
                 }
-                
+
                 // Discipline: temptation grows
                 if self.challenge.category == .discipline {
                     self.temptationLevel = min(1.0, 0.3 + difficultyProgress * 0.7)
@@ -908,7 +954,7 @@ struct UniversalChallengeView: View {
                         self.score += 1
                     }
                 }
-                
+
                 // Breathing: cycles
                 if self.challenge.category == .breathing {
                     self.breathProgress = (self.breathProgress + 0.01).truncatingRemainder(dividingBy: 1.0)
@@ -923,12 +969,12 @@ struct UniversalChallengeView: View {
                         self.cycleCount += 1
                     }
                 }
-                
+
                 // Reaction: starts
                 if self.challenge.category == .reaction && self.gameState == .waiting {
                     self.startReaction()
                 }
-                
+
                 // Memory: level up
                 if self.challenge.category == .memory && self.score > self.level * 30 {
                     self.level += 1
@@ -943,18 +989,21 @@ struct UniversalChallengeView: View {
             }
         }
     }
-    
+
     func endChallenge() {
         isActive = false
         showResults = true
-        
+
         // Play completion sounds
         if score >= 50 {
             HapticManager.shared.success()
+            SoundManager.shared.playLevelUp()
         } else if score > 0 {
             HapticManager.shared.lightTap()
+            SoundManager.shared.playSuccess()
         } else {
             HapticManager.shared.error()
+            SoundManager.shared.playFail()
         }
     }
 }
