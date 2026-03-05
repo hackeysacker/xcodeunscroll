@@ -2,6 +2,13 @@ import SwiftUI
 import AVFoundation
 import UIKit
 
+// MARK: - Breath Phase Enum
+enum BreathPhase: String {
+    case inhale = "Breathe In"
+    case hold = "Hold"
+    case exhale = "Breathe Out"
+}
+
 // MARK: - Haptic Manager
 class HapticManager {
     static let shared = HapticManager()
@@ -79,9 +86,9 @@ class BreathingGuide: NSObject, AVSpeechSynthesizerDelegate {
     func announcePhase(_ phase: BreathPhase, cycleCount: Int) {
         guard isEnabled else { return }
         guard phase != lastSpokenPhase else { return }
-Phase = phase
+        lastSpokenPhase = phase
 
-        lastSpoken        let text: String
+        let text: String
         switch phase {
         case .inhale:
             text = cycleCount == 0 ? "Breathe in slowly through your nose" : "Breathe in"
@@ -138,12 +145,6 @@ struct UniversalChallengeView: View {
     @State private var lastTapPosition: CGPoint = .zero
     @State private var showRipple: Bool = false
     @State private var difficulty: Double = 0.0  // Increases with score for harder challenges
-
-    enum BreathPhase: String {
-        case inhale = "Breathe In"
-        case hold = "Hold"
-        case exhale = "Breathe Out"
-    }
 
     enum ReactionState {
         case waiting, ready, go, tooEarly
