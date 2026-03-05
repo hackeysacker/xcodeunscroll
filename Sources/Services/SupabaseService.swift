@@ -245,13 +245,13 @@ class SupabaseService: ObservableObject {
     
     /// Update skill progress
     func updateSkillProgress(userId: String, focusScore: Int, impulseControlScore: Int, distractionResistanceScore: Int) async throws {
-        let skillData: [String: Any] = [
-            "user_id": userId,
-            "focus_score": focusScore,
-            "impulse_control_score": impulseControlScore,
-            "distraction_resistance_score": distractionResistanceScore,
-            "updated_at": ISO8601DateFormatter().string(from: Date())
-        ]
+        let skillData = SkillProgressRecord(
+            userId: userId,
+            focusScore: focusScore,
+            impulseControlScore: impulseControlScore,
+            distractionResistanceScore: distractionResistanceScore,
+            updatedAt: Date()
+        )
         
         try await supabase
             .database

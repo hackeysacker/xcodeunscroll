@@ -307,13 +307,13 @@ class AppState: ObservableObject {
             
             // Sync skill progress to cloud
             if let prog = progress {
-                let skillData: [String: Any] = [
-                    "user_id": userId,
-                    "focus_score": prog.focusScore,
-                    "impulse_control_score": prog.impulseControlScore,
-                    "distraction_resistance_score": prog.distractionResistanceScore,
-                    "updated_at": ISO8601DateFormatter().string(from: Date())
-                ]
+                let skillData = SkillProgressRecord(
+                    userId: userId,
+                    focusScore: prog.focusScore,
+                    impulseControlScore: prog.impulseControlScore,
+                    distractionResistanceScore: prog.distractionResistanceScore,
+                    updatedAt: Date()
+                )
                 
                 // Upsert skill progress
                 try await supabase
