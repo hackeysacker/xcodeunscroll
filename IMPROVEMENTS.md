@@ -8,7 +8,7 @@
 - [x] Sync game progress to cloud on app launch - IMPLEMENTED Mar 1, 2026
 - [x] Sync progress after each challenge completion - IMPLEMENTED Mar 1, 2026
 - [x] Handle offline mode gracefully - IMPLEMENTED Mar 2, 2026
-- [ ] Implement RLS policies for all tables
+- [x] Implement RLS policies for all tables - DONE Mar 5, 2026
 
 ### Gems System
 - [x] Add gem balance display in header - DONE Mar 2, 2026
