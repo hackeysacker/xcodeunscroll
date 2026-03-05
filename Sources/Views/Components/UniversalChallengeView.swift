@@ -54,6 +54,59 @@ class SoundManager {
     }
 }
 
+// MARK: - Breathing Guide (Guided Audio)
+class BreathingGuide: NSObject, AVSpeechSynthesizerDelegate {
+    static let shared = BreathingGuide()
+    private let synthesizer = AVSpeechSynthesizer()
+    var isEnabled: Bool = true
+    private var lastSpokenPhase: BreathPhase?
+
+    override init() {
+        super.init()
+        synthesizer.delegate = self
+    }
+
+    func speak(_ text: String) {
+        guard isEnabled else { return }
+        synthesizer.stopSpeaking(at: .immediate)
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.rate = AVSpeechUtteranceDefaultSpeechRate * 0.8
+        utterance.pitchMultiplier = 0.9
+        utterance.volume = 0.7
+        synthesizer.speak(utterance)
+    }
+
+    func announcePhase(_ phase: BreathPhase, cycleCount: Int) {
+        guard isEnabled else { return }
+        guard phase != lastSpokenPhase else { return }
+Phase = phase
+
+        lastSpoken        let text: String
+        switch phase {
+        case .inhale:
+            text = cycleCount == 0 ? "Breathe in slowly through your nose" : "Breathe in"
+        case .hold:
+            text = "Hold"
+        case .exhale:
+            text = "Breathe out slowly"
+        }
+        speak(text)
+    }
+
+    func startSession() {
+        speak("Welcome to your breathing exercise. Get comfortable and follow my voice.")
+    }
+
+    func endSession() {
+        synthesizer.stopSpeaking(at: .immediate)
+        speak("Well done. Session complete.")
+    }
+
+    func stop() {
+        synthesizer.stopSpeaking(at: .immediate)
+    }
+}
+
 struct UniversalChallengeView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) var dismiss
@@ -69,6 +122,7 @@ struct UniversalChallengeView: View {
     @State private var level: Int = 1
     @State private var breathPhase: BreathPhase = .inhale
     @State private var breathProgress: Double = 0
+    @State private var guidedAudioEnabled: Bool = true
     @State private var gameState: ReactionState = .waiting
     @State private var startTimeReact: Date = Date()
     @State private var reactionTime: Double = 0
@@ -765,6 +819,22 @@ struct UniversalChallengeView: View {
                 Text("Breathe naturally")
                     .font(.system(size: 14))
                     .foregroundColor(.gray)
+                Spacer()
+                Button(action: {
+                    guidedAudioEnabled.toggle()
+                    BreathingGuide.shared.isEnabled = guidedAudioEnabled
+                }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: guidedAudioEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
+                            .font(.system(size: 12))
+                        Text(guidedAudioEnabled ? "Voice On" : "Voice Off")
+                            .font(.system(size: 12))
+                    }
+                    .foregroundColor(guidedAudioEnabled ? .green : .gray)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Capsule().fill(guidedAudioEnabled ? Color.green.opacity(0.2) : Color.gray.opacity(0.2)))
+                }
             }
         }
         .padding()
@@ -935,6 +1005,12 @@ struct UniversalChallengeView: View {
         HapticManager.shared.prepare()
         SoundManager.shared.playSuccess()  // Start sound
 
+        // Start guided breathing audio if it's a breathing challenge
+        if challenge.category == .breathing {
+            BreathingGuide.shared.isEnabled = guidedAudioEnabled
+            BreathingGuide.shared.startSession()
+        }
+
         Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
             if self.timeRemaining > 0 {
                 self.timeRemaining -= 0.1
@@ -960,10 +1036,13 @@ struct UniversalChallengeView: View {
                     self.breathProgress = (self.breathProgress + 0.01).truncatingRemainder(dividingBy: 1.0)
                     if self.breathProgress < 0.33 {
                         self.breathPhase = .inhale
+                        BreathingGuide.shared.announcePhase(.inhale, cycleCount: self.cycleCount)
                     } else if self.breathProgress < 0.66 {
                         self.breathPhase = .hold
+                        BreathingGuide.shared.announcePhase(.hold, cycleCount: self.cycleCount)
                     } else {
                         self.breathPhase = .exhale
+                        BreathingGuide.shared.announcePhase(.exhale, cycleCount: self.cycleCount)
                     }
                     if Int(self.breathProgress * 100) == 0 {
                         self.cycleCount += 1
@@ -983,6 +1062,12 @@ struct UniversalChallengeView: View {
             } else {
                 timer.invalidate()
                 self.showResults = true
+
+                // End guided breathing audio if it was a breathing challenge
+                if self.challenge.category == .breathing {
+                    BreathingGuide.shared.endSession()
+                }
+
                 if self.score > 50 {
                     HapticManager.shared.success()
                 }

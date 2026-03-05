@@ -54,7 +54,7 @@
 
 ### Breathing Exercises
 - [x] Multiple breathing7-8, patterns (4- box breathing, etc.) - IMPLEMENTED Feb 28, 2026
-- [ ] Guided breathing audio
+- [x] Guided breathing audio - IMPLEMENTED Mar 5, 2026
 - [x] Session duration customization - IMPLEMENTED Feb 28, 2026
 - [ ] Mood tracking before/after
 
@@ -234,6 +234,7 @@ Tables created:
 - Added sound effects for: taps, successes, failures, level ups, challenge start, challenge complete
 - RLS policies for all Supabase tables completed
 - Added personal best and average reaction time tracking to reaction challenges
+- Added guided breathing audio with voice instructions (AVSpeechSynthesizer) - Mar 5, 2026
 
 ---
 
