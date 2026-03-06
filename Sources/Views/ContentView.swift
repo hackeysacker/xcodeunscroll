@@ -39,6 +39,15 @@ struct ContentView: View {
             }
             .environmentObject(appState)
         }
+        .fullScreenCover(isPresented: $appState.showDailyLoginReward) {
+            DailyLoginRewardView(
+                streak: appState.dailyLoginStreak,
+                gems: appState.dailyLoginGems
+            ) {
+                // Dismiss action if needed
+            }
+            .environmentObject(appState)
+        }
     }
 }
 

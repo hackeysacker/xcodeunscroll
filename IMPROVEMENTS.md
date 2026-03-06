@@ -97,9 +97,9 @@
 ### Gamification
 - [x] Daily challenges (3 per day) - DONE Feb 28, 2026
 - [x] Streak rewards (7-day, 30-day, 100-day) - DONE Feb 28, 2026
-- [ ] Achievement badges with icons
-- [ ] Level-up celebrations
-- [ ] Daily login rewards
+- [x] Achievement badges with icons
+- [x] Level-up celebrations
+- [x] Daily login rewards
 
 ### Social (Future)
 - [ ] Friends list
@@ -337,4 +337,29 @@ Tables created:
 
 ---
 
-Last Updated: March 6, 2026 (4am)
+## Completed Mar 6, 2026 (5am) - Daily Login Rewards
+
+### New Feature: Daily Login Rewards
+- **Added DailyLoginRewardView** - Full-screen celebration overlay showing:
+  - Animated diamond gem icon with floating animation
+  - Streak counter showing consecutive login days
+  - Gems reward (5 base + streak bonus, up to 50 max)
+  - Bonus XP (25 XP per daily login)
+  - Haptic feedback on appear
+  - Gradient styling matching app theme
+
+### Integration
+- Added `showDailyLoginReward`, `dailyLoginGems`, `dailyLoginStreak` state to AppState
+- Added `checkDailyLoginReward()` method that:
+  - Tracks last login date in UserDefaults
+  - Awards gems and XP on first login of the day
+  - Calculates streak-based bonus (more consecutive days = more gems)
+  - Shows reward popup automatically on app launch
+- Added fullScreenCover presentation in ContentView
+
+### Build Status
+- ✅ BUILD SUCCEEDED on iOS Simulator (iPhone 17)
+
+---
+
+Last Updated: March 6, 2026 (5am)

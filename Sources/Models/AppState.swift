@@ -20,6 +20,11 @@ class AppState: ObservableObject {
     @Published var showLevelUpCelebration: Bool = false
     @Published var levelUpFrom: Int = 0
     
+    // Daily login rewards
+    @Published var showDailyLoginReward: Bool = false
+    @Published var dailyLoginGems: Int = 0
+    @Published var dailyLoginStreak: Int = 0
+    
     // Testing mode
     @Published var testingModeEnabled: Bool = false
     @Published var testingDuration: Int = 5
@@ -368,6 +373,9 @@ class AppState: ObservableObject {
             progress = prog
         }
         
+        // Check for daily login reward after loading user data
+        checkDailyLoginReward()
+        
         isLoading = false
     }
     
@@ -556,6 +564,62 @@ class AppState: ObservableObject {
         if let prog = progress,
            let data = try? JSONEncoder().encode(prog) {
             UserDefaults.standard.set(data, forKey: "focusflow_progress")
+        }
+    }
+    
+    // MARK: - Daily Login Rewards
+    
+    /// Check and award daily login rewards - call after user is loaded
+    func checkDailyLoginReward() {
+        guard let _ = currentUser, let prog = progress else { return }
+        
+        let lastLoginKey = "focusflow_last_login_\(currentUser?.id ?? "default")"
+        let lastLoginDate = UserDefaults.standard.object(forKey: lastLoginKey) as? Date
+        
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        
+        // Check if already claimed today
+        if let lastLogin = lastLoginDate {
+            let lastLoginDay = calendar.startOfDay(for: lastLogin)
+            if lastLoginDay == today {
+                // Already claimed today
+                return
+            }
+            
+            // Check if it's a consecutive day (within 2 days to account for timezone)
+            let daysDifference = calendar.dateComponents([.day], from: lastLoginDay, to: today).day ?? 0
+            if daysDifference > 1 {
+                // Streak broken - reset to day 1
+                dailyLoginStreak = 1
+            } else {
+                // Consecutive day - increment streak
+                dailyLoginStreak = prog.streakDays > 0 ? prog.streakDays : 1
+            }
+        } else {
+            // First login ever
+            dailyLoginStreak = 1
+        }
+        
+        // Calculate rewards based on streak
+        // Day 1: 5 gems, Day 2: 10 gems, Day 3: 15 gems... up to 50 gems max
+        // Bonus XP: 25 XP per day
+        let baseGems = 5
+        let gemBonus = min(dailyLoginStreak * 5, 50) // Max 50 gems
+        dailyLoginGems = baseGems + gemBonus
+        
+        // Award the gems
+        addGems(dailyLoginGems)
+        
+        // Add bonus XP
+        addXP(25)
+        
+        // Save last login date
+        UserDefaults.standard.set(Date(), forKey: lastLoginKey)
+        
+        // Show the reward (only if this is the first check after login, not every time)
+        if !showDailyLoginReward && !showLevelUpCelebration {
+            showDailyLoginReward = true
         }
     }
     

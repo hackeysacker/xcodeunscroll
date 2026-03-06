@@ -48,6 +48,7 @@
 		A753F4680E153CFC046B31C2 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = C4EEDE06C567725C5C680400 /* Supabase */; };
 		A95CC104D706CE210006D113 /* HeartRefillManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A244A9E11BC14987440F19CC /* HeartRefillManager.swift */; };
 		BA36BBFDCFDA309DB438A012 /* CoreChallenges.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FF345F88B9807E1FEF9785 /* CoreChallenges.swift */; };
+		BB9378CC51F44777365F070B /* DailyLoginRewardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EBDE604339063B817FD81C1 /* DailyLoginRewardView.swift */; };
 		C0D25A4CFACECBD750997D59 /* UniversalChallengeView.swift.broken in Resources */ = {isa = PBXBuildFile; fileRef = 7C6709ACAEC6D5F7BF24C5A8 /* UniversalChallengeView.swift.broken */; };
 		C37B7AF8A1BF7813DABF1470 /* MemoryGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0750F6F44C6618E12EB007DF /* MemoryGridView.swift */; };
 		C6ED778AAB986AC145424898 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78BC8B9AB0840EC35907819 /* ProgressView.swift */; };
@@ -83,6 +84,7 @@
 		6A7D8D62786DF6C72DA3AA8B /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		6BCB2E1C4A2FC0A1FEB843DD /* Achievement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Achievement.swift; sourceTree = "<group>"; };
 		6D40CB4BE7CF1F995E25536E /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		6EBDE604339063B817FD81C1 /* DailyLoginRewardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyLoginRewardView.swift; sourceTree = "<group>"; };
 		712E75634EDDF39FE0EC2015 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		715FD3D1A0334C57536C3103 /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
 		7413DB7A1650203D1F4E7135 /* UIComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIComponents.swift; sourceTree = "<group>"; };
@@ -261,6 +263,7 @@
 				545230256D5F2A71262515B7 /* BiometricTrackingView.swift */,
 				14B35B0250244FC90DF26929 /* ChallengeExercises.swift */,
 				DB2505ECE7128F7B00B5D3EC /* ChallengeView.swift */,
+				6EBDE604339063B817FD81C1 /* DailyLoginRewardView.swift */,
 				8C8E39B9E5E9E8379D8F1B2F /* GlassComponents.swift */,
 				3F31947429A4CB879F0BA04C /* LevelUpCelebrationView.swift */,
 				4C8405765EFD7768023303DE /* ScrollStoppingView.swift */,
@@ -397,6 +400,7 @@
 				94CEA6AEA84AF1224308D6F9 /* ColorPatternMemoryView.swift in Sources */,
 				F5E51C06E2FD7C5327823851 /* ContentView.swift in Sources */,
 				BA36BBFDCFDA309DB438A012 /* CoreChallenges.swift in Sources */,
+				BB9378CC51F44777365F070B /* DailyLoginRewardView.swift in Sources */,
 				D2CE236CD4C89487E0723264 /* DuolingoPathView.swift in Sources */,
 				EF321A8CE43CF65B58890B1A /* FakeNotificationsChallengeView.swift in Sources */,
 				95F3126B773BF04B587B9D7B /* FocusFlowApp.swift in Sources */,
