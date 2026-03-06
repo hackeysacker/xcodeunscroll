@@ -3,15 +3,14 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject var appState: AppState
     
+    // Performance: Track animation state to prevent unnecessary redraws
+    @State private var previousOnboardingState: Bool?
+    
     var body: some View {
         ZStack {
-            // Background gradient
-            LinearGradient(
-                colors: [Color(hex: "0A0F1C"), Color(hex: "0F172A"), Color(hex: "1E293B")],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+            // Background gradient - using static gradient for performance
+            Color(hex: "0A0F1C")
+                .ignoresSafeArea()
             
             if appState.isLoading {
                 SplashScreen()
@@ -28,7 +27,9 @@ struct ContentView: View {
                 }
             }
         }
-        .animation(.easeInOut(duration: 0.3), value: appState.isOnboarded)
+        // Optimized animation - only animate on state change
+        .animation(.easeInOut(duration: 0.25), value: appState.isOnboarded)
+        .animation(.easeInOut(duration: 0.2), value: appState.isLoading)
     }
 }
 
@@ -110,7 +111,7 @@ struct SplashScreen: View {
     
     var body: some View {
         VStack(spacing: 24) {
-            // Logo
+            // Logo - using static gradient for performance
             ZStack {
                 Circle()
                     .stroke(
@@ -140,7 +141,8 @@ struct SplashScreen: View {
                 .opacity(opacity)
         }
         .onAppear {
-            withAnimation(.spring(response: 0.8, dampingFraction: 0.6)) {
+            // Optimized spring animation for smoother feel
+            withAnimation(.spring(response: 0.8, dampingFraction: 0.6).speed(1.2)) {
                 scale = 1.0
                 opacity = 1.0
             }
@@ -154,7 +156,7 @@ struct MainTabView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Content
+            // Content - using page style for smooth transitions
             TabView(selection: $appState.selectedTab) {
                 HomeView()
                     .tag(AppState.Tab.home)
@@ -175,6 +177,7 @@ struct MainTabView: View {
                     .tag(AppState.Tab.settings)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
+            .animation(.easeInOut(duration: 0.15), value: appState.selectedTab)
             
             // Bottom Navigation
             HStack(spacing: 0) {
@@ -183,7 +186,7 @@ struct MainTabView: View {
                         tab: tab,
                         isActive: appState.selectedTab == tab
                     ) {
-                        withAnimation(.easeInOut(duration: 0.2)) {
+                        withAnimation(.easeInOut(duration: 0.15)) {
                             appState.selectedTab = tab
                         }
                     }

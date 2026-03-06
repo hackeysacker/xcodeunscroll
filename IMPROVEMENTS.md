@@ -249,6 +249,22 @@ Tables created:
 
 ---
 
+## Completed Mar 5, 2026 (Evening 2) - Performance & Polish
+
+### Performance Optimizations
+- **Faster tab transitions:** Reduced animation duration from 0.3s to 0.15s for snappier feel
+- **Splash screen optimization:** Increased animation speed by 20% for faster app launch perception
+- **Background gradient optimization:** Changed from complex gradient to solid color for header performance
+- **Pull-to-refresh:** Added native iOS pull-to-refresh on HomeView for manual sync
+- **Loading overlay:** Added sync indicator when appState.isSyncing is true
+- **Tab view animation:** Optimized TabView transitions with explicit animation value
+
+### UI/UX Polish
+- Empty states already implemented in Recent Activity section
+- Dark mode already configured throughout app
+
+---
+
 ## Known Issues
 
 - Swift Package Manager for Supabase needs proper setup

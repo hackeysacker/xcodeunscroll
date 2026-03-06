@@ -5,6 +5,7 @@ struct HomeView: View {
     @State private var showChallengePicker: Bool = false
     @State private var showInsights: Bool = false
     @State private var showLeaderboard: Bool = false
+    @State private var isRefreshing: Bool = false
     
     var body: some View {
         ZStack {
@@ -34,6 +35,28 @@ struct HomeView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 100)
             }
+            .refreshable {
+                await refreshData()
+            }
+            
+            // Loading overlay when syncing
+            if isRefreshing || appState.isSyncing {
+                VStack {
+                    Spacer()
+                    HStack {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .scaleEffect(0.8)
+                        Text("Syncing...")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
+                    .padding(8)
+                    .background(Color.black.opacity(0.5))
+                    .cornerRadius(8)
+                    .padding(.bottom, 120)
+                }
+            }
         }
         .sheet(isPresented: $showInsights) {
             InsightsView()
@@ -41,6 +64,19 @@ struct HomeView: View {
         .sheet(isPresented: $showLeaderboard) {
             LeaderboardView()
         }
+    }
+    
+    // MARK: - Pull to Refresh
+    private func refreshData() async {
+        isRefreshing = true
+        // Simulate network delay for smooth UX
+        try? await Task.sleep(nanoseconds: 500_000_000)
+        
+        if let userId = appState.currentUser?.id {
+            await appState.syncFullProgressFromCloud(userId: userId)
+        }
+        
+        isRefreshing = false
     }
     
     // MARK: - Header
