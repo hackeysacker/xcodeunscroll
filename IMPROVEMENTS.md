@@ -114,9 +114,13 @@
 - [ ] Custom themes
 
 ### Notifications
-- [ ] Daily reminder
-- [ ] Streak at risk
-- [ ] New challenges available
+- [x] Daily reminder - DONE Mar 6, 2026
+- [x] Streak at risk - DONE Mar 6, 2026
+- [x] New challenges available - DONE Mar 6, 2026
+- [x] Level up notifications - DONE Mar 6, 2026
+- [x] Badge earned notifications - DONE Mar 6, 2026
+- [x] Heart refill ready notifications - DONE Mar 6, 2026
+- [x] Streak milestone celebrations - DONE Mar 6, 2026
 
 ---
 
@@ -404,4 +408,36 @@ Tables created:
 
 ---
 
-Last Updated: March 6, 2026 (8:15am)
+## Completed Mar 6, 2026 (9am) - Local Notifications System
+
+### New Feature: Push Notifications for User Engagement
+- **Created NotificationManager.swift** - Full local notification system with:
+  - Daily reminder notifications (configurable time, default 9 AM)
+  - Streak at risk warnings (8 PM)
+  - Streak milestone celebrations (7, 14, 30, 60, 100 days)
+  - Level up notifications
+  - Badge earned notifications
+  - Heart refill ready notifications
+  - New challenge available notifications
+- **Added notification settings to AppState:**
+  - `notificationsEnabled` - master toggle
+  - `reminderHour` / `reminderMinute` - daily reminder time
+  - `streakWarningEnabled` - streak at risk alerts
+  - `heartRefillNotifications` - heart refill alerts
+  - `badgeNotifications` - badge earned alerts
+- **Integrated with user events:**
+  - Level up celebration now triggers notification
+  - Streak milestones trigger celebration notifications
+- **Settings persistence in UserDefaults**
+- **Auto-configure on app launch based on preferences**
+
+### Build Status
+- ✅ BUILD SUCCEEDED on iOS Simulator (iPhone 17)
+
+### Git Status
+- Branch: main (10 commits ahead of origin)
+- Pushed: `f660d9c feat: Add local notifications system for daily reminders, streak warnings, and milestones`
+
+---
+
+Last Updated: March 6, 2026 (9:06am)
