@@ -3,6 +3,45 @@ import SwiftUI
 // MARK: - Breathing Exercise View
 // Multiple breathing patterns: 4-7-8, Box Breathing, Relaxing Breath, Energizing Breath
 
+// MARK: - Mood Enum
+enum Mood: String, CaseIterable {
+    case terrible = "Terrible"
+    case bad = "Bad"
+    case okay = "Okay"
+    case good = "Good"
+    case great = "Great"
+    
+    var emoji: String {
+        switch self {
+        case .terrible: return "😫"
+        case .bad: return "😔"
+        case .okay: return "😐"
+        case .good: return "🙂"
+        case .great: return "😄"
+        }
+    }
+    
+    var color: Color {
+        switch self {
+        case .terrible: return .red
+        case .bad: return .orange
+        case .okay: return .yellow
+        case .good: return Color.green.opacity(0.7)
+        case .great: return .green
+        }
+    }
+    
+    var numericValue: Int {
+        switch self {
+        case .terrible: return 1
+        case .bad: return 2
+        case .okay: return 3
+        case .good: return 4
+        case .great: return 5
+        }
+    }
+}
+
 struct BreathingExerciseView: View {
     @Environment(\.dismiss) var dismiss
     @State private var selectedPattern: BreathingPattern = .box
@@ -16,6 +55,17 @@ struct BreathingExerciseView: View {
     @State private var audioManager = AppAudioManager.shared
     
     @State private var sessionComplete: Bool = false
+    
+    // Mood tracking
+    @State private var showMoodSelection: Bool = true
+    @State private var preSessionMood: Mood?
+    @State private var postSessionMood: Mood?
+    @State private var moodPhase: MoodSelectionPhase = .pre
+    
+    enum MoodSelectionPhase {
+        case pre
+        case post
+    }
     
     enum BreathingPattern: String, CaseIterable {
         case box = "Box Breathing"
@@ -94,10 +144,16 @@ struct BreathingExerciseView: View {
                 // Header
                 header
                 
-                if !isActive && !sessionComplete {
+                if showMoodSelection && moodPhase == .pre {
+                    moodSelectionView(isPreSession: true)
+                } else if !isActive && !sessionComplete {
                     patternSelection
                 } else if sessionComplete {
-                    resultsView
+                    if postSessionMood == nil && moodPhase == .post {
+                        moodSelectionView(isPreSession: false)
+                    } else {
+                        resultsView
+                    }
                 } else {
                     breathingCircle
                 }
@@ -106,6 +162,99 @@ struct BreathingExerciseView: View {
         .onReceive(timer) { _ in
             if isActive && !sessionComplete {
                 tick()
+            }
+        }
+    }
+    
+    // MARK: - Mood Selection View
+    
+    func moodSelectionView(isPreSession: Bool) -> some View {
+        VStack(spacing: 32) {
+            Spacer()
+            
+            Text(isPreSession ? "How are you feeling?" : "How do you feel now?")
+                .font(.system(size: 28, weight: .bold))
+                .foregroundColor(.white)
+                .multilineTextAlignment(.center)
+            
+            Text(isPreSession ? "Check in before your breathing session" : "Check in after your breathing session")
+                .font(.system(size: 16))
+                .foregroundColor(.gray)
+                .multilineTextAlignment(.center)
+            
+            // Mood options
+            HStack(spacing: 12) {
+                ForEach(Mood.allCases, id: \.self) { mood in
+                    Button {
+                        if isPreSession {
+                            preSessionMood = mood
+                        } else {
+                            postSessionMood = mood
+                        }
+                    } label: {
+                        VStack(spacing: 8) {
+                            Text(mood.emoji)
+                                .font(.system(size: 40))
+                            Text(mood.rawValue)
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.white)
+                        }
+                        .frame(width: 60, height: 80)
+                        .background(
+                            (isPreSession ? preSessionMood == mood : postSessionMood == mood) 
+                            ? mood.color.opacity(0.3) 
+                            : Color.white.opacity(0.05)
+                        )
+                        .cornerRadius(12)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(
+                                    (isPreSession ? preSessionMood == mood : postSessionMood == mood) 
+                                    ? mood.color 
+                                    : Color.clear, 
+                                    lineWidth: 2
+                                )
+                        )
+                    }
+                }
+            }
+            .padding(.horizontal, 20)
+            
+            Spacer()
+            
+            // Continue button
+            if (isPreSession && preSessionMood != nil) || (!isPreSession && postSessionMood != nil) {
+                Button {
+                    if isPreSession {
+                        showMoodSelection = false
+                    } else {
+                        postSessionMood = postSessionMood ?? preSessionMood
+                        // Auto-advance to results
+                    }
+                } label: {
+                    Text(isPreSession ? "Continue" : "See Results")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 18)
+                        .background(
+                            LinearGradient(colors: [.purple, .indigo], startPoint: .leading, endPoint: .trailing)
+                        )
+                        .cornerRadius(16)
+                }
+                .padding(.horizontal, 40)
+            }
+            
+            if isPreSession {
+                Button {
+                    showMoodSelection = false
+                    preSessionMood = .okay // Default
+                } label: {
+                    Text("Skip")
+                        .font(.system(size: 16))
+                        .foregroundColor(.gray)
+                }
+                .padding(.bottom, 20)
             }
         }
     }
@@ -345,6 +494,11 @@ struct BreathingExerciseView: View {
                 .font(.system(size: 28, weight: .bold))
                 .foregroundColor(.white)
             
+            // Mood improvement (if tracked)
+            if let pre = preSessionMood, let post = postSessionMood {
+                moodImprovementView(pre: pre, post: post)
+            }
+            
             VStack(spacing: 16) {
                 resultRow(icon: "arrow.clockwise", label: "Cycles Completed", value: "\(cycleCount)")
                 resultRow(icon: "clock", label: "Duration", value: "\(sessionDuration / 60) min")
@@ -371,6 +525,62 @@ struct BreathingExerciseView: View {
             .padding(.horizontal, 40)
             .padding(.bottom, 40)
         }
+    }
+    
+    func moodImprovementView(pre: Mood, post: Mood) -> some View {
+        let improvement = post.numericValue - pre.numericValue
+        let improvementText: String
+        let improvementIcon: String
+        let improvementColor: Color
+        
+        if improvement > 0 {
+            improvementText = "+\(improvement) mood points"
+            improvementIcon = "arrow.up.circle.fill"
+            improvementColor = .green
+        } else if improvement < 0 {
+            improvementText = "\(improvement) mood points"
+            improvementIcon = "arrow.down.circle.fill"
+            improvementColor = .orange
+        } else {
+            improvementText = "No change"
+            improvementIcon = "minus.circle.fill"
+            improvementColor = .gray
+        }
+        
+        return VStack(spacing: 16) {
+            HStack(spacing: 20) {
+                VStack(spacing: 4) {
+                    Text("Before")
+                        .font(.system(size: 12))
+                        .foregroundColor(.gray)
+                    Text(pre.emoji)
+                        .font(.system(size: 32))
+                }
+                
+                Image(systemName: "arrow.right")
+                    .font(.system(size: 20))
+                    .foregroundColor(.gray)
+                
+                VStack(spacing: 4) {
+                    Text("After")
+                        .font(.system(size: 12))
+                        .foregroundColor(.gray)
+                    Text(post.emoji)
+                        .font(.system(size: 32))
+                }
+            }
+            
+            HStack(spacing: 6) {
+                Image(systemName: improvementIcon)
+                    .foregroundColor(improvementColor)
+                Text(improvementText)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(improvementColor)
+            }
+        }
+        .padding(20)
+        .background(Color.white.opacity(0.1))
+        .cornerRadius(16)
     }
     
     func resultRow(icon: String, label: String, value: String) -> some View {
@@ -483,6 +693,13 @@ struct BreathingExerciseView: View {
         isActive = false
         sessionComplete = true
         audioManager.playChallengeComplete()
+        
+        // Show post-session mood if pre-session was tracked
+        if preSessionMood != nil {
+            moodPhase = .post
+            // Keep sessionComplete but show mood selection overlay
+            // The UI logic handles showing mood selection when postSessionMood is nil
+        }
     }
 }
 
