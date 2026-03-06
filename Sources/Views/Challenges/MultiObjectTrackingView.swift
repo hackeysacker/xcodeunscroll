@@ -42,7 +42,8 @@ struct MultiObjectTrackingView: View {
         var x: CGFloat
         var y: CGFloat
         var targetX: CGFloat
-        var targetY: CGFloat        var shape: String
+        var targetY: CGFloat
+        var shape: String
         var color: Color
         var isSelected: Bool = false
         var wasCorrect: Bool = false

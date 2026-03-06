@@ -16,6 +16,7 @@ enum AllChallengeType: String, CaseIterable, Identifiable, Codable {
     case memoryPuzzle = "Memory Puzzle"
     case numberSequence = "Number Sequence"
     case patternMatching = "Pattern Matching"
+    case colorPattern = "Color Pattern"
     case tapPattern = "Tap Pattern"
     case spatialPuzzle = "Spatial Puzzle"
     
@@ -66,7 +67,7 @@ enum AllChallengeType: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .movingTarget, .multiObjectTracking, .gazeHold, .focusHold, .focusSprint, .stillnessTest, .slowTracking, .focusEndurance:
             return .focus
-        case .memoryFlash, .memoryPuzzle, .numberSequence, .patternMatching, .tapPattern, .spatialPuzzle:
+        case .memoryFlash, .memoryPuzzle, .numberSequence, .patternMatching, .colorPattern, .tapPattern, .spatialPuzzle:
             return .memory
         case .reactionInhibition, .impulseSpikeTest, .rhythmTap, .delayUnlock, .resetChallenge:
             return .reaction
@@ -90,6 +91,7 @@ enum AllChallengeType: String, CaseIterable, Identifiable, Codable {
         case .memoryPuzzle: return "puzzlepiece.fill"
         case .numberSequence: return "number"
         case .patternMatching: return "square.grid.3x3.fill"
+        case .colorPattern: return "square.fill"
         case .tapPattern: return "hand.tap.fill"
         case .spatialPuzzle: return "cube.fill"
         case .reactionInhibition: return "hand.raised.fill"
@@ -156,6 +158,7 @@ enum AllChallengeType: String, CaseIterable, Identifiable, Codable {
         case .memoryPuzzle: return "Solve memory puzzles"
         case .numberSequence: return "Remember number sequences"
         case .patternMatching: return "Match the patterns"
+        case .colorPattern: return "Remember and repeat color sequences"
         case .tapPattern: return "Recreate the tap pattern"
         case .spatialPuzzle: return "Solve spatial puzzles"
         case .reactionInhibition: return "Practice impulse control"
@@ -203,7 +206,7 @@ enum AllChallengeType: String, CaseIterable, Identifiable, Codable {
         case .stillnessTest, .slowTracking: return 60
         case .memoryFlash, .memoryPuzzle: return 60
         case .numberSequence: return 45
-        case .patternMatching, .tapPattern: return 90
+        case .patternMatching, .colorPattern, .tapPattern: return 90
         case .spatialPuzzle: return 120
         case .reactionInhibition: return 30
         case .impulseSpikeTest: return 45
@@ -248,7 +251,7 @@ enum AllChallengeType: String, CaseIterable, Identifiable, Codable {
         case .stillnessTest, .slowTracking: return 25
         case .memoryFlash, .memoryPuzzle: return 20
         case .numberSequence: return 15
-        case .patternMatching, .tapPattern: return 25
+        case .patternMatching, .colorPattern, .tapPattern: return 25
         case .spatialPuzzle: return 30
         case .reactionInhibition: return 20
         case .impulseSpikeTest: return 25
@@ -335,7 +338,7 @@ extension AllChallengeType {
         
         // Rotate through challenges based on day
         let focusChallenges: [AllChallengeType] = [.movingTarget, .multiObjectTracking, .gazeHold, .focusSprint, .focusHold]
-        let memoryChallenges: [AllChallengeType] = [.memoryFlash, .numberSequence, .patternMatching, .tapPattern, .spatialPuzzle]
+        let memoryChallenges: [AllChallengeType] = [.memoryFlash, .numberSequence, .patternMatching, .colorPattern, .tapPattern, .spatialPuzzle]
         let reactionChallenges: [AllChallengeType] = [.reactionInhibition, .rhythmTap, .delayUnlock, .resetChallenge, .impulseSpikeTest]
         
         let focusIdx = (dayOfYear - 1) % focusChallenges.count

@@ -11,7 +11,7 @@ struct ColorPatternMemoryView: View {
     @State private var score: Int = 0
     @State private var round: Int = 1
     @State private var lives: Int = 3
-    @State private var sequence: [ColorTile] = []
+    @State private var sequence: [Int] = []
     @State private var userSequence: [Int] = []
     @State private var showingSequence: Bool = false
     @State private var canTap: Bool = false
@@ -26,12 +26,6 @@ struct ColorPatternMemoryView: View {
     let maxRounds = 12
     let tileColors: [Color] = [.red, .blue, .green, .yellow, .purple, .orange]
     let tileEmojis: [String] = ["🔴", "🔵", "🟢", "🟡", "🟣", "🟠"]
-    
-    struct ColorTile: Identifiable {
-        let id = Int
-        let color: Color
-        let emoji: String
-    }
     
     var body: some View {
         ZStack {
@@ -119,7 +113,7 @@ struct ColorPatternMemoryView: View {
                 HStack(spacing: 16) {
                     ForEach(sequence.indices, id: \.self) { index in
                         Circle()
-                            .fill(sequence[index].color)
+                            .fill(tileColors[sequence[index]])
                             .frame(width: 40, height: 40)
                             .overlay(
                                 Circle()
@@ -144,7 +138,7 @@ struct ColorPatternMemoryView: View {
                         index: index,
                         emoji: tileEmojis[index],
                         color: tileColors[index],
-                        isShowing: showingSequence && sequence.contains(where: { $0.id == index }),
+                        isShowing: showingSequence && sequence.contains(index),
                         isCorrect: correctTiles.contains(index),
                         isWrong: wrongTile == index,
                         canTap: canTap
@@ -242,7 +236,7 @@ struct ColorPatternMemoryView: View {
         
         for _ in 0..<sequenceLength {
             let randomIndex = Int.random(in: 0..<6)
-            sequence.append(ColorTile(id: randomIndex, color: tileColors[randomIndex], emoji: tileEmojis[randomIndex]))
+            sequence.append(randomIndex)
         }
         
         // Show sequence
@@ -263,7 +257,7 @@ struct ColorPatternMemoryView: View {
         selectedTile = index
         audioManager.lightImpact()
         
-        let expectedIndex = sequence[userSequence.count].id
+        let expectedIndex = sequence[userSequence.count]
         
         if index == expectedIndex {
             // Correct

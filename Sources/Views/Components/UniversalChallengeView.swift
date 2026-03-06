@@ -340,6 +340,22 @@ struct UniversalChallengeView: View {
     // MARK: - Challenge Content
     @ViewBuilder
     var challengeContent: some View {
+        // Check for specific custom challenge views first
+        switch challenge {
+        case .multiObjectTracking:
+            MultiObjectTrackingView()
+        case .colorPattern:
+            ColorPatternMemoryView()
+        case .fakeNotifications:
+            FakeNotificationsChallengeView()
+        default:
+            // Fall back to category-based generic content
+            categoryContent
+        }
+    }
+    
+    @ViewBuilder
+    var categoryContent: some View {
         switch challenge.category {
         case .focus:
             focusContent
