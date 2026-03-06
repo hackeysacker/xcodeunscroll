@@ -45,6 +45,17 @@ class AppState: ObservableObject {
     // Color scheme preference
     @Published var colorScheme: ColorScheme? = .dark
     
+    // Notification settings
+    @Published var notificationsEnabled: Bool = true
+    @Published var reminderHour: Int = 9
+    @Published var reminderMinute: Int = 0
+    @Published var streakWarningEnabled: Bool = true
+    @Published var heartRefillNotifications: Bool = true
+    @Published var badgeNotifications: Bool = true
+    
+    // Notification manager instance
+    let notificationManager = NotificationManager.shared
+    
     // Supabase client - using centralized config
     private var supabase: SupabaseClient?
     private let networkMonitor = NetworkMonitor.shared
@@ -355,6 +366,9 @@ class AppState: ObservableObject {
     // MARK: - Data Management
     
     func loadUserData() {
+        // Load notification settings first
+        loadNotificationSettings()
+        
         // Load from UserDefaults
         if let data = UserDefaults.standard.data(forKey: "focusflow_user"),
            let user = try? JSONDecoder().decode(User.self, from: data) {
@@ -378,6 +392,9 @@ class AppState: ObservableObject {
         
         // Check for daily login reward after loading user data
         checkDailyLoginReward()
+        
+        // Configure notifications if enabled
+        configureNotifications()
         
         isLoading = false
     }
@@ -551,6 +568,9 @@ class AppState: ObservableObject {
         if let milestoneName = prog.streakMilestoneName {
             prog.gems += prog.streakBonusGems
             print("🎉 \(milestoneName) Bonus: +\(prog.streakBonusGems) gems!")
+            
+            // Trigger streak milestone notification
+            notificationManager.scheduleStreakMilestoneNotification(streakDays: prog.streakDays)
         }
         
         prog.lastActivityDate = Date()
@@ -567,6 +587,56 @@ class AppState: ObservableObject {
         if let prog = progress,
            let data = try? JSONEncoder().encode(prog) {
             UserDefaults.standard.set(data, forKey: "focusflow_progress")
+        }
+        
+        // Save notification settings
+        UserDefaults.standard.set(notificationsEnabled, forKey: "focusflow_notifications_enabled")
+        UserDefaults.standard.set(reminderHour, forKey: "focusflow_reminder_hour")
+        UserDefaults.standard.set(reminderMinute, forKey: "focusflow_reminder_minute")
+        UserDefaults.standard.set(streakWarningEnabled, forKey: "focusflow_streak_warning")
+        UserDefaults.standard.set(heartRefillNotifications, forKey: "focusflow_heart_refill")
+        UserDefaults.standard.set(badgeNotifications, forKey: "focusflow_badge_notifications")
+        
+        // Configure notifications based on settings
+        configureNotifications()
+    }
+    
+    /// Load notification settings from UserDefaults
+    func loadNotificationSettings() {
+        notificationsEnabled = UserDefaults.standard.bool(forKey: "focusflow_notifications_enabled")
+        reminderHour = UserDefaults.standard.integer(forKey: "focusflow_reminder_hour")
+        reminderMinute = UserDefaults.standard.integer(forKey: "focusflow_reminder_minute")
+        streakWarningEnabled = UserDefaults.standard.object(forKey: "focusflow_streak_warning") as? Bool ?? true
+        heartRefillNotifications = UserDefaults.standard.object(forKey: "focusflow_heart_refill") as? Bool ?? true
+        badgeNotifications = UserDefaults.standard.object(forKey: "focusflow_badge_notifications") as? Bool ?? true
+        
+        // Default reminder to 9 AM if not set
+        if reminderHour == 0 && reminderMinute == 0 {
+            reminderHour = 9
+        }
+    }
+    
+    /// Configure local notifications based on current settings
+    func configureNotifications() {
+        guard notificationsEnabled else {
+            notificationManager.cancelAllNotifications()
+            return
+        }
+        
+        // Schedule daily reminder
+        notificationManager.scheduleDailyReminder(hour: reminderHour, minute: reminderMinute)
+        
+        // Schedule streak warning if enabled
+        if streakWarningEnabled {
+            notificationManager.scheduleStreakWarning()
+        }
+    }
+    
+    /// Request notification authorization from user
+    func requestNotificationPermission() async {
+        let granted = await notificationManager.requestAuthorization()
+        if granted {
+            configureNotifications()
         }
     }
     
@@ -772,6 +842,8 @@ class AppState: ObservableObject {
             if prog.level > previousLevel {
                 levelUpFrom = previousLevel
                 showLevelUpCelebration = true
+                // Trigger level up notification
+                notificationManager.scheduleLevelUpNotification(newLevel: prog.level)
             }
         }
         

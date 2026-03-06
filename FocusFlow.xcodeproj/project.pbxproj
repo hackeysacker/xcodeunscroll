@@ -54,6 +54,7 @@
 		C6ED778AAB986AC145424898 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78BC8B9AB0840EC35907819 /* ProgressView.swift */; };
 		CCD1EA47C33F4552AAFFDAB9 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 712E75634EDDF39FE0EC2015 /* LeaderboardView.swift */; };
 		D2CE236CD4C89487E0723264 /* DuolingoPathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E6EF3D646C8DB229A91D0C /* DuolingoPathView.swift */; };
+		EECD71FCF0299B312137F639 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A38B26903E4527D53A0945 /* NotificationManager.swift */; };
 		EF321A8CE43CF65B58890B1A /* FakeNotificationsChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06A539CE472AC6239A1695 /* FakeNotificationsChallengeView.swift */; };
 		F3C599B801008C41B6ABED77 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40CB4BE7CF1F995E25536E /* AppConfig.swift */; };
 		F5E51C06E2FD7C5327823851 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831747B052CD9BF1B19B0123 /* ContentView.swift */; };
@@ -97,6 +98,7 @@
 		8B7534EBF1F29EF3901E3D5F /* FocusFlow.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FocusFlow.entitlements; sourceTree = "<group>"; };
 		8C8E39B9E5E9E8379D8F1B2F /* GlassComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassComponents.swift; sourceTree = "<group>"; };
 		8CAD608545BC76F272E9D482 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		94A38B26903E4527D53A0945 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		99852AD5608C8EED645C6ACE /* AchievementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsView.swift; sourceTree = "<group>"; };
 		A244A9E11BC14987440F19CC /* HeartRefillManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRefillManager.swift; sourceTree = "<group>"; };
 		A45ED9A3D1FBDB0285F1E077 /* SyncQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncQueue.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 				7E5DE8F8C483D11D5CD1165C /* AudioHapticManager.swift */,
 				A244A9E11BC14987440F19CC /* HeartRefillManager.swift */,
 				4548CFE88CAE78080A2A0F42 /* NetworkMonitor.swift */,
+				94A38B26903E4527D53A0945 /* NotificationManager.swift */,
 				857A322FA2B7012519E495CA /* ScreenTimeManager.swift */,
 				619652A96ED7FC53389BB8EA /* SupabaseService.swift */,
 				A45ED9A3D1FBDB0285F1E077 /* SyncQueue.swift */,
@@ -415,6 +418,7 @@
 				C37B7AF8A1BF7813DABF1470 /* MemoryGridView.swift in Sources */,
 				817FC6B4F2A56E22A87EB36A /* MultiObjectTrackingView.swift in Sources */,
 				873A3CC52A4C1D2E5F1CC2F5 /* NetworkMonitor.swift in Sources */,
+				EECD71FCF0299B312137F639 /* NotificationManager.swift in Sources */,
 				FE5F8FF7294FB3EB189F4EF5 /* OnboardingFlowView.swift in Sources */,
 				2E8D047A6A18C937ACE3512C /* PracticeView.swift in Sources */,
 				4132BC6DC3055820176E99FE /* ProfileView.swift in Sources */,
