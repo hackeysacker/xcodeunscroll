@@ -42,6 +42,9 @@ class AppState: ObservableObject {
     @Published var isOnline: Bool = true
     @Published var pendingSyncCount: Int = 0
     
+    // Color scheme preference
+    @Published var colorScheme: ColorScheme? = .dark
+    
     // Supabase client - using centralized config
     private var supabase: SupabaseClient?
     private let networkMonitor = NetworkMonitor.shared

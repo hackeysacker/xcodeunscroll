@@ -5,6 +5,7 @@ struct SettingsView: View {
     @State private var notificationsEnabled = true
     @State private var soundEnabled = true
     @State private var hapticEnabled = true
+    @State private var darkModeEnabled = true
     @State private var showDeleteAccountAlert = false
     
     var body: some View {
@@ -113,6 +114,23 @@ struct SettingsView: View {
                     subtitle: "Vibration on interactions",
                     isOn: $hapticEnabled
                 )
+                
+                Divider().background(Color.white.opacity(0.1))
+                
+                SettingsToggleRow(
+                    icon: "moon.fill",
+                    iconColor: .indigo,
+                    title: "Dark Mode",
+                    subtitle: "Use dark theme",
+                    isOn: $darkModeEnabled
+                )
+                .onChange(of: darkModeEnabled) { _, newValue in
+                    if newValue {
+                        appState.colorScheme = .dark
+                    } else {
+                        appState.colorScheme = .light
+                    }
+                }
             }
             .background(Color.white.opacity(0.05))
             .cornerRadius(16)

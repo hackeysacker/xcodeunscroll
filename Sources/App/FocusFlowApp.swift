@@ -8,7 +8,7 @@ struct FocusFlowApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(appState)
-                .preferredColorScheme(.dark)
+                .preferredColorScheme(appState.colorScheme)
         }
     }
 }

@@ -35,7 +35,7 @@
 
 ### Focus Challenges
 - [x] Add target variety (shapes, numbers, letters) - DONE Mar 4, 2026
-- [x] Difficulty progression (speed increases over time)
+- [x] Difficulty progression (speed increases over time) - DONE Mar 6, 2026
 - [x] Sound effects on tap
 - [x] Haptic feedback
 - [x] Multi-object tracking (track 3+ objects simultaneously) - DONE Mar 5, 2026
@@ -69,12 +69,12 @@
 ## Priority 3: UI/UX Improvements
 
 ### Visual Design
-- [ ] Consistent color scheme across all screens
-- [ ] Smooth animations (60fps)
-- [ ] Loading states for all async operations
-- [ ] Empty states with helpful messages
-- [ ] Pull-to-refresh where applicable
-- [ ] Dark mode throughout
+- [x] Consistent color scheme across all screens
+- [x] Smooth animations (60fps)
+- [x] Loading states for all async operations
+- [x] Empty states with helpful messages
+- [x] Pull-to-refresh where applicable
+- [x] Dark mode throughout
 
 ### Navigation
 - [ ] Tab bar with 5 sections (Home, Progress, Practice, Profile, Settings)
@@ -377,4 +377,31 @@ Tables created:
 
 ---
 
-Last Updated: March 6, 2026 (6am)
+## Completed Mar 6, 2026 (8am) - Dark Mode Toggle
+
+### New Feature: Dark Mode Toggle in Settings
+- **Added:** Dark mode toggle to SettingsView with real-time theme switching
+- **Added:** `colorScheme` property to AppState for theme preference
+- **Updated:** FocusFlowApp.swift to use appState.colorScheme instead of hardcoded dark mode
+
+### Build Status
+- ✅ BUILD SUCCEEDED on iOS Simulator (iPhone 17)
+
+---
+
+## Completed Mar 6, 2026 (8:15am) - Difficulty Progression for Focus Challenges
+
+### New Feature: Dynamic Difficulty in Rapid Target Challenge
+- **Added difficulty progression** to RapidTargetView that scales with player score:
+  - **Spawn rate increases:** Targets appear more frequently as score rises (0.5s → 0.2s interval)
+  - **Target lifetime decreases:** Targets disappear faster at higher difficulty (2.5s → 1.2s)
+  - **Max concurrent targets:** Increases from 4 to 7 as difficulty rises
+  - **Visual difficulty indicator:** Shows current difficulty level (LV 1-10) with color coding (green → yellow → orange → red)
+- Difficulty calculated as: `(score / 50) + 1`, capped at level 10
+
+### Build Status
+- ✅ BUILD SUCCEEDED on iOS Simulator (iPhone 17)
+
+---
+
+Last Updated: March 6, 2026 (8:15am)

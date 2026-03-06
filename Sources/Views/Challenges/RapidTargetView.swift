@@ -2,6 +2,7 @@ import SwiftUI
 
 // MARK: - Rapid Target Challenge
 // Fully built with: animations, haptics, sound, scoring, combo system, results
+// Difficulty progression: speed increases as score rises
 
 struct RapidTargetView: View {
     @Environment(\.dismiss) var dismiss
@@ -13,6 +14,7 @@ struct RapidTargetView: View {
     @State private var isGameOver: Bool = false
     @State private var showResults: Bool = false
     @State private var targetType: TargetType = .shape
+    @State private var lastSpawnTime: Date = Date()
     
     // Audio/Haptics
     @State private var audioManager = AppAudioManager.shared
@@ -42,9 +44,31 @@ struct RapidTargetView: View {
         var targetType: TargetType
         var targetValue: String
         var color: Color
+        var lifetime: TimeInterval // Difficulty-based lifetime
     }
     
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    
+    // MARK: - Difficulty Calculation
+    var difficultyLevel: Int {
+        // Increase difficulty every 50 points
+        return min((score / 50) + 1, 10) // Max level 10
+    }
+    
+    var spawnInterval: TimeInterval {
+        // Base interval 0.5s, decreases as difficulty increases (min 0.2s)
+        max(0.5 - Double(difficultyLevel) * 0.03, 0.2)
+    }
+    
+    var targetLifetime: TimeInterval {
+        // Base lifetime 2.5s, decreases as difficulty increases (min 1.2s)
+        max(2.5 - Double(difficultyLevel) * 0.15, 1.2)
+    }
+    
+    var maxTargets: Int {
+        // Start with 4, increase to max 7 at high difficulty
+        min(4 + (difficultyLevel / 3), 7)
+    }
     
     var body: some View {
         ZStack {
@@ -100,6 +124,19 @@ struct RapidTargetView: View {
             
             Spacer()
             
+            // Difficulty indicator
+            HStack(spacing: 4) {
+                Image(systemName: "speedometer")
+                    .foregroundColor(difficultyColor)
+                Text("LV \(difficultyLevel)")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(difficultyColor)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(difficultyColor.opacity(0.15))
+            .cornerRadius(12)
+            
             // Score
             VStack(spacing: 2) {
                 Text("\(score)")
@@ -128,6 +165,15 @@ struct RapidTargetView: View {
         }
         .padding(.horizontal, 24)
         .padding(.top, 60)
+    }
+    
+    var difficultyColor: Color {
+        switch difficultyLevel {
+        case 1...3: return .green
+        case 4...6: return .yellow
+        case 7...8: return .orange
+        default: return .red
+        }
     }
     
     // MARK: - Game Area
@@ -297,7 +343,14 @@ struct RapidTargetView: View {
     }
     
     func spawnTarget() {
-        guard targets.count < 5 else { return }
+        let now = Date()
+        
+        // Check if enough time has passed based on difficulty
+        guard now.timeIntervalSince(lastSpawnTime) >= spawnInterval else { return }
+        
+        guard targets.count < maxTargets else { return }
+        
+        lastSpawnTime = now
         
         let padding: CGFloat = 80
         
@@ -307,7 +360,14 @@ struct RapidTargetView: View {
         let type = TargetType.allCases.randomElement() ?? .shape
         let (value, color) = generateTargetContent(type: type)
         
-        var newTarget = Target(x: x, y: y, targetType: type, targetValue: value, color: color)
+        var newTarget = Target(
+            x: x, 
+            y: y, 
+            targetType: type, 
+            targetValue: value, 
+            color: color,
+            lifetime: targetLifetime
+        )
         newTarget.scale = 0
         targets.append(newTarget)
         
@@ -340,7 +400,10 @@ struct RapidTargetView: View {
     }
     
     func cleanupOldTargets() {
-        targets.removeAll { Date().timeIntervalSince($0.createdAt) > 2.5 }
+        let now = Date()
+        targets.removeAll { target in
+            now.timeIntervalSince(target.createdAt) > target.lifetime
+        }
     }
 }
 
