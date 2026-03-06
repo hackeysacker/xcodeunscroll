@@ -53,6 +53,7 @@
 		CCD1EA47C33F4552AAFFDAB9 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 712E75634EDDF39FE0EC2015 /* LeaderboardView.swift */; };
 		D2CE236CD4C89487E0723264 /* DuolingoPathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E6EF3D646C8DB229A91D0C /* DuolingoPathView.swift */; };
 		EF321A8CE43CF65B58890B1A /* FakeNotificationsChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06A539CE472AC6239A1695 /* FakeNotificationsChallengeView.swift */; };
+		F3C599B801008C41B6ABED77 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40CB4BE7CF1F995E25536E /* AppConfig.swift */; };
 		F5E51C06E2FD7C5327823851 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831747B052CD9BF1B19B0123 /* ContentView.swift */; };
 		FE5F8FF7294FB3EB189F4EF5 /* OnboardingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 715FD3D1A0334C57536C3103 /* OnboardingFlowView.swift */; };
 /* End PBXBuildFile section */
@@ -79,6 +80,7 @@
 		65952119518689B462E25E6E /* MultiObjectTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiObjectTrackingView.swift; sourceTree = "<group>"; };
 		6A7D8D62786DF6C72DA3AA8B /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		6BCB2E1C4A2FC0A1FEB843DD /* Achievement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Achievement.swift; sourceTree = "<group>"; };
+		6D40CB4BE7CF1F995E25536E /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		712E75634EDDF39FE0EC2015 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		715FD3D1A0334C57536C3103 /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
 		7413DB7A1650203D1F4E7135 /* UIComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIComponents.swift; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 		9AB278A4668194C1484E9526 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				6D40CB4BE7CF1F995E25536E /* AppConfig.swift */,
 				8B7534EBF1F29EF3901E3D5F /* FocusFlow.entitlements */,
 				391EDD392A163136D6EE989E /* FocusFlowApp.swift */,
 				E2F6BD8E296AF1A9E065D31E /* Info.plist */,
@@ -381,6 +384,7 @@
 				9EE136EB0CF46882CE5756E0 /* AchievementsView.swift in Sources */,
 				5AAAF25C8CF481328351CF55 /* AllChallenges.swift in Sources */,
 				5586DECD5B4FE3FAE457F91A /* AllChallengesView.swift in Sources */,
+				F3C599B801008C41B6ABED77 /* AppConfig.swift in Sources */,
 				8AA86381B7F2CC33EE129582 /* AppState.swift in Sources */,
 				5463048CE6AED6F790D7AAAD /* AudioHapticManager.swift in Sources */,
 				8B56E05EDE9D04E4C1E7AA82 /* BiometricTrackingView.swift in Sources */,

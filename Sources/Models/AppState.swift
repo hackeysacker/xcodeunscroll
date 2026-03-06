@@ -33,10 +33,7 @@ class AppState: ObservableObject {
     @Published var isOnline: Bool = true
     @Published var pendingSyncCount: Int = 0
     
-    // Supabase client
-    private let supabaseUrl = "https://sxgpcsfwbzptlmwfddda.supabase.co"
-    private let supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4Z3Bjc2Z3YnpwdGxtd2ZkZGRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM3NTI0NzYsImV4cCI6MjA3OTMyODQ3Nn0.kkQc632Gu8ozuCD5HoZVS35yGbxA4l2kmuq96bCBg4w"
-    
+    // Supabase client - using centralized config
     private var supabase: SupabaseClient?
     private let networkMonitor = NetworkMonitor.shared
     private let syncQueue = SyncQueue.shared
@@ -72,8 +69,8 @@ class AppState: ObservableObject {
     
     private func setupSupabase() {
         supabase = SupabaseClient(
-            supabaseURL: URL(string: supabaseUrl)!,
-            supabaseKey: supabaseKey
+            supabaseURL: URL(string: AppConfig.supabaseUrl)!,
+            supabaseKey: AppConfig.supabaseAnonKey
         )
     }
     

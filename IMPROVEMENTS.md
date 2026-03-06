@@ -299,4 +299,23 @@ Tables created:
 
 ---
 
-Last Updated: March 5, 2026 (night 3)
+## Completed Mar 5, 2026 (Late Night 1) - Code Cleanup & Refactoring
+
+### Configuration Consolidation
+- **Created AppConfig.swift** - Centralized Supabase credentials and app constants in one location
+- **Removed duplicate credentials** - AppState.swift and SupabaseService.swift now both use AppConfig
+- This improves maintainability and makes credential rotation easier
+
+### Code Quality Notes
+- Build verified: ✅ BUILD SUCCEEDED
+- No TODO/FIXME comments found (good!)
+- Reusable UI components already well-organized in UIComponents.swift and GlassComponents.swift
+
+### Future Cleanup Opportunities
+- Large files (UniversalChallengeView.swift at 1116 lines) could be split into smaller modules
+- Hardcoded colors (Color.red/green/blue) could use theme constants
+- Consider adding .gitignore entry for any local config overrides
+
+---
+
+Last Updated: March 5, 2026 (Late Night 1)

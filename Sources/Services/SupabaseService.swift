@@ -1,14 +1,10 @@
 import Foundation
 import Supabase
 
-// Supabase configuration
-let supabaseUrl = "https://sxgpcsfwbzptlmwfddda.supabase.co"
-let supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4Z3Bjc2Z3YnpwdGxtd2ZkZGRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM3NTI0NzYsImV4cCI6MjA3OTMyODQ3Nn0.kkQc632Gu8ozuCD5HoZVS35yGbxA4l2kmuq96bCBg4w"
-
-// Create Supabase client
+// Create Supabase client using centralized config
 let supabase = SupabaseClient(
-    supabaseURL: URL(string: supabaseUrl)!,
-    supabaseKey: supabaseAnonKey
+    supabaseURL: URL(string: AppConfig.supabaseUrl)!,
+    supabaseKey: AppConfig.supabaseAnonKey
 )
 
 // MARK: - Database Models (matching Supabase schema)
