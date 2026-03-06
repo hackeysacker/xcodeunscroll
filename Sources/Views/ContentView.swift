@@ -30,6 +30,15 @@ struct ContentView: View {
         // Optimized animation - only animate on state change
         .animation(.easeInOut(duration: 0.25), value: appState.isOnboarded)
         .animation(.easeInOut(duration: 0.2), value: appState.isLoading)
+        .fullScreenCover(isPresented: $appState.showLevelUpCelebration) {
+            LevelUpCelebrationView(
+                newLevel: appState.progress?.level ?? 1,
+                gemsEarned: 10
+            ) {
+                // Dismiss action if needed
+            }
+            .environmentObject(appState)
+        }
     }
 }
 

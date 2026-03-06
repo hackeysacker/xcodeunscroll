@@ -44,6 +44,7 @@
 		9DC5D40EFD2626DFAF890B25 /* GameProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1F61973C2A75C153C055B1 /* GameProgress.swift */; };
 		9EE136EB0CF46882CE5756E0 /* AchievementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99852AD5608C8EED645C6ACE /* AchievementsView.swift */; };
 		A57123486EA5104C10DA6230 /* GlassComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C8E39B9E5E9E8379D8F1B2F /* GlassComponents.swift */; };
+		A6C8D49A3DD0127FE64E4710 /* LevelUpCelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F31947429A4CB879F0BA04C /* LevelUpCelebrationView.swift */; };
 		A753F4680E153CFC046B31C2 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = C4EEDE06C567725C5C680400 /* Supabase */; };
 		A95CC104D706CE210006D113 /* HeartRefillManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A244A9E11BC14987440F19CC /* HeartRefillManager.swift */; };
 		BA36BBFDCFDA309DB438A012 /* CoreChallenges.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FF345F88B9807E1FEF9785 /* CoreChallenges.swift */; };
@@ -70,6 +71,7 @@
 		32FFCC417859C79EC5C7D41C /* WindingProgressPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindingProgressPath.swift; sourceTree = "<group>"; };
 		391EDD392A163136D6EE989E /* FocusFlowApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusFlowApp.swift; sourceTree = "<group>"; };
 		3E8CCCD70A378414FE50ACAF /* UniversalChallengeView.swift.broken2 */ = {isa = PBXFileReference; path = UniversalChallengeView.swift.broken2; sourceTree = "<group>"; };
+		3F31947429A4CB879F0BA04C /* LevelUpCelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelUpCelebrationView.swift; sourceTree = "<group>"; };
 		4548CFE88CAE78080A2A0F42 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		4C8405765EFD7768023303DE /* ScrollStoppingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollStoppingView.swift; sourceTree = "<group>"; };
 		52666F0B05379E2670AC6932 /* BreathingExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathingExerciseView.swift; sourceTree = "<group>"; };
@@ -260,6 +262,7 @@
 				14B35B0250244FC90DF26929 /* ChallengeExercises.swift */,
 				DB2505ECE7128F7B00B5D3EC /* ChallengeView.swift */,
 				8C8E39B9E5E9E8379D8F1B2F /* GlassComponents.swift */,
+				3F31947429A4CB879F0BA04C /* LevelUpCelebrationView.swift */,
 				4C8405765EFD7768023303DE /* ScrollStoppingView.swift */,
 				7413DB7A1650203D1F4E7135 /* UIComponents.swift */,
 				D3DCE37315B42E2CAA191DC1 /* UniversalChallengeView.swift */,
@@ -403,6 +406,7 @@
 				92E5F5F021A9BF5A2D7AEF32 /* HomeView.swift in Sources */,
 				1F0F048B762982C7D862B598 /* InsightsView.swift in Sources */,
 				CCD1EA47C33F4552AAFFDAB9 /* LeaderboardView.swift in Sources */,
+				A6C8D49A3DD0127FE64E4710 /* LevelUpCelebrationView.swift in Sources */,
 				069D759A2C98A26512E7D205 /* LightningTapView.swift in Sources */,
 				C37B7AF8A1BF7813DABF1470 /* MemoryGridView.swift in Sources */,
 				817FC6B4F2A56E22A87EB36A /* MultiObjectTrackingView.swift in Sources */,

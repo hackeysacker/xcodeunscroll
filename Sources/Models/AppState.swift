@@ -16,6 +16,10 @@ class AppState: ObservableObject {
     @Published var showFocusShield: Bool = false
     @Published var showInsights: Bool = false
     
+    // Level up celebration
+    @Published var showLevelUpCelebration: Bool = false
+    @Published var levelUpFrom: Int = 0
+    
     // Testing mode
     @Published var testingModeEnabled: Bool = false
     @Published var testingDuration: Int = 5
@@ -688,6 +692,7 @@ class AppState: ObservableObject {
     
     func addXP(_ amount: Int) {
         guard var prog = progress else { return }
+        let previousLevel = prog.level
         prog.totalXP += amount
         
         // Check for level up
@@ -696,6 +701,11 @@ class AppState: ObservableObject {
             prog.level += 1
             // Bonus gems on level up
             prog.gems += 10
+            // Trigger level up celebration
+            if prog.level > previousLevel {
+                levelUpFrom = previousLevel
+                showLevelUpCelebration = true
+            }
         }
         
         progress = prog
@@ -706,6 +716,7 @@ class AppState: ObservableObject {
     
     func completeChallenge(type: AllChallengeType, score: Int, xpEarned: Int) {
         guard var prog = progress else { return }
+        let previousLevel = prog.level
         
         // Add XP
         prog.totalXP += xpEarned
@@ -715,6 +726,11 @@ class AppState: ObservableObject {
         if prog.totalXP >= xpForNextLevel {
             prog.level += 1
             prog.gems += 10 // Level up bonus
+            // Trigger level up celebration
+            if prog.level > previousLevel {
+                levelUpFrom = previousLevel
+                showLevelUpCelebration = true
+            }
         }
         
         // Add to completed challenges
@@ -784,9 +800,15 @@ class AppState: ObservableObject {
             prog.gems += gemReward
             
             // Check level up
+            let previousLevel = prog.level
             if prog.totalXP >= prog.xpForNextLevel {
                 prog.level += 1
                 prog.gems += 10
+                // Trigger level up celebration
+                if prog.level > previousLevel {
+                    levelUpFrom = previousLevel
+                    showLevelUpCelebration = true
+                }
             }
             
             // Update streak
