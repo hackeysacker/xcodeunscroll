@@ -16,9 +16,11 @@
 		0DF7BFA9DA55BBB0BB86BE5E /* ChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2505ECE7128F7B00B5D3EC /* ChallengeView.swift */; };
 		198C8A013D88BECB65C3E24A /* UniversalChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3DCE37315B42E2CAA191DC1 /* UniversalChallengeView.swift */; };
 		1F0F048B762982C7D862B598 /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC42C74D5637FA9E6A946E9F /* InsightsView.swift */; };
+		1F5A0E41F625D0B0AFE622EA /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DEE8CD59B8FC4A434236DAB /* ThemeManager.swift */; };
 		25D1D29E71D4AD3FAD16E6D8 /* UniversalChallengeView.swift.broken2 in Resources */ = {isa = PBXBuildFile; fileRef = 3E8CCCD70A378414FE50ACAF /* UniversalChallengeView.swift.broken2 */; };
 		279DB960557460E88DB8DC8C /* UIComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7413DB7A1650203D1F4E7135 /* UIComponents.swift */; };
 		2D0845C97D74A5F350DD937B /* Achievement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BCB2E1C4A2FC0A1FEB843DD /* Achievement.swift */; };
+		2D5D08E8CBB2619C000B110E /* ThemeSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0E7607542C76D03EE63312C /* ThemeSelectionView.swift */; };
 		2E8D047A6A18C937ACE3512C /* PracticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CE7EE6E98670688195C325 /* PracticeView.swift */; };
 		3C0690F5D14302D8277669FE /* RapidTargetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 811988AD8805B57941182496 /* RapidTargetView.swift */; };
 		4132BC6DC3055820176E99FE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAD6F49FCDB02DBEA3A18B60 /* ProfileView.swift */; };
@@ -66,6 +68,7 @@
 		07F8881AB2FCA09C4A49E7F8 /* ColorPatternMemoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPatternMemoryView.swift; sourceTree = "<group>"; };
 		0F0D277B4955AC8D35AA9C77 /* UniversalChallengeView.swift.broken3 */ = {isa = PBXFileReference; path = UniversalChallengeView.swift.broken3; sourceTree = "<group>"; };
 		14B35B0250244FC90DF26929 /* ChallengeExercises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeExercises.swift; sourceTree = "<group>"; };
+		1DEE8CD59B8FC4A434236DAB /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		22B17CFB71EB878207A67E7B /* AllChallengesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChallengesView.swift; sourceTree = "<group>"; };
 		244DE710D7D58E21A83D9BA7 /* ProgressPathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPathView.swift; sourceTree = "<group>"; };
 		2A1D2BC76B876CE74C2C5692 /* ProgressPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPath.swift; sourceTree = "<group>"; };
@@ -110,6 +113,7 @@
 		BAD6F49FCDB02DBEA3A18B60 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		C18E6DACB2F83EA4DD476994 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C78BC8B9AB0840EC35907819 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
+		D0E7607542C76D03EE63312C /* ThemeSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSelectionView.swift; sourceTree = "<group>"; };
 		D10E4CAFC91D2835C9447A93 /* ScreenTimeDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeDashboardView.swift; sourceTree = "<group>"; };
 		D3DCE37315B42E2CAA191DC1 /* UniversalChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalChallengeView.swift; sourceTree = "<group>"; };
 		D46BF2B1368D29DD936F1E2A /* LightningTapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightningTapView.swift; sourceTree = "<group>"; };
@@ -195,6 +199,7 @@
 				857A322FA2B7012519E495CA /* ScreenTimeManager.swift */,
 				619652A96ED7FC53389BB8EA /* SupabaseService.swift */,
 				A45ED9A3D1FBDB0285F1E077 /* SyncQueue.swift */,
+				1DEE8CD59B8FC4A434236DAB /* ThemeManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -217,6 +222,7 @@
 				AC42C74D5637FA9E6A946E9F /* InsightsView.swift */,
 				712E75634EDDF39FE0EC2015 /* LeaderboardView.swift */,
 				C18E6DACB2F83EA4DD476994 /* SettingsView.swift */,
+				D0E7607542C76D03EE63312C /* ThemeSelectionView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -432,6 +438,8 @@
 				6ABA2FE002C97BB9844645BD /* SettingsView.swift in Sources */,
 				0A841C6E7A673590635B1215 /* SupabaseService.swift in Sources */,
 				63AB7E0FB37DB07D097480BE /* SyncQueue.swift in Sources */,
+				1F5A0E41F625D0B0AFE622EA /* ThemeManager.swift in Sources */,
+				2D5D08E8CBB2619C000B110E /* ThemeSelectionView.swift in Sources */,
 				279DB960557460E88DB8DC8C /* UIComponents.swift in Sources */,
 				198C8A013D88BECB65C3E24A /* UniversalChallengeView.swift in Sources */,
 				972388A1B7060903E5624EFA /* User.swift in Sources */,

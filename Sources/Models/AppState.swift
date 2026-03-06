@@ -15,6 +15,7 @@ class AppState: ObservableObject {
     @Published var showLeaderboard: Bool = false
     @Published var showFocusShield: Bool = false
     @Published var showInsights: Bool = false
+    @Published var showThemeSelection: Bool = false
     
     // Level up celebration
     @Published var showLevelUpCelebration: Bool = false

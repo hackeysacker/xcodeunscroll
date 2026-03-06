@@ -111,7 +111,7 @@
 - [ ] In-app purchases
 - [ ] No-ads option
 - [ ] Advanced analytics
-- [ ] Custom themes
+- [x] Custom themes - DONE Mar 6, 2026
 
 ### Notifications
 - [x] Daily reminder - DONE Mar 6, 2026
@@ -440,4 +440,33 @@ Tables created:
 
 ---
 
-Last Updated: March 6, 2026 (9:06am)
+Last Updated: March 6, 2026 (12:07pm)
+
+---
+
+## Completed Mar 6, 2026 (12:07pm) - Custom Themes
+
+### New Feature: Custom Themes (Premium)
+- **Added ThemeManager.swift** - Full theme system with:
+  - 8 built-in themes: Focus Purple (default), Ocean Blue, Sunset, Forest Green, Rose, Golden Hour, Midnight, Monochrome
+  - Each theme has primary, secondary, accent, and background colors
+  - Theme persistence via UserDefaults
+  - Toggle to enable/disable custom themes
+  
+- **Added ThemeSelectionView.swift** - Theme picker UI with:
+  - Live preview card showing theme on app UI elements
+  - Toggle to enable/disable custom themes
+  - 4-column grid of theme options with selection indicator
+  - Premium notice (free during beta)
+  - Smooth animations on theme selection
+  
+- **Added theme toggle to Settings** - Users can access theme selection from Settings > Themes
+
+### Integration
+- Added `showThemeSelection` state to AppState
+- Updated ContentView to present ThemeSelectionView as sheet
+- Created Color extension for theme hex colors
+- Created ThemeBackground and ThemeButton reusable components
+
+### Build Status
+- ✅ BUILD SUCCEEDED on iOS Simulator (iPhone 17)

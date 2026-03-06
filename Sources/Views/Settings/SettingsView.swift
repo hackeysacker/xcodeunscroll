@@ -131,6 +131,17 @@ struct SettingsView: View {
                         appState.colorScheme = .light
                     }
                 }
+                
+                Divider().background(Color.white.opacity(0.1))
+                
+                SettingsNavigationRow(
+                    icon: "paintpalette.fill",
+                    iconColor: .pink,
+                    title: "Themes",
+                    subtitle: "Customize app appearance"
+                ) {
+                    appState.showThemeSelection = true
+                }
             }
             .background(Color.white.opacity(0.05))
             .cornerRadius(16)

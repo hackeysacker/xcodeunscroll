@@ -48,6 +48,10 @@ struct ContentView: View {
             }
             .environmentObject(appState)
         }
+        .sheet(isPresented: $appState.showThemeSelection) {
+            ThemeSelectionView()
+                .environmentObject(appState)
+        }
     }
 }
 
