@@ -18,6 +18,7 @@ struct HomeView: View {
                 VStack(spacing: 0) {
                     heroSection
                     levelSection
+                    dailyLoginSection
                     dailyChallengesSection
                 }
                 .padding(.bottom, 110)
@@ -247,6 +248,46 @@ struct HomeView: View {
         }
     }
 
+    // MARK: - Daily Login Rewards Section
+    var dailyLoginSection: some View {
+        VStack(spacing: 12) {
+            // Daily Login Reward Card
+            if let progress = appState.progress {
+                if progress.canClaimDailyReward {
+                    // Show claim button
+                    DailyLoginRewardCard(
+                        streakDays: progress.consecutiveLoginDays,
+                        reward: progress.currentDayReward,
+                        onClaim: {
+                            claimDailyReward()
+                        }
+                    )
+                } else {
+                    // Show already claimed state
+                    DailyLoginStreakCard(
+                        streakDays: progress.consecutiveLoginDays,
+                        daysUntilBonus: progress.daysUntilWeeklyBonus
+                    )
+                }
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 8)
+    }
+    
+    func claimDailyReward() {
+        guard var progress = appState.progress else { return }
+        let reward = progress.claimDailyReward()
+        appState.progress = progress
+        
+        // Show reward animation/notification
+        showRewardNotification = true
+        pendingReward = reward
+    }
+    
+    @State private var showRewardNotification = false
+    @State private var pendingReward: (gems: Int, xp: Int) = (0, 0)
+    
     var greeting: String {
         let hour = Calendar.current.component(.hour, from: Date())
         switch hour {
@@ -498,6 +539,204 @@ struct GemStoreView: View {
                     .fill(Color.white.opacity(0.04))
                     .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.white.opacity(0.08), lineWidth: 1))
             )
+        }
+    }
+}
+
+// MARK: - Daily Login Reward Card
+struct DailyLoginRewardCard: View {
+    let streakDays: Int
+    let reward: (gems: Int, xp: Int)
+    let onClaim: () -> Void
+    
+    @State private var pulse = false
+    
+    var body: some View {
+        Button(action: onClaim) {
+            ZStack {
+                // Glow effect
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.purple.opacity(0.25), Color.orange.opacity(0.15)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                
+                // Border
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(
+                        LinearGradient(
+                            colors: [Color.purple, Color.orange],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 2
+                    )
+                
+                // Content
+                HStack(spacing: 16) {
+                    // Gift icon with animation
+                    ZStack {
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    colors: [.purple, .orange],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 56, height: 56)
+                            .scaleEffect(pulse ? 1.1 : 1.0)
+                        
+                        Image(systemName: "gift.fill")
+                            .font(.system(size: 24, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("DAILY REWARD")
+                            .font(.system(size: 10, weight: .black, design: .rounded))
+                            .foregroundColor(.purple)
+                            .tracking(2)
+                        
+                        Text(dayText)
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(.white)
+                        
+                        HStack(spacing: 12) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "diamond.fill")
+                                    .font(.system(size: 10))
+                                    .foregroundColor(.cyan)
+                                Text("\(reward.gems)")
+                                    .font(.system(size: 13, weight: .bold))
+                                    .foregroundColor(.cyan)
+                            }
+                            
+                            HStack(spacing: 4) {
+                                Image(systemName: "star.fill")
+                                    .font(.system(size: 10))
+                                    .foregroundColor(.yellow)
+                                Text("\(reward.xp) XP")
+                                    .font(.system(size: 13, weight: .bold))
+                                    .foregroundColor(.yellow)
+                            }
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    // Claim button
+                    Text("CLAIM")
+                        .font(.system(size: 14, weight: .black, design: .rounded))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                        .background(
+                            LinearGradient(
+                                colors: [.purple, .orange],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .cornerRadius(20)
+                }
+                .padding(18)
+            }
+        }
+        .onAppear {
+            withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
+                pulse = true
+            }
+        }
+    }
+    
+    var dayText: String {
+        if streakDays == 0 || streakDays == 1 {
+            return "Day 1 Reward"
+        } else if streakDays <= 7 {
+            return "Day \(streakDays) Reward"
+        } else {
+            let cycle = ((streakDays - 1) % 7) + 1
+            return "Day \(cycle) Reward"
+        }
+    }
+}
+
+// MARK: - Daily Login Streak Card (Already Claimed)
+struct DailyLoginStreakCard: View {
+    let streakDays: Int
+    let daysUntilBonus: Int
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.white.opacity(0.04))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                )
+            
+            HStack(spacing: 14) {
+                // Flame icon
+                ZStack {
+                    Circle()
+                        .fill(Color.orange.opacity(0.2))
+                        .frame(width: 48, height: 48)
+                    Image(systemName: "flame.fill")
+                        .font(.system(size: 22))
+                        .foregroundColor(.orange)
+                }
+                
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("LOGIN STREAK")
+                        .font(.system(size: 10, weight: .black, design: .rounded))
+                        .foregroundColor(.orange)
+                        .tracking(2)
+                    
+                    Text(streakText)
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(.white)
+                    
+                    if daysUntilBonus > 0 {
+                        Text("\(daysUntilBonus) day\(daysUntilBonus == 1 ? "" : "s") until weekly bonus!")
+                            .font(.system(size: 12))
+                            .foregroundColor(.white.opacity(0.5))
+                    } else {
+                        Text("🎉 Weekly bonus earned!")
+                            .font(.system(size: 12))
+                            .foregroundColor(.yellow)
+                    }
+                }
+                
+                Spacer()
+                
+                // Checkmark
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.system(size: 28))
+                    .foregroundColor(.green)
+            }
+            .padding(16)
+        }
+    }
+    
+    var streakText: String {
+        if streakDays == 1 {
+            return "1 Day - Keep it up!"
+        } else if streakDays < 7 {
+            return "\(streakDays) Days - Great!"
+        } else if streakDays == 7 {
+            return "1 Week Strong! 🔥"
+        } else {
+            let weeks = streakDays / 7
+            let days = streakDays % 7
+            if days == 0 {
+                return "\(weeks) Weeks!"
+            } else {
+                return "\(weeks)w \(days)d Streak"
+            }
         }
     }
 }

@@ -153,10 +153,27 @@ struct GameProgress: Codable {
     var streakFreezeUsed: Bool
     var streakFreezesAvailable: Int
     
+    // Daily login rewards
+    var lastLoginDate: Date?
+    var consecutiveLoginDays: Int
+    var dailyRewardsClaimed: [Date]
+    var totalDailyRewardsEarned: Int
+    
     // Constants
     static let maxHearts = 5
     static let maxRefillSlots = 3
     static let refillIntervalMinutes = 30  // Hearts refill every 30 minutes
+    
+    // Daily login reward schedule (day -> gems, xp)
+    static let dailyRewardSchedule: [(gems: Int, xp: Int)] = [
+        (5, 50),    // Day 1
+        (10, 75),   // Day 2
+        (15, 100),  // Day 3
+        (25, 150),  // Day 4
+        (35, 200),  // Day 5
+        (50, 300),  // Day 6
+        (75, 500),  // Day 7 - Weekly bonus!
+    ]
     
     init() {
         self.level = 1
@@ -171,6 +188,10 @@ struct GameProgress: Codable {
         self.heartRefillSlots = 3
         self.streakFreezeUsed = false
         self.streakFreezesAvailable = 1  // Start with 1 free freeze
+        self.lastLoginDate = nil
+        self.consecutiveLoginDays = 0
+        self.dailyRewardsClaimed = []
+        self.totalDailyRewardsEarned = 0
         
         // Initialize all skills
         for skillType in SkillType.allCases {
@@ -243,6 +264,107 @@ struct GameProgress: Codable {
                 var newSkill = SkillProgress(skillType: skillType)
                 newSkill.addXP(xpEarned)
                 skills[newSkill.id] = newSkill
+            }
+        }
+    }
+    
+    // MARK: - Daily Login Rewards
+    
+    /// Check if user can claim daily reward today
+    var canClaimDailyReward: Bool {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        
+        // Already claimed today?
+        if let lastClaim = dailyRewardsClaimed.last {
+            let lastClaimDay = calendar.startOfDay(for: lastClaim)
+            if lastClaimDay == today {
+                return false
+            }
+        }
+        
+        return true
+    }
+    
+    /// Get the reward for the current login streak (day 1-7, then repeats day 7)
+    var currentDayReward: (gems: Int, xp: Int) {
+        let dayIndex = min(consecutiveLoginDays, 6)  // 0-indexed, max at day 6 (day 7)
+        return GameProgress.dailyRewardSchedule[dayIndex]
+    }
+    
+    /// Get reward for a specific day (1-7)
+    static func reward(forDay day: Int) -> (gems: Int, xp: Int) {
+        let index = min(day - 1, 6)  // 1-indexed input
+        return dailyRewardSchedule[index]
+    }
+    
+    /// Check and update login streak - call on app launch
+    mutating func checkDailyLogin() {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        
+        if let lastLogin = lastLoginDate {
+            let lastLoginDay = calendar.startOfDay(for: lastLogin)
+            let daysDiff = calendar.dateComponents([.day], from: lastLoginDay, to: today).day ?? 0
+            
+            if daysDiff == 1 {
+                // Consecutive day - increment streak
+                consecutiveLoginDays += 1
+            } else if daysDiff > 1 {
+                // Missed days - reset streak
+                consecutiveLoginDays = 1
+            }
+            // Same day - don't change streak
+        } else {
+            // First login ever
+            consecutiveLoginDays = 1
+        }
+        
+        lastLoginDate = Date()
+    }
+    
+    /// Claim today's daily reward - returns (gems, xp) earned
+    mutating func claimDailyReward() -> (gems: Int, xp: Int) {
+        guard canClaimDailyReward else {
+            return (0, 0)
+        }
+        
+        let reward = currentDayReward
+        gems += reward.gems
+        totalXP += reward.xp
+        dailyRewardsClaimed.append(Date())
+        totalDailyRewardsEarned += 1
+        
+        // Check for level up
+        while totalXP >= xpForNextLevel {
+            totalXP -= xpForNextLevel
+            level += 1
+        }
+        
+        return reward
+    }
+    
+    /// Days until next weekly bonus (day 7)
+    var daysUntilWeeklyBonus: Int {
+        let dayInCycle = ((consecutiveLoginDays - 1) % 7) + 1
+        return 7 - dayInCycle
+    }
+    
+    /// Current streak as formatted string
+    var streakDescription: String {
+        if consecutiveLoginDays == 0 {
+            return "Start your streak today!"
+        } else if consecutiveLoginDays == 1 {
+            return "1 day streak"
+        } else if consecutiveLoginDays < 7 {
+            return "\(consecutiveLoginDays) day streak"
+        } else {
+            let weeks = consecutiveLoginDays / 7
+            let days = consecutiveLoginDays % 7
+            if days == 0 {
+                return "\(weeks) week streak!"
+            } else {
+                return "\(weeks)w \(days)d streak"
             }
         }
     }

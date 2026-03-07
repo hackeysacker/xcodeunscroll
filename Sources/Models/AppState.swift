@@ -27,7 +27,14 @@ class AppState: ObservableObject {
     @Published var isOnboarded: Bool = true
     @Published var isLoading: Bool = true
     @Published var currentUser: User?
-    @Published var progress: GameProgress?
+    @Published var progress: GameProgress? {
+        didSet {
+            // Only auto-save after initial load is complete
+            if !isLoading {
+                saveData()
+            }
+        }
+    }
     @Published var selectedTab: Tab = .home
     @Published var showSettings: Bool = false
     @Published var showLeaderboard: Bool = false
@@ -258,6 +265,8 @@ class AppState: ObservableObject {
             progress = prog
             // Process any missed heart refills when loading
             processMissedHeartRefills()
+            // Check daily login streak
+            progress?.checkDailyLogin()
         }
         
         isLoading = false
