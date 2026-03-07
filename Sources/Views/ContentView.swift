@@ -27,6 +27,8 @@ struct ContentView: View {
                 }
             }
         }
+        // Drawing group for smoother compositing performance
+        .drawingGroup()
         // Optimized animation - only animate on state change
         .animation(.easeInOut(duration: 0.25), value: appState.isOnboarded)
         .animation(.easeInOut(duration: 0.2), value: appState.isLoading)
@@ -59,6 +61,12 @@ struct ContentView: View {
 struct UniversalHeader: View {
     @EnvironmentObject var appState: AppState
     
+    // Cache values to avoid recalculating on every redraw
+    @State private var cachedHearts: Int = 5
+    @State private var cachedStreak: Int = 0
+    @State private var cachedXP: Int = 0
+    @State private var cachedGems: Int = 0
+    
     var body: some View {
         HStack(spacing: 16) {
             // Hearts
@@ -66,7 +74,7 @@ struct UniversalHeader: View {
                 Image(systemName: "heart.fill")
                     .foregroundColor(.red)
                     .font(.system(size: 14))
-                Text("\(appState.progress?.hearts ?? 5)")
+                Text("\(cachedHearts)")
                     .font(.system(size: 13, weight: .bold))
                     .foregroundColor(.white)
             }
@@ -82,7 +90,7 @@ struct UniversalHeader: View {
                 Image(systemName: "flame.fill")
                     .foregroundColor(.orange)
                     .font(.system(size: 14))
-                Text("\(appState.progress?.streakDays ?? 0)")
+                Text("\(cachedStreak)")
                     .font(.system(size: 13, weight: .bold))
                     .foregroundColor(.white)
             }
@@ -96,7 +104,7 @@ struct UniversalHeader: View {
                 Image(systemName: "star.fill")
                     .foregroundColor(.yellow)
                     .font(.system(size: 14))
-                Text("\(appState.progress?.totalXP ?? 0)")
+                Text("\(cachedXP)")
                     .font(.system(size: 13, weight: .bold))
                     .foregroundColor(.white)
             }
@@ -110,7 +118,7 @@ struct UniversalHeader: View {
                 Image(systemName: "diamond.fill")
                     .foregroundColor(.cyan)
                     .font(.system(size: 14))
-                Text("\(appState.progress?.gems ?? 0)")
+                Text("\(cachedGems)")
                     .font(.system(size: 13, weight: .bold))
                     .foregroundColor(.white)
             }
@@ -123,6 +131,19 @@ struct UniversalHeader: View {
         .padding(.top, 12)
         .padding(.bottom, 6)
         .background(Color(hex: "0A0F1C"))
+        // Use onChange to update cached values only when they change
+        .onChange(of: appState.progress?.hearts) { _, newValue in
+            cachedHearts = newValue ?? 5
+        }
+        .onChange(of: appState.progress?.streakDays) { _, newValue in
+            cachedStreak = newValue ?? 0
+        }
+        .onChange(of: appState.progress?.totalXP) { _, newValue in
+            cachedXP = newValue ?? 0
+        }
+        .onChange(of: appState.progress?.gems) { _, newValue in
+            cachedGems = newValue ?? 0
+        }
     }
 }
 
@@ -132,36 +153,44 @@ struct SplashScreen: View {
     @State private var opacity: Double = 0
     
     var body: some View {
-        VStack(spacing: 24) {
-            // Logo - using static gradient for performance
-            ZStack {
-                Circle()
-                    .stroke(
-                        LinearGradient(
-                            colors: [.purple, .orange],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: 3
-                    )
-                    .frame(width: 140, height: 140)
-                
-                Circle()
-                    .stroke(Color.purple.opacity(0.5), lineWidth: 2)
-                    .frame(width: 180, height: 180)
-                
-                Image(systemName: "xmark")
-                    .font(.system(size: 50, weight: .bold))
-                    .foregroundColor(.red)
-            }
-            .scaleEffect(scale)
-            .opacity(opacity)
+        ZStack {
+            // Solid background for faster initial paint
+            Color(hex: "0A0F1C")
+                .ignoresSafeArea()
             
-            Text("FocusFlow")
-                .font(.system(size: 32, weight: .bold))
-                .foregroundColor(.white)
+            VStack(spacing: 24) {
+                // Logo - using static gradient for performance
+                ZStack {
+                    Circle()
+                        .stroke(
+                            LinearGradient(
+                                colors: [.purple, .orange],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 3
+                        )
+                        .frame(width: 140, height: 140)
+                    
+                    Circle()
+                        .stroke(Color.purple.opacity(0.5), lineWidth: 2)
+                        .frame(width: 180, height: 180)
+                    
+                    Image(systemName: "xmark")
+                        .font(.system(size: 50, weight: .bold))
+                        .foregroundColor(.red)
+                }
+                .scaleEffect(scale)
                 .opacity(opacity)
+                
+                Text("FocusFlow")
+                    .font(.system(size: 32, weight: .bold))
+                    .foregroundColor(.white)
+                    .opacity(opacity)
+            }
         }
+        // Pre-render for faster transitions
+        .drawingGroup()
         .onAppear {
             // Optimized spring animation for smoother feel
             withAnimation(.spring(response: 0.8, dampingFraction: 0.6).speed(1.2)) {
@@ -200,6 +229,8 @@ struct MainTabView: View {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.easeInOut(duration: 0.15), value: appState.selectedTab)
+            // Performance: Disable automatic keyboard avoidance
+            .ignoresSafeArea(.keyboard)
             
             // Bottom Navigation
             HStack(spacing: 0) {
