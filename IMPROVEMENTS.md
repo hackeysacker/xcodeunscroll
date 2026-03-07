@@ -36,8 +36,8 @@
 ### Focus Challenges
 - [x] Add target variety (shapes, numbers, letters) - DONE Mar 4, 2026
 - [x] Difficulty progression (speed increases over time) - DONE Mar 6, 2026
-- [x] Sound effects on tap
-- [x] Haptic feedback
+- [x] Sound effects on tap - DONE Mar 7, 2026
+- [x] Haptic feedback - DONE Mar 7, 2026
 - [x] Multi-object tracking (track 3+ objects simultaneously) - DONE Mar 5, 2026
 
 ### Memory Challenges  
@@ -87,7 +87,7 @@
 - [x] Progress/Skills screen - DONE
 - [x] Practice hub (all exercises) - DONE
 - [x] Profile screen with stats - DONE
-- [ ] Settings (notifications, sounds, dark mode, account)
+- [x] Settings (notifications, sounds, dark mode, account) - DONE Mar 7, 2026
 - [ ] Leaderboard (optional, premium)
 
 ---
