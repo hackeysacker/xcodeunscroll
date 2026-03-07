@@ -159,12 +159,130 @@ struct SettingsView: View {
                 .font(.system(size: 12))
                 .foregroundColor(.gray)
                 .padding(.horizontal, 4)
+            
+            // Heart System Test
+            if appState.testingModeEnabled {
+                heartSystemTestSection
+            }
         }
         .padding(.horizontal, 16)
         .sheet(isPresented: $showChallengePicker) {
             ChallengeTestPicker()
                 .environmentObject(appState)
         }
+    }
+    
+    // MARK: - Heart System Test Section
+    var heartSystemTestSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            SectionHeader(title: "Heart System Test", color: .red)
+            
+            VStack(spacing: 12) {
+                HStack {
+                    Image(systemName: "heart.fill").foregroundColor(.red)
+                    Text("Current Hearts")
+                        .foregroundColor(.white)
+                    Spacer()
+                    Text("\(appState.progress?.hearts ?? 0)/5")
+                        .foregroundColor(.yellow)
+                        .font(.system(size: 16, weight: .bold))
+                }
+                .padding()
+                
+                HStack(spacing: 12) {
+                    Button {
+                        if var progress = appState.progress, progress.hearts < 5 {
+                            progress.hearts += 1
+                            appState.progress = progress
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: "plus.circle.fill")
+                            Text("Add Heart")
+                        }
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color.green.opacity(0.2))
+                        .cornerRadius(10)
+                    }
+                    
+                    Button {
+                        if var progress = appState.progress, progress.hearts > 0 {
+                            progress.hearts -= 1
+                            appState.progress = progress
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: "minus.circle.fill")
+                            Text("Use Heart")
+                        }
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color.red.opacity(0.2))
+                        .cornerRadius(10)
+                    }
+                }
+                .padding(.horizontal)
+                
+                HStack {
+                    Image(systemName: "clock.fill").foregroundColor(.orange)
+                    Text("Refill Slots")
+                        .foregroundColor(.white)
+                    Spacer()
+                    Text("\(appState.progress?.heartRefillSlots ?? 0)/3")
+                        .foregroundColor(.cyan)
+                        .font(.system(size: 16, weight: .bold))
+                }
+                .padding()
+                
+                HStack(spacing: 12) {
+                    Button {
+                        if var progress = appState.progress, progress.heartRefillSlots < 3 {
+                            progress.heartRefillSlots += 1
+                            appState.progress = progress
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: "plus.circle.fill")
+                            Text("Add Slot")
+                        }
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color.cyan.opacity(0.2))
+                        .cornerRadius(10)
+                    }
+                    
+                    Button {
+                        if var progress = appState.progress, progress.heartRefillSlots > 0 {
+                            progress.heartRefillSlots -= 1
+                            appState.progress = progress
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: "minus.circle.fill")
+                            Text("Use Slot")
+                        }
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color.orange.opacity(0.2))
+                        .cornerRadius(10)
+                    }
+                }
+                .padding(.horizontal)
+                .padding(.bottom, 8)
+            }
+            .background(RoundedRectangle(cornerRadius: 16).fill(Color.white.opacity(0.05)))
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.red.opacity(0.3), lineWidth: 1))
+        }
+        .padding(.top, 8)
     }
     
     var notificationsSection: some View {
