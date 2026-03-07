@@ -88,7 +88,7 @@
 - [x] Practice hub (all exercises) - DONE
 - [x] Profile screen with stats - DONE
 - [x] Settings (notifications, sounds, dark mode, account) - DONE Mar 7, 2026
-- [ ] Leaderboard (optional, premium)
+- [x] Leaderboard (connected to Supabase) - DONE Mar 7, 2026
 
 ---
 
@@ -461,6 +461,27 @@ Tables created:
 ---
 
 Last Updated: March 7, 2026 (9:15am) - Morning Session Complete
+
+---
+
+## Mar 7, 2026 (12:15pm) - Leaderboard Supabase Integration
+
+### New Feature: Leaderboard Connected to Supabase
+- **Added:** Leaderboard now fetches data from Supabase `user_stats` table
+- **Added:** `fetchLeaderboard()` function in SupabaseService - queries top 50 users by XP
+- **Added:** `fetchUserRank()` function - calculates user's global rank
+- **Updated:** LeaderboardView now shows loading state while fetching
+- **Updated:** Error handling with fallback to mock data if Supabase unavailable
+- **Added:** User's rank displayed in "Your Rank" card
+- **Features:** Category filters (Global, Friends, Regional, League), Period filters (Today, Week, Month, All Time)
+
+### Changes Made
+- Sources/Services/SupabaseService.swift - Added leaderboard fetch functions
+- Sources/Views/Settings/LeaderboardView.swift - Integrated Supabase data, added loading states
+- Sources/Models/ - Added LeaderboardEntryData model
+
+### Build Status
+- ✅ BUILD SUCCEEDED on iOS Simulator (iPhone 17, iOS 26.2)
 
 ---
 

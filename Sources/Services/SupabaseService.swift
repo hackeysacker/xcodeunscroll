@@ -364,4 +364,70 @@ class SupabaseService: ObservableObject {
         
         return try await (progress, profile, skills, hearts)
     }
+    
+    // MARK: - Leaderboard Operations
+    
+    /// Leaderboard entry model
+    struct LeaderboardEntryData: Codable, Identifiable {
+        var id: String { userId }
+        let userId: String
+        let displayName: String
+        let avatarEmoji: String?
+        let totalXp: Int
+        let level: Int
+        let streak: Int
+        let rank: Int
+        
+        enum CodingKeys: String, CodingKey {
+            case userId = "user_id"
+            case displayName = "display_name"
+            case avatarEmoji = "avatar_emoji"
+            case totalXp = "total_xp"
+            case level
+            case streak
+            case rank
+        }
+    }
+    
+    /// Fetch global leaderboard
+    func fetchLeaderboard(limit: Int = 50) async throws -> [LeaderboardEntryData] {
+        // Try to fetch from user_stats view/table
+        let response: [LeaderboardEntryData] = try await supabase
+            .from("user_stats")
+            .select("user_id, display_name, avatar_emoji, total_xp, level, streak")
+            .order("total_xp", ascending: false)
+            .limit(limit)
+            .execute()
+            .value
+        
+        // Add rank based on order
+        return response.enumerated().map { index, entry in
+            LeaderboardEntryData(
+                userId: entry.userId,
+                displayName: entry.displayName,
+                avatarEmoji: entry.avatarEmoji,
+                totalXp: entry.totalXp,
+                level: entry.level,
+                streak: entry.streak,
+                rank: index + 1
+            )
+        }
+    }
+    
+    /// Fetch user's rank
+    func fetchUserRank(userId: String) async throws -> Int {
+        let allUsers: [LeaderboardEntryData] = try await supabase
+            .from("user_stats")
+            .select("user_id, total_xp")
+            .order("total_xp", ascending: false)
+            .execute()
+            .value
+        
+        for (index, user) in allUsers.enumerated() {
+            if user.userId == userId {
+                return index + 1
+            }
+        }
+        return allUsers.count + 1
+    }
 }
