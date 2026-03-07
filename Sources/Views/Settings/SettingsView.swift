@@ -2,10 +2,10 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
-    @State private var notificationsEnabled = true
-    @State private var soundEnabled = true
-    @State private var hapticEnabled = true
-    @State private var darkModeEnabled = true
+    @State private var notificationsEnabled = UserDefaults.standard.bool(forKey: "notificationsEnabled")
+    @State private var soundEnabled = UserDefaults.standard.object(forKey: "soundEnabled") as? Bool ?? true
+    @State private var hapticEnabled = UserDefaults.standard.object(forKey: "hapticEnabled") as? Bool ?? true
+    @State private var darkModeEnabled = UserDefaults.standard.object(forKey: "darkModeEnabled") as? Bool ?? true
     @State private var showDeleteAccountAlert = false
     
     var body: some View {
@@ -94,6 +94,9 @@ struct SettingsView: View {
                     subtitle: "Daily reminders & challenges",
                     isOn: $notificationsEnabled
                 )
+                .onChange(of: notificationsEnabled) { _, newValue in
+                    UserDefaults.standard.set(newValue, forKey: "notificationsEnabled")
+                }
                 
                 Divider().background(Color.white.opacity(0.1))
                 
@@ -104,6 +107,10 @@ struct SettingsView: View {
                     subtitle: "Challenge & UI sounds",
                     isOn: $soundEnabled
                 )
+                .onChange(of: soundEnabled) { _, newValue in
+                    UserDefaults.standard.set(newValue, forKey: "soundEnabled")
+                    AppAudioManager.shared.soundEnabled = newValue
+                }
                 
                 Divider().background(Color.white.opacity(0.1))
                 
@@ -114,6 +121,10 @@ struct SettingsView: View {
                     subtitle: "Vibration on interactions",
                     isOn: $hapticEnabled
                 )
+                .onChange(of: hapticEnabled) { _, newValue in
+                    UserDefaults.standard.set(newValue, forKey: "hapticEnabled")
+                    AppAudioManager.shared.hapticEnabled = newValue
+                }
                 
                 Divider().background(Color.white.opacity(0.1))
                 
@@ -125,6 +136,7 @@ struct SettingsView: View {
                     isOn: $darkModeEnabled
                 )
                 .onChange(of: darkModeEnabled) { _, newValue in
+                    UserDefaults.standard.set(newValue, forKey: "darkModeEnabled")
                     if newValue {
                         appState.colorScheme = .dark
                     } else {
