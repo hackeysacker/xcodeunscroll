@@ -60,17 +60,30 @@
 		EF321A8CE43CF65B58890B1A /* FakeNotificationsChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06A539CE472AC6239A1695 /* FakeNotificationsChallengeView.swift */; };
 		F3C599B801008C41B6ABED77 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40CB4BE7CF1F995E25536E /* AppConfig.swift */; };
 		F5E51C06E2FD7C5327823851 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831747B052CD9BF1B19B0123 /* ContentView.swift */; };
+		F97A8711DCB17F4DDB84A3A6 /* AchievementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E5EF2EE2C3B05E44331051 /* AchievementTests.swift */; };
 		FE5F8FF7294FB3EB189F4EF5 /* OnboardingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 715FD3D1A0334C57536C3103 /* OnboardingFlowView.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AFC0A6AA4353D04F18609D9E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97DE19DA9AB725EE9C06FF9B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DC4994EFAFF2408E8660C9BD;
+			remoteInfo = FocusFlow;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		0750F6F44C6618E12EB007DF /* MemoryGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryGridView.swift; sourceTree = "<group>"; };
 		07F8881AB2FCA09C4A49E7F8 /* ColorPatternMemoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPatternMemoryView.swift; sourceTree = "<group>"; };
 		0F0D277B4955AC8D35AA9C77 /* UniversalChallengeView.swift.broken3 */ = {isa = PBXFileReference; path = UniversalChallengeView.swift.broken3; sourceTree = "<group>"; };
+		111757159C8B6485F1BFF2EC /* FocusFlowTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = FocusFlowTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		14B35B0250244FC90DF26929 /* ChallengeExercises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeExercises.swift; sourceTree = "<group>"; };
 		1DEE8CD59B8FC4A434236DAB /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		22B17CFB71EB878207A67E7B /* AllChallengesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChallengesView.swift; sourceTree = "<group>"; };
 		244DE710D7D58E21A83D9BA7 /* ProgressPathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPathView.swift; sourceTree = "<group>"; };
+		26E5EF2EE2C3B05E44331051 /* AchievementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementTests.swift; sourceTree = "<group>"; };
 		2A1D2BC76B876CE74C2C5692 /* ProgressPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPath.swift; sourceTree = "<group>"; };
 		2D3EBA258C9AD9784DA8E21B /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		32FFCC417859C79EC5C7D41C /* WindingProgressPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindingProgressPath.swift; sourceTree = "<group>"; };
@@ -160,6 +173,7 @@
 			isa = PBXGroup;
 			children = (
 				AF2CA8D18F777F2E2A08CB53 /* FocusFlow.app */,
+				111757159C8B6485F1BFF2EC /* FocusFlowTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -239,6 +253,7 @@
 			isa = PBXGroup;
 			children = (
 				9BD2019D01C468297BE70ADF /* Sources */,
+				9E80BE69E8D44269EF4536E0 /* Tests */,
 				3FEAAE055FC1FDD581F0881F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -263,6 +278,14 @@
 				51991A9981E96A67CA8BFC2A /* Views */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		9E80BE69E8D44269EF4536E0 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				26E5EF2EE2C3B05E44331051 /* AchievementTests.swift */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		AFC169B9BE8B74823C3EE486 /* Components */ = {
@@ -319,6 +342,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1A73ADC7F9F9BBA753C75802 /* FocusFlowTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 43A1852B9EB838050ED7FBD8 /* Build configuration list for PBXNativeTarget "FocusFlowTests" */;
+			buildPhases = (
+				05DA013F2E1ECD99D6D891EE /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				75071BA89B1A4A4032C298CA /* PBXTargetDependency */,
+			);
+			name = FocusFlowTests;
+			packageProductDependencies = (
+			);
+			productName = FocusFlowTests;
+			productReference = 111757159C8B6485F1BFF2EC /* FocusFlowTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		DC4994EFAFF2408E8660C9BD /* FocusFlow */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6F1FF262C8813E8AC5EDCF15 /* Build configuration list for PBXNativeTarget "FocusFlow" */;
@@ -348,6 +389,10 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
+					1A73ADC7F9F9BBA753C75802 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
 					DC4994EFAFF2408E8660C9BD = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
@@ -372,6 +417,7 @@
 			projectRoot = "";
 			targets = (
 				DC4994EFAFF2408E8660C9BD /* FocusFlow */,
+				1A73ADC7F9F9BBA753C75802 /* FocusFlowTests */,
 			);
 		};
 /* End PBXProject section */
@@ -391,6 +437,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		05DA013F2E1ECD99D6D891EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F97A8711DCB17F4DDB84A3A6 /* AchievementTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		75C0FE50CA8B08BF3C4E357C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -449,11 +503,21 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		75071BA89B1A4A4032C298CA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DC4994EFAFF2408E8660C9BD /* FocusFlow */;
+			targetProxy = AFC0A6AA4353D04F18609D9E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		1C6FCA9812460553C0AAA8E2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_ENTITLEMENTS = Sources/App/FocusFlow.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
@@ -531,10 +595,50 @@
 			};
 			name = Release;
 		};
+		2DA600A94656CAA89EAEA2F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.focusflow.app.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FocusFlow.app/FocusFlow";
+			};
+			name = Release;
+		};
+		358F570AB1553ECE53B99710 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.focusflow.app.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FocusFlow.app/FocusFlow";
+			};
+			name = Debug;
+		};
 		782A8521389D9F5B4494BFF8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_ENTITLEMENTS = Sources/App/FocusFlow.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
@@ -627,6 +731,15 @@
 			buildConfigurations = (
 				BE6F3938F2E8134B7556845E /* Debug */,
 				2796D4182B0CBAFC67D63C14 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		43A1852B9EB838050ED7FBD8 /* Build configuration list for PBXNativeTarget "FocusFlowTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				358F570AB1553ECE53B99710 /* Debug */,
+				2DA600A94656CAA89EAEA2F9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

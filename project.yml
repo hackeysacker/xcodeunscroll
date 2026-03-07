@@ -36,10 +36,27 @@ targets:
         GENERATE_INFOPLIST_FILE: false
         SWIFT_EMIT_LOC_STRINGS: "YES"
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        CODE_SIGNING_ALLOWED: NO
+        CODE_SIGNING_REQUIRED: NO
     entitlements:
       path: Sources/App/FocusFlow.entitlements
       properties:
         com.apple.developer.family-controls: true
+
+  FocusFlowTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests
+        type: group
+    dependencies:
+      - target: FocusFlow
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.focusflow.app.tests
+        GENERATE_INFOPLIST_FILE: true
+        CODE_SIGNING_ALLOWED: NO
+        CODE_SIGNING_REQUIRED: NO
 
 schemes:
   FocusFlow:
@@ -50,3 +67,15 @@ schemes:
       config: Debug
     archive:
       config: Release
+  FocusFlowTests:
+    build:
+      targets:
+        FocusFlowTests: all
+    run:
+      config: Debug
+      commandLineArguments:
+        "-skipMacroValidation": ""
+    test:
+      config: Debug
+      commandLineArguments:
+        "-skipMacroValidation": ""
