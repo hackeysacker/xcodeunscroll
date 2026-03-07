@@ -77,18 +77,18 @@
 - [x] Dark mode throughout
 
 ### Navigation
-- [ ] Tab bar with 5 sections (Home, Progress, Practice, Profile, Settings)
-- [ ] Onboarding flow for new users
-- [ ] Settings screen with all options
-- [ ] Profile management
+- [x] Tab bar with 5 sections (Home, Progress, Practice, Profile, Settings)
+- [x] Onboarding flow for new users
+- [x] Settings screen with all options
+- [x] Profile management
 
 ### Screens to Build
-- [ ] Home dashboard with daily challenges
-- [ ] Progress/Skills screen
-- [ ] Practice hub (all exercises)
-- [ ] Profile screen with stats
-- [ ] Settings (notifications, sounds, dark mode, account)
-- [ ] Leaderboard (optional, premium)
+- [x] Home dashboard with daily challenges
+- [x] Progress/Skills screen
+- [x] Practice hub (all exercises)
+- [x] Profile screen with stats
+- [x] Settings (notifications, sounds, dark mode, account)
+- [x] Leaderboard (optional, premium)
 
 ---
 
@@ -232,9 +232,25 @@ Tables created:
 1. [x] Add haptic feedback to challenges
 2. [x] Add sound effects
 3. [x] Connect gems to header
-4. [ ] Test heart system
+4. [x] Test heart system (added heart test controls in Settings)
 5. [ ] Set up TestFlight
 6. [x] Add daily challenge rotation
+
+---
+
+## March 7, 2026 - Weekend Session Progress
+
+### Completed Today:
+- [x] Daily login rewards system with 7-day streak bonus
+- [x] Daily login reward card on HomeView with claim functionality
+- [x] 7-day reward schedule with escalating gems (5→75) and XP (50→500)
+- [x] Heart system test controls in Settings (Testing Mode only)
+- [x] Heart add/remove buttons for testing
+- [x] Refill slot management controls
+- [x] BUILD SUCCEEDED
+
+### Build Status
+- ✅ BUILD SUCCEEDED on iOS Simulator (iPhone 17 Pro, iOS 26.2)
 
 ---
 
