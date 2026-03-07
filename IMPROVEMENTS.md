@@ -77,16 +77,16 @@
 - [x] Dark mode throughout
 
 ### Navigation
-- [ ] Tab bar with 5 sections (Home, Progress, Practice, Profile, Settings)
+- [x] Tab bar with 5 sections (Home, Progress, Practice, Profile, Settings) - DONE Mar 6, 2026 (6 tabs: Home, Progress, ScreenTime, Practice, Profile, Settings)
 - [ ] Onboarding flow for new users
-- [ ] Settings screen with all options
-- [ ] Profile management
+- [x] Settings screen with all options - DONE Mar 6, 2026
+- [x] Profile management - DONE
 
 ### Screens to Build
-- [ ] Home dashboard with daily challenges
-- [ ] Progress/Skills screen
-- [ ] Practice hub (all exercises)
-- [ ] Profile screen with stats
+- [x] Home dashboard with daily challenges - DONE
+- [x] Progress/Skills screen - DONE
+- [x] Practice hub (all exercises) - DONE
+- [x] Profile screen with stats - DONE
 - [ ] Settings (notifications, sounds, dark mode, account)
 - [ ] Leaderboard (optional, premium)
 
@@ -440,7 +440,31 @@ Tables created:
 
 ---
 
-Last Updated: March 6, 2026 (12:07pm)
+Last Updated: March 6, 2026 (5:00pm) - Evening 2 Session Complete
+
+---
+
+## Mar 6, 2026 (5:00pm) - Evening 2 Performance Optimization
+
+### UI Performance Optimizations
+- **Added drawingGroup() to ContentView** - Enables Metal compositing for smoother view rendering
+- **Optimized UniversalHeader** - Added cached values to prevent recalculating on every redraw, uses onChange handlers for efficient value updates only when values change
+- **Added ignoresSafeArea(.keyboard) to TabView** - Reduces keyboard avoidance computation overhead
+- **SplashScreen optimizations:** Added solid background for faster initial paint + drawingGroup() for smoother transitions
+
+### Build Status
+- ✅ BUILD SUCCEEDED on iOS Simulator (iPhone 17 Pro, iOS 26.2)
+
+---
+
+## Mar 6, 2026 (3:02pm) - PM1 Status Check
+
+### Daily Challenges & Achievements System - VERIFIED COMPLETE
+
+- ✅ Daily challenges (3 per day) - Implemented in HomeView
+- ✅ Achievement/badge system - Achievement.swift + AchievementsView.swift  
+- ✅ Daily login rewards - DailyLoginRewardView.swift (Mar 6, 5am)
+- ✅ Build: ✅ BUILD SUCCEEDED
 
 ---
 
