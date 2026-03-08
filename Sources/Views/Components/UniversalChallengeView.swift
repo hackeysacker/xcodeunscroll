@@ -2,117 +2,9 @@ import SwiftUI
 import AVFoundation
 import UIKit
 
-// MARK: - Breath Phase Enum
-enum BreathPhase: String {
-    case inhale = "Breathe In"
-    case hold = "Hold"
-    case exhale = "Breathe Out"
-}
-
-// MARK: - Haptic Manager
-class HapticManager {
-    static let shared = HapticManager()
-    private let light = UIImpactFeedbackGenerator(style: .light)
-    private let medium = UIImpactFeedbackGenerator(style: .medium)
-    private let heavy = UIImpactFeedbackGenerator(style: .heavy)
-    private let selection = UISelectionFeedbackGenerator()
-    private let notification = UINotificationFeedbackGenerator()
-
-    func prepare() {
-        light.prepare()
-        medium.prepare()
-        heavy.prepare()
-        selection.prepare()
-        notification.prepare()
-    }
-
-    func lightTap() { light.impactOccurred() }
-    func mediumTap() { medium.impactOccurred() }
-    func heavyTap() { heavy.impactOccurred() }
-    func selectionChanged() { selection.selectionChanged() }
-    func success() { notification.notificationOccurred(.success) }
-    func warning() { notification.notificationOccurred(.warning) }
-    func error() { notification.notificationOccurred(.error) }
-}
-
-// MARK: - Sound Manager
-class SoundManager {
-    static let shared = SoundManager()
-    var isEnabled: Bool = true
-
-    func playTap() {
-        guard isEnabled else { return }
-        AudioServicesPlaySystemSound(1104)
-    }
-
-    func playSuccess() {
-        guard isEnabled else { return }
-        AudioServicesPlaySystemSound(1025)
-    }
-
-    func playFail() {
-        guard isEnabled else { return }
-        AudioServicesPlaySystemSound(1053)
-    }
-
-    func playLevelUp() {
-        guard isEnabled else { return }
-        AudioServicesPlaySystemSound(1026)
-    }
-}
-
-// MARK: - Breathing Guide (Guided Audio)
-class BreathingGuide: NSObject, AVSpeechSynthesizerDelegate {
-    static let shared = BreathingGuide()
-    private let synthesizer = AVSpeechSynthesizer()
-    var isEnabled: Bool = true
-    private var lastSpokenPhase: BreathPhase?
-
-    override init() {
-        super.init()
-        synthesizer.delegate = self
-    }
-
-    func speak(_ text: String) {
-        guard isEnabled else { return }
-        synthesizer.stopSpeaking(at: .immediate)
-        let utterance = AVSpeechUtterance(string: text)
-        utterance.rate = AVSpeechUtteranceDefaultSpeechRate * 0.8
-        utterance.pitchMultiplier = 0.9
-        utterance.volume = 0.7
-        synthesizer.speak(utterance)
-    }
-
-    func announcePhase(_ phase: BreathPhase, cycleCount: Int) {
-        guard isEnabled else { return }
-        guard phase != lastSpokenPhase else { return }
-        lastSpokenPhase = phase
-
-        let text: String
-        switch phase {
-        case .inhale:
-            text = cycleCount == 0 ? "Breathe in slowly through your nose" : "Breathe in"
-        case .hold:
-            text = "Hold"
-        case .exhale:
-            text = "Breathe out slowly"
-        }
-        speak(text)
-    }
-
-    func startSession() {
-        speak("Welcome to your breathing exercise. Get comfortable and follow my voice.")
-    }
-
-    func endSession() {
-        synthesizer.stopSpeaking(at: .immediate)
-        speak("Well done. Session complete.")
-    }
-
-    func stop() {
-        synthesizer.stopSpeaking(at: .immediate)
-    }
-}
+// MARK: - Import shared services
+// Using AppAudioManager from Services/AudioHapticManager.swift
+// Using BreathingGuide from Services/BreathingGuide.swift
 
 struct UniversalChallengeView: View {
     @EnvironmentObject var appState: AppState
@@ -466,16 +358,16 @@ struct UniversalChallengeView: View {
 
         // Haptics and Sound
         if combo > 5 {
-            HapticManager.shared.success()
-            SoundManager.shared.playSuccess()
+            AppAudioManager.shared.success()
+            AppAudioManager.shared.playSuccess()
         } else {
-            HapticManager.shared.lightTap()
-            SoundManager.shared.playTap()
+            AppAudioManager.shared.lightImpact()
+            AppAudioManager.shared.playTap()
         }
 
         // Milestone sounds
         if combo == 10 || combo == 25 || combo == 50 {
-            HapticManager.shared.success()
+            AppAudioManager.shared.success()
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -559,20 +451,20 @@ struct UniversalChallengeView: View {
         if index % 2 == 0 && index < level * 2 {
             combo += 1
             score += 10 * min(combo, 5)
-            HapticManager.shared.lightTap()
-            SoundManager.shared.playTap()
+            AppAudioManager.shared.lightImpact()
+            AppAudioManager.shared.playTap()
         } else {
             combo = 0
             score = max(0, score - 5)
-            HapticManager.shared.error()
-            SoundManager.shared.playFail()
+            AppAudioManager.shared.error()
+            AppAudioManager.shared.playError()
         }
 
         if score > level * 30 {
             level += 1
             combo = 0
-            HapticManager.shared.success()
-            SoundManager.shared.playLevelUp()
+            AppAudioManager.shared.success()
+            AppAudioManager.shared.playLevelUp()
         }
     }
 
@@ -726,8 +618,8 @@ struct UniversalChallengeView: View {
     func handleReactionTap() {
         if gameState == .waiting || gameState == .ready {
             gameState = .tooEarly
-            HapticManager.shared.warning()
-            SoundManager.shared.playFail()
+            AppAudioManager.shared.warning()
+            AppAudioManager.shared.playError()
             return
         }
 
@@ -745,14 +637,14 @@ struct UniversalChallengeView: View {
             averageReactionTime = reactionTimes.reduce(0, +) / Double(reactionTimes.count)
 
             if reactionTime < 0.15 {
-                HapticManager.shared.success()
-                SoundManager.shared.playLevelUp()
+                AppAudioManager.shared.success()
+                AppAudioManager.shared.playLevelUp()
             } else if reactionTime < 0.25 {
-                HapticManager.shared.mediumTap()
-                SoundManager.shared.playSuccess()
+                AppAudioManager.shared.mediumImpact()
+                AppAudioManager.shared.playSuccess()
             } else {
-                HapticManager.shared.lightTap()
-                SoundManager.shared.playTap()
+                AppAudioManager.shared.lightImpact()
+                AppAudioManager.shared.playTap()
             }
 
             gameState = .waiting
@@ -1019,8 +911,8 @@ struct UniversalChallengeView: View {
         reactionTimes = []
         averageReactionTime = 0
 
-        HapticManager.shared.prepare()
-        SoundManager.shared.playSuccess()  // Start sound
+        AppAudioManager.shared.prepareHaptics()
+        AppAudioManager.shared.playSuccess()  // Start sound
 
         // Start guided breathing audio if it's a breathing challenge
         if challenge.category == .breathing {
@@ -1074,7 +966,7 @@ struct UniversalChallengeView: View {
                 // Memory: level up
                 if self.challenge.category == .memory && self.score > self.level * 30 {
                     self.level += 1
-                    HapticManager.shared.mediumTap()
+                    AppAudioManager.shared.mediumImpact()
                 }
             } else {
                 timer.invalidate()
@@ -1086,7 +978,7 @@ struct UniversalChallengeView: View {
                 }
 
                 if self.score > 50 {
-                    HapticManager.shared.success()
+                    AppAudioManager.shared.success()
                 }
             }
         }
@@ -1098,14 +990,14 @@ struct UniversalChallengeView: View {
 
         // Play completion sounds
         if score >= 50 {
-            HapticManager.shared.success()
-            SoundManager.shared.playLevelUp()
+            AppAudioManager.shared.success()
+            AppAudioManager.shared.playLevelUp()
         } else if score > 0 {
-            HapticManager.shared.lightTap()
-            SoundManager.shared.playSuccess()
+            AppAudioManager.shared.lightImpact()
+            AppAudioManager.shared.playSuccess()
         } else {
-            HapticManager.shared.error()
-            SoundManager.shared.playFail()
+            AppAudioManager.shared.error()
+            AppAudioManager.shared.playError()
         }
     }
 }

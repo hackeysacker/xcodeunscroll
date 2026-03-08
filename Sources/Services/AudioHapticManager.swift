@@ -269,13 +269,3 @@ class AppAudioManager: ObservableObject {
         warning()
     }
 }
-
-// MARK: - Shortcut Extensions for Easy Access
-
-extension HapticManager {
-    static var app: AppAudioManager { AppAudioManager.shared }
-}
-
-extension SoundManager {
-    static var app: AppAudioManager { AppAudioManager.shared }
-}
