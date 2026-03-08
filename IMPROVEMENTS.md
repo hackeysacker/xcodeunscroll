@@ -125,9 +125,9 @@
 - [ ] Custom themes
 
 ### Notifications
-- [ ] Daily reminder
-- [ ] Streak at risk
-- [ ] New challenges available
+- [x] Daily reminder
+- [x] Streak at risk
+- [x] New challenges available
 
 ---
 
@@ -300,6 +300,24 @@ Tables created:
 
 - No Apple Developer account linked in Xcode yet
 - TestFlight not configured
+
+## March 8, 2026 - Midday Session (Notification System)
+
+### Completed Today:
+- [x] Create NotificationService with UserNotifications integration
+- [x] Add daily reminder notification at user-configurable time
+- [x] Add streak warning notification (8 PM)
+- [x] Add new challenges notification (7 AM)
+- [x] Add achievement/level-up milestone notifications
+- [x] Update SettingsView with notification preferences
+- [x] Add time picker sheet for reminder configuration
+- [x] Connect Settings toggles to NotificationService
+- [x] BUILD SUCCEEDED
+
+### Git Commit
+- Committed as: `7c507c7` - "feat: Add NotificationService with daily reminders and streak warnings"
+
+---
 
 ## March 8, 2026 - Midday Session (PM1: Sound & Haptics Fix)
 
