@@ -2,6 +2,7 @@ import SwiftUI
 import Combine
 import Supabase
 import Network
+import UIKit
 
 // MARK: - Network Monitor (Inline)
 class FocusFlowNetworkMonitor: ObservableObject {
@@ -98,17 +99,24 @@ class AppState: ObservableObject {
         // Observe network changes
         isOnline = networkMonitor.isConnected
         
-        // Check for connectivity changes periodically
-        Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
-            Task { @MainActor in
-                let wasOnline = self?.isOnline ?? true
-                self?.isOnline = self?.networkMonitor.isConnected ?? true
-                
-                // Auto-sync when coming back online
-                if !wasOnline && (self?.isOnline ?? false) {
-                    await self?.syncPendingOfflineActions()
-                }
-            }
+        // Start monitoring only when app is active
+        startNetworkMonitoring()
+        
+        // Listen for app lifecycle events to pause/resume monitoring
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.startNetworkMonitoring()
+        }
+        
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.willResignActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.stopNetworkMonitoring()
         }
     }
     
@@ -252,6 +260,8 @@ class AppState: ObservableObject {
     
     // MARK: - Data Management
     
+    private var networkTimer: Timer?
+    
     func loadUserData() {
         // Load from UserDefaults
         if let data = UserDefaults.standard.data(forKey: "focusflow_user"),
@@ -270,6 +280,28 @@ class AppState: ObservableObject {
         }
         
         isLoading = false
+    }
+    
+    func startNetworkMonitoring() {
+        // Only start timer when app is active
+        networkTimer?.invalidate()
+        networkTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                guard let self = self else { return }
+                let wasOnline = self.isOnline
+                self.isOnline = self.networkMonitor.isConnected
+                
+                // Auto-sync when coming back online
+                if !wasOnline && self.isOnline {
+                    await self.syncPendingOfflineActions()
+                }
+            }
+        }
+    }
+    
+    func stopNetworkMonitoring() {
+        networkTimer?.invalidate()
+        networkTimer = nil
     }
     
     func completeOnboarding(goal: GoalType) {

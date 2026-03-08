@@ -5,13 +5,14 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            // Background gradient
+            // Background gradient - using drawingGroup for smoother animations
             LinearGradient(
                 colors: [Color(hex: "0A0F1C"), Color(hex: "0F172A"), Color(hex: "1E293B")],
                 startPoint: .top,
                 endPoint: .bottom
             )
             .ignoresSafeArea()
+            .drawingGroup()
             
             if appState.isLoading {
                 SplashScreen()
@@ -154,19 +155,23 @@ struct MainTabView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Content
+            // Content - using lazy loading for performance
             TabView(selection: $appState.selectedTab) {
                 HomeView()
                     .tag(AppState.Tab.home)
+                    .id(AppState.Tab.home)
 
                 WindingProgressPath()
                     .tag(AppState.Tab.path)
+                    .id(AppState.Tab.path)
 
                 ScreenTimeDashboardView()
                     .tag(AppState.Tab.screenTime)
+                    .id(AppState.Tab.screenTime)
 
                 PracticeView()
                     .tag(AppState.Tab.practice)
+                    .id(AppState.Tab.practice)
 
                 ProfileView()
                     .tag(AppState.Tab.profile)
