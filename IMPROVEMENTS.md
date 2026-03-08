@@ -238,6 +238,7 @@ Tables created:
 4. [x] Test heart system (added heart test controls in Settings)
 5. [ ] Set up TestFlight
 6. [x] Add daily challenge rotation
+7. [x] Connect sound/haptic settings toggles to actual managers (Mar 8)
 
 ---
 
@@ -299,7 +300,20 @@ Tables created:
 
 - No Apple Developer account linked in Xcode yet
 - TestFlight not configured
-- BUILD ERROR: Type mismatches between GameViewModel and model types (GameProgress, Profile, HeartState) - needs refactoring to align properties
+
+## March 8, 2026 - Midday Session (PM1: Sound & Haptics Fix)
+
+### Completed Today:
+- [x] Add isEnabled flag to HapticManager (was missing - haptics always fired)
+- [x] Connect Settings sound toggle to SoundManager.shared.isEnabled
+- [x] Connect Settings haptics toggle to HapticManager.shared.isEnabled
+- [x] Both toggles now actually control feedback systems
+- [x] BUILD SUCCEEDED
+
+### Git Commit
+- Committed as: `e937ba4` - "fix: Connect sound/haptic settings toggles to actual managers"
+
+---
 
 ## March 8, 2026 - Early Morning Session (5:00 AM)
 
