@@ -233,10 +233,7 @@ struct ProfileView: View {
                 
                 // Reset progress
                 Button {
-                    // Would need confirmation
-                    appState.progress?.streakDays = 0
-                    appState.progress?.totalXP = 0
-                    appState.progress?.hearts = 5
+                    appState.resetProgress()
                 } label: {
                     ProfileRowButton(icon: "trash.fill", title: "Reset Progress", color: .red)
                 }

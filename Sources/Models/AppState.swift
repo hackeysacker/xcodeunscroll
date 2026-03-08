@@ -579,6 +579,17 @@ class AppState: ObservableObject {
         saveData()
     }
     
+    func resetProgress() {
+        progress?.streakDays = 0
+        progress?.totalXP = 0
+        progress?.hearts = 5
+        progress?.level = 1
+        progress?.focusScore = GameProgress.defaultFocusScore
+        progress?.impulseControlScore = GameProgress.defaultImpulseControlScore
+        progress?.distractionResistanceScore = GameProgress.defaultDistractionResistanceScore
+        saveData()
+    }
+    
     func saveData() {
         if let user = currentUser,
            let data = try? JSONEncoder().encode(user) {

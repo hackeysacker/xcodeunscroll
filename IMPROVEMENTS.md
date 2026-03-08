@@ -793,3 +793,24 @@ Last Updated: March 7, 2026 (10:12pm) - Late Night 1 Complete
 ---
 
 Last Updated: March 8, 2026 (6:17am) - Morning Session Complete
+
+---
+
+## Mar 8, 2026 (8:35am) - Heart System Bug Fix
+
+### Bug Fix: Reset Progress in Profile
+- **Fixed:** Reset Progress button in ProfileView now properly resets hearts, streak, XP, and level
+- **Problem:** Previous code used optional chaining (`appState.progress?.hearts = 5`) which doesn't actually mutate the struct
+- **Solution:** Added `resetProgress()` method to AppState that properly modifies and saves progress data
+- **Also fixed:** Added proper reset of level and skill scores to default values
+
+### Changes Made
+- `Sources/Models/AppState.swift` - Added `resetProgress()` method
+- `Sources/Views/Profile/ProfileView.swift` - Now calls `appState.resetProgress()`
+
+### Build Status
+- ✅ BUILD SUCCEEDED on iOS Simulator (iPhone 17, iOS 26.2)
+
+---
+
+Last Updated: March 8, 2026 (8:35am) - Bug Fix Complete
