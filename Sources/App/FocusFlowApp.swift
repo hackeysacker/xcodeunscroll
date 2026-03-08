@@ -1,4 +1,5 @@
 import SwiftUI
+import BackgroundTasks
 
 @main
 struct FocusFlowApp: App {
@@ -10,6 +11,9 @@ struct FocusFlowApp: App {
         let hapticEnabled = UserDefaults.standard.object(forKey: "hapticEnabled") as? Bool ?? true
         AppAudioManager.shared.soundEnabled = soundEnabled
         AppAudioManager.shared.hapticEnabled = hapticEnabled
+        
+        // Register background tasks for battery-efficient background refresh
+        BackgroundTaskManager.shared.registerBackgroundTasks()
     }
     
     var body: some Scene {

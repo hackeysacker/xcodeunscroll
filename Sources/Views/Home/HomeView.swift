@@ -13,7 +13,7 @@ struct HomeView: View {
                 .ignoresSafeArea()
             
             ScrollView {
-                VStack(spacing: 20) {
+                LazyVStack(spacing: 20) {
                     // Header
                     header
                     

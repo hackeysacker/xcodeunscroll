@@ -57,8 +57,7 @@ class AppState: ObservableObject {
     // Notification manager instance
     let notificationManager = NotificationManager.shared
     
-    // Supabase client - using centralized config
-    private var supabase: SupabaseClient?
+    // Supabase client - use global supabase client from SupabaseService
     private let networkMonitor = NetworkMonitor.shared
     private let syncQueue = SyncQueue.shared
     private var cancellables = Set<AnyCancellable>()
@@ -86,16 +85,8 @@ class AppState: ObservableObject {
     }
     
     init() {
-        setupSupabase()
         setupNetworkMonitoring()
         loadUserData()
-    }
-    
-    private func setupSupabase() {
-        supabase = SupabaseClient(
-            supabaseURL: URL(string: AppConfig.supabaseUrl)!,
-            supabaseKey: AppConfig.supabaseAnonKey
-        )
     }
     
     private func setupNetworkMonitoring() {
@@ -130,7 +121,7 @@ class AppState: ObservableObject {
     // MARK: - Authentication
     
     func signUp(email: String, password: String) async {
-        guard let supabase = supabase else { return }
+        
         isLoading = true
         
         do {
@@ -165,7 +156,7 @@ class AppState: ObservableObject {
     }
     
     private func createUserProfile(userId: String, email: String) async throws {
-        guard let supabase = supabase else { return }
+        
         
         let profile = Profile(id: userId, email: email, isPremium: false, gems: 0)
         
@@ -173,7 +164,7 @@ class AppState: ObservableObject {
     }
     
     private func initializeGameProgress(userId: String) async {
-        guard let supabase = supabase else { return }
+        
         
         let progress = GameProgressRecord(
             userId: userId,
@@ -216,7 +207,7 @@ class AppState: ObservableObject {
     }
     
     func signIn(email: String, password: String) async {
-        guard let supabase = supabase else { return }
+        
         isLoading = true
         
         do {
@@ -233,7 +224,7 @@ class AppState: ObservableObject {
     }
     
     func signOut() async {
-        guard let supabase = supabase else { return }
+        
         
         do {
             try await supabase.auth.signOut()
@@ -245,7 +236,7 @@ class AppState: ObservableObject {
     }
     
     func checkAuthStatus() async {
-        guard let supabase = supabase else { return }
+        
         
         do {
             let session = try await supabase.auth.session
@@ -259,7 +250,7 @@ class AppState: ObservableObject {
     // MARK: - Cloud Sync
     
     func syncFromCloud(userId: String) async {
-        guard let supabase = supabase else { return }
+        
         isSyncing = true
         
         do {
@@ -315,7 +306,7 @@ class AppState: ObservableObject {
             return
         }
         
-        guard let supabase = supabase else { return }
+        
         isSyncing = true
         
         do {
@@ -402,7 +393,7 @@ class AppState: ObservableObject {
     
     /// Full sync from cloud - fetches all progress data and merges with local
     func syncFullProgressFromCloud(userId: String) async {
-        guard let supabase = supabase else { return }
+        
         isSyncing = true
         
         do {
@@ -456,7 +447,7 @@ class AppState: ObservableObject {
     // MARK: - Cloud Fetch Helpers
     
     private func fetchGameProgressRecord(userId: String) async throws -> GameProgressRecord? {
-        guard let supabase = supabase else { return nil }
+        
         
         let records: [GameProgressRecord] = try await supabase
             .from("game_progress")
@@ -469,7 +460,7 @@ class AppState: ObservableObject {
     }
     
     private func fetchProfile(userId: String) async throws -> Profile? {
-        guard let supabase = supabase else { return nil }
+        
         
         let records: [Profile] = try await supabase
             .from("profiles")
@@ -482,7 +473,7 @@ class AppState: ObservableObject {
     }
     
     private func fetchSkillProgressRecord(userId: String) async throws -> SkillProgressRecord? {
-        guard let supabase = supabase else { return nil }
+        
         
         let records: [SkillProgressRecord] = try await supabase
             .from("skill_progress")
@@ -495,7 +486,7 @@ class AppState: ObservableObject {
     }
     
     private func fetchHeartStateRecord(userId: String) async throws -> HeartStateRecord? {
-        guard let supabase = supabase else { return nil }
+        
         
         let records: [HeartStateRecord] = try await supabase
             .from("heart_state")

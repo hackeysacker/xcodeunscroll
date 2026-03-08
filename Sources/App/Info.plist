@@ -51,5 +51,15 @@
     <string>Dark</string>
     <key>ITSAppUsesNonExemptEncryption</key>
     <false/>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+        <string>processing</string>
+    </array>
+    <key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>com.focusflow.app.refresh</string>
+        <string>com.focusflow.app.sync</string>
+    </array>
 </dict>
 </plist>

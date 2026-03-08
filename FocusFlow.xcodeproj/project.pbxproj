@@ -55,6 +55,7 @@
 		C0D25A4CFACECBD750997D59 /* UniversalChallengeView.swift.broken in Resources */ = {isa = PBXBuildFile; fileRef = 7C6709ACAEC6D5F7BF24C5A8 /* UniversalChallengeView.swift.broken */; };
 		C37B7AF8A1BF7813DABF1470 /* MemoryGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0750F6F44C6618E12EB007DF /* MemoryGridView.swift */; };
 		C6ED778AAB986AC145424898 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78BC8B9AB0840EC35907819 /* ProgressView.swift */; };
+		CC1675CD65722B4C03D7E4BF /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B135324C952FCE29E5967D85 /* BackgroundTaskManager.swift */; };
 		CCD1EA47C33F4552AAFFDAB9 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 712E75634EDDF39FE0EC2015 /* LeaderboardView.swift */; };
 		D2CE236CD4C89487E0723264 /* DuolingoPathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E6EF3D646C8DB229A91D0C /* DuolingoPathView.swift */; };
 		EECD71FCF0299B312137F639 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A38B26903E4527D53A0945 /* NotificationManager.swift */; };
@@ -123,6 +124,7 @@
 		AC42C74D5637FA9E6A946E9F /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
 		AE06A539CE472AC6239A1695 /* FakeNotificationsChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeNotificationsChallengeView.swift; sourceTree = "<group>"; };
 		AF2CA8D18F777F2E2A08CB53 /* FocusFlow.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FocusFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B135324C952FCE29E5967D85 /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		B9FF345F88B9807E1FEF9785 /* CoreChallenges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreChallenges.swift; sourceTree = "<group>"; };
 		BAD6F49FCDB02DBEA3A18B60 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		C18E6DACB2F83EA4DD476994 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -209,6 +211,7 @@
 			isa = PBXGroup;
 			children = (
 				7E5DE8F8C483D11D5CD1165C /* AudioHapticManager.swift */,
+				B135324C952FCE29E5967D85 /* BackgroundTaskManager.swift */,
 				D7CDCB6FA66F659CA26F3990 /* BreathingGuide.swift */,
 				A244A9E11BC14987440F19CC /* HeartRefillManager.swift */,
 				4548CFE88CAE78080A2A0F42 /* NetworkMonitor.swift */,
@@ -459,6 +462,7 @@
 				F3C599B801008C41B6ABED77 /* AppConfig.swift in Sources */,
 				8AA86381B7F2CC33EE129582 /* AppState.swift in Sources */,
 				5463048CE6AED6F790D7AAAD /* AudioHapticManager.swift in Sources */,
+				CC1675CD65722B4C03D7E4BF /* BackgroundTaskManager.swift in Sources */,
 				8B56E05EDE9D04E4C1E7AA82 /* BiometricTrackingView.swift in Sources */,
 				0AF234D08956B16DE5E483A4 /* BreathingExerciseView.swift in Sources */,
 				6171F9AAF71B5AA23103A17E /* BreathingGuide.swift in Sources */,
