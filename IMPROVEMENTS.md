@@ -225,7 +225,7 @@ Tables created:
 1. [x] Add haptic feedback to challenges - DONE Mar 5, 2026
 2. [x] Add sound effects - DONE Mar 5, 2026
 3. [x] Connect gems to header - DONE
-4. [ ] Test heart system
+4. [x] Test heart system - FIXED Mar 8, 2026 (reset progress bug)
 5. [ ] Set up TestFlight
 6. [x] Add daily challenge rotation - DONE
 7. [x] Add reaction time tracking (personal best + average) - DONE Mar 5, 2026
