@@ -717,4 +717,29 @@ Last Updated: March 6, 2026 (7:00pm) - Evening Status Check Complete
 
 ---
 
-Last Updated: March 7, 2026 (3:09pm) - Late PM1 Status Check Complete
+## Mar 7, 2026 (10:12pm) - Late Night 1 - Code Cleanup & Refactoring
+
+### Refactoring: Consolidate Audio/Haptic Managers
+
+**Problem Found:**
+- UniversalChallengeView.swift (1116 lines) contained duplicate `HapticManager` and `SoundManager` classes
+- These duplicated functionality already available in `Services/AudioHapticManager.swift`
+- `BreathingGuide` class was embedded in UniversalChallengeView but is a reusable service
+
+**Solution:**
+- **Removed** duplicate `HapticManager` and `SoundManager` classes from UniversalChallengeView
+- **Replaced** all calls with `AppAudioManager.shared` (existing comprehensive manager)
+- **Extracted** `BreathingGuide` to dedicated `Services/BreathingGuide.swift` file
+- **Removed** obsolete shortcut extensions from AudioHapticManager.swift
+
+**Changes:**
+- `Sources/Views/Components/UniversalChallengeView.swift` - Removed 100+ lines of duplicate code, now uses shared services
+- `Sources/Services/AudioHapticManager.swift` - Removed obsolete HapticManager/SoundManager extensions
+- `Sources/Services/BreathingGuide.swift` - New file (extracted from UniversalChallengeView)
+
+**Build Status:**
+- ✅ BUILD SUCCEEDED on iOS Simulator (iPhone 17, iOS 26.2)
+
+---
+
+Last Updated: March 7, 2026 (10:12pm) - Late Night 1 Complete
