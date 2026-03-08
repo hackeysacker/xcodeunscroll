@@ -88,3 +88,6 @@ schemes:
       config: Debug
       commandLineArguments:
         "-skipMacroValidation": ""
+      targets:
+        - FocusFlowTests
+        - FocusFlow

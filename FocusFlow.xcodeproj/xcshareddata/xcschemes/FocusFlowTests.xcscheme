@@ -39,6 +39,28 @@
          </BuildableReference>
       </MacroExpansion>
       <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1A73ADC7F9F9BBA753C75802"
+               BuildableName = "FocusFlowTests.xctest"
+               BlueprintName = "FocusFlowTests"
+               ReferencedContainer = "container:FocusFlow.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "DC4994EFAFF2408E8660C9BD"
+               BuildableName = "FocusFlow.app"
+               BlueprintName = "FocusFlow"
+               ReferencedContainer = "container:FocusFlow.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <CommandLineArguments>
       </CommandLineArguments>
