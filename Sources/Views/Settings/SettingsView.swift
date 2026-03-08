@@ -4,8 +4,12 @@ struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) var dismiss
     @State private var notificationsEnabled: Bool = true
-    @State private var soundEnabled: Bool = true
-    @State private var hapticsEnabled: Bool = true
+    @State private var soundEnabled: Bool = true {
+        didSet { SoundManager.shared.isEnabled = soundEnabled }
+    }
+    @State private var hapticsEnabled: Bool = true {
+        didSet { HapticManager.shared.isEnabled = hapticsEnabled }
+    }
     @State private var darkModeEnabled: Bool = true
     @State private var showDeleteAlert: Bool = false
     

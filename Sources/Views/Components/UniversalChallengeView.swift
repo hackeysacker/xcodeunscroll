@@ -5,18 +5,19 @@ import AudioToolbox
 // MARK: - Haptic Manager
 class HapticManager {
     static let shared = HapticManager()
+    var isEnabled: Bool = true
     private let light = UIImpactFeedbackGenerator(style: .light)
     private let medium = UIImpactFeedbackGenerator(style: .medium)
     private let heavy = UIImpactFeedbackGenerator(style: .heavy)
     private let notification = UINotificationFeedbackGenerator()
     private let selection = UISelectionFeedbackGenerator()
-    func lightTap()  { light.impactOccurred() }
-    func mediumTap() { medium.impactOccurred() }
-    func heavyTap()  { heavy.impactOccurred() }
-    func success()   { notification.notificationOccurred(.success) }
-    func error()     { notification.notificationOccurred(.error) }
-    func warning()   { notification.notificationOccurred(.warning) }
-    func selectionChanged() { selection.selectionChanged() }
+    func lightTap()  { guard isEnabled else { return }; light.impactOccurred() }
+    func mediumTap() { guard isEnabled else { return }; medium.impactOccurred() }
+    func heavyTap()  { guard isEnabled else { return }; heavy.impactOccurred() }
+    func success()   { guard isEnabled else { return }; notification.notificationOccurred(.success) }
+    func error()     { guard isEnabled else { return }; notification.notificationOccurred(.error) }
+    func warning()   { guard isEnabled else { return }; notification.notificationOccurred(.warning) }
+    func selectionChanged() { guard isEnabled else { return }; selection.selectionChanged() }
 }
 
 // MARK: - Sound Manager
