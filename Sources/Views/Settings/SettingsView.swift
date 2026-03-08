@@ -3,7 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) var dismiss
-    @State private var notificationsEnabled: Bool = true
+    @StateObject private var notificationService = NotificationService.shared
     @State private var soundEnabled: Bool = true {
         didSet { SoundManager.shared.isEnabled = soundEnabled }
     }
@@ -12,6 +12,7 @@ struct SettingsView: View {
     }
     @State private var darkModeEnabled: Bool = true
     @State private var showDeleteAlert: Bool = false
+    @State private var showTimePicker: Bool = false
     
     var body: some View {
         ZStack {
@@ -294,15 +295,75 @@ struct SettingsView: View {
             SectionHeader(title: "Notifications")
             
             VStack(spacing: 8) {
-                GlassToggle(title: "Push Notifications", icon: "bell.fill", isOn: $notificationsEnabled)
-                GlassDivider()
-                SettingsRow(icon: "clock.fill", title: "Reminder Time", value: "9:00 AM")
-                GlassDivider()
-                SettingsRow(icon: "calendar", title: "Daily Goal Reminder", value: "On")
+                // Main notifications toggle
+                GlassToggle(title: "Push Notifications", icon: "bell.fill", isOn: $notificationService.notificationsEnabled)
+                    .onChange(of: notificationService.notificationsEnabled) { _, newValue in
+                        if newValue {
+                            Task {
+                                await notificationService.requestAuthorization()
+                            }
+                        }
+                    }
+                
+                if notificationService.notificationsEnabled {
+                    GlassDivider()
+                    
+                    // Reminder time
+                    Button {
+                        showTimePicker = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "clock.fill").foregroundColor(.purple).frame(width: 24)
+                            Text("Reminder Time").foregroundColor(.white)
+                            Spacer()
+                            Text(timeString(notificationService.reminderHour, notificationService.reminderMinute))
+                                .foregroundColor(.gray)
+                            Image(systemName: "chevron.right").foregroundColor(.gray).font(.system(size: 12))
+                        }
+                        .padding(16)
+                    }
+                    
+                    GlassDivider()
+                    
+                    // Streak warning toggle
+                    GlassToggle(title: "Streak Warning", icon: "flame.fill", isOn: $notificationService.streakWarningEnabled)
+                }
             }
             .padding(.vertical, 8)
+            
+            // Authorization status
+            if !notificationService.isAuthorized {
+                Button {
+                    Task {
+                        await notificationService.requestAuthorization()
+                    }
+                } label: {
+                    HStack {
+                        Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.orange)
+                        Text("Enable Notifications").foregroundColor(.orange)
+                    }
+                    .font(.system(size: 14, weight: .semibold))
+                    .frame(maxWidth: .infinity)
+                    .padding(12)
+                    .background(Color.orange.opacity(0.1))
+                    .cornerRadius(10)
+                }
+            }
         }
         .padding(.horizontal, 16)
+        .sheet(isPresented: $showTimePicker) {
+            TimePickerSheet(notificationService: notificationService)
+        }
+    }
+    
+    private func timeString(_ hour: Int, _ minute: Int) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a"
+        var components = DateComponents()
+        components.hour = hour
+        components.minute = minute
+        let date = Calendar.current.date(from: components) ?? Date()
+        return formatter.string(from: date)
     }
     
     var dataSection: some View {
@@ -661,5 +722,75 @@ struct TestingChallengeView: View {
         let mins = seconds / 60
         let secs = seconds % 60
         return String(format: "%d:%02d", mins, secs)
+    }
+}
+
+struct TimePickerSheet: View {
+    @ObservedObject var notificationService: NotificationService
+    @Environment(\.dismiss) var dismiss
+    
+    @State private var selectedHour: Int
+    @State private var selectedMinute: Int
+    
+    init(notificationService: NotificationService) {
+        self.notificationService = notificationService
+        self._selectedHour = State(initialValue: notificationService.reminderHour)
+        self._selectedMinute = State(initialValue: notificationService.reminderMinute)
+    }
+    
+    var body: some View {
+        ZStack {
+            Color(hex: "0A0F1C").ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                // Header
+                HStack {
+                    Button("Cancel") { dismiss() }
+                        .foregroundColor(.gray)
+                    
+                    Spacer()
+                    
+                    Text("Reminder Time")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.white)
+                    
+                    Spacer()
+                    
+                    Button("Save") {
+                        notificationService.reminderHour = selectedHour
+                        notificationService.reminderMinute = selectedMinute
+                        dismiss()
+                    }
+                    .foregroundColor(.purple)
+                }
+                .padding()
+                
+                Spacer()
+                
+                // Time picker
+                DatePicker(
+                    "Reminder Time",
+                    selection: Binding(
+                        get: {
+                            var components = DateComponents()
+                            components.hour = selectedHour
+                            components.minute = selectedMinute
+                            return Calendar.current.date(from: components) ?? Date()
+                        },
+                        set: { newDate in
+                            let components = Calendar.current.dateComponents([.hour, .minute], from: newDate)
+                            selectedHour = components.hour ?? 9
+                            selectedMinute = components.minute ?? 0
+                        }
+                    ),
+                    displayedComponents: .hourAndMinute
+                )
+                .datePickerStyle(.wheel)
+                .labelsHidden()
+                .colorScheme(.dark)
+                
+                Spacer()
+            }
+        }
     }
 }
