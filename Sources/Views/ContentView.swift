@@ -67,6 +67,12 @@ struct UniversalHeader: View {
     @State private var cachedXP: Int = 0
     @State private var cachedGems: Int = 0
     
+    // Animation states for value changes
+    @State private var heartsScale: CGFloat = 1.0
+    @State private var streakScale: CGFloat = 1.0
+    @State private var xpScale: CGFloat = 1.0
+    @State private var gemsScale: CGFloat = 1.0
+    
     var body: some View {
         HStack(spacing: 16) {
             // Hearts
@@ -82,6 +88,7 @@ struct UniversalHeader: View {
             .padding(.vertical, 6)
             .background(Color.red.opacity(0.15))
             .cornerRadius(16)
+            .scaleEffect(heartsScale)
             
             Spacer()
             
@@ -98,6 +105,7 @@ struct UniversalHeader: View {
             .padding(.vertical, 6)
             .background(Color.orange.opacity(0.15))
             .cornerRadius(16)
+            .scaleEffect(streakScale)
             
             // XP
             HStack(spacing: 6) {
@@ -112,6 +120,7 @@ struct UniversalHeader: View {
             .padding(.vertical, 6)
             .background(Color.yellow.opacity(0.15))
             .cornerRadius(16)
+            .scaleEffect(xpScale)
             
             // Gems
             HStack(spacing: 6) {
@@ -126,23 +135,68 @@ struct UniversalHeader: View {
             .padding(.vertical, 6)
             .background(Color.cyan.opacity(0.15))
             .cornerRadius(16)
+            .scaleEffect(gemsScale)
         }
         .padding(.horizontal, 16)
         .padding(.top, 12)
         .padding(.bottom, 6)
         .background(Color(hex: "0A0F1C"))
-        // Use onChange to update cached values only when they change
+        // Use onChange to update cached values only when they change, with animation
         .onChange(of: appState.progress?.hearts) { _, newValue in
+            let oldValue = cachedHearts
             cachedHearts = newValue ?? 5
+            if cachedHearts != oldValue {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
+                    heartsScale = 1.3
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        heartsScale = 1.0
+                    }
+                }
+            }
         }
         .onChange(of: appState.progress?.streakDays) { _, newValue in
+            let oldValue = cachedStreak
             cachedStreak = newValue ?? 0
+            if cachedStreak != oldValue {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
+                    streakScale = 1.3
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        streakScale = 1.0
+                    }
+                }
+            }
         }
         .onChange(of: appState.progress?.totalXP) { _, newValue in
+            let oldValue = cachedXP
             cachedXP = newValue ?? 0
+            if cachedXP != oldValue {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
+                    xpScale = 1.3
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        xpScale = 1.0
+                    }
+                }
+            }
         }
         .onChange(of: appState.progress?.gems) { _, newValue in
+            let oldValue = cachedGems
             cachedGems = newValue ?? 0
+            if cachedGems != oldValue {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
+                    gemsScale = 1.3
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        gemsScale = 1.0
+                    }
+                }
+            }
         }
     }
 }
