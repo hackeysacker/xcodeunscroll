@@ -146,6 +146,11 @@ struct UniversalHeader: View {
             let oldValue = cachedHearts
             cachedHearts = newValue ?? 5
             if cachedHearts != oldValue {
+                if cachedHearts > oldValue {
+                    AppAudioManager.shared.playHeartGain()
+                } else {
+                    AppAudioManager.shared.playHeartLoss()
+                }
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
                     heartsScale = 1.3
                 }
@@ -160,6 +165,7 @@ struct UniversalHeader: View {
             let oldValue = cachedStreak
             cachedStreak = newValue ?? 0
             if cachedStreak != oldValue {
+                AppAudioManager.shared.playStreak()
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
                     streakScale = 1.3
                 }
@@ -174,6 +180,7 @@ struct UniversalHeader: View {
             let oldValue = cachedXP
             cachedXP = newValue ?? 0
             if cachedXP != oldValue {
+                AppAudioManager.shared.playSuccess()
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
                     xpScale = 1.3
                 }
@@ -188,6 +195,7 @@ struct UniversalHeader: View {
             let oldValue = cachedGems
             cachedGems = newValue ?? 0
             if cachedGems != oldValue {
+                AppAudioManager.shared.playGemEarn()
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
                     gemsScale = 1.3
                 }
