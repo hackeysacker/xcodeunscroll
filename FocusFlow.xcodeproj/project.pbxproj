@@ -21,6 +21,7 @@
 		2D0845C97D74A5F350DD937B /* Achievement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BCB2E1C4A2FC0A1FEB843DD /* Achievement.swift */; };
 		2D5D08E8CBB2619C000B110E /* ThemeSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0E7607542C76D03EE63312C /* ThemeSelectionView.swift */; };
 		2E8D047A6A18C937ACE3512C /* PracticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CE7EE6E98670688195C325 /* PracticeView.swift */; };
+		39B63691E8B5EA760550E8DD /* UserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24149BAB02C874F10BA73B0D /* UserTests.swift */; };
 		3C0690F5D14302D8277669FE /* RapidTargetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 811988AD8805B57941182496 /* RapidTargetView.swift */; };
 		4132BC6DC3055820176E99FE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAD6F49FCDB02DBEA3A18B60 /* ProfileView.swift */; };
 		4AE7045D0594899AC8080295 /* ProgressPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A1D2BC76B876CE74C2C5692 /* ProgressPath.swift */; };
@@ -57,6 +58,7 @@
 		CC1675CD65722B4C03D7E4BF /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B135324C952FCE29E5967D85 /* BackgroundTaskManager.swift */; };
 		CCD1EA47C33F4552AAFFDAB9 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 712E75634EDDF39FE0EC2015 /* LeaderboardView.swift */; };
 		D2CE236CD4C89487E0723264 /* DuolingoPathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E6EF3D646C8DB229A91D0C /* DuolingoPathView.swift */; };
+		ECFF637CB4F207B978314A91 /* ProgressPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CA50375993CE9F0ECEC71 /* ProgressPathTests.swift */; };
 		EECD71FCF0299B312137F639 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A38B26903E4527D53A0945 /* NotificationManager.swift */; };
 		EF321A8CE43CF65B58890B1A /* FakeNotificationsChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06A539CE472AC6239A1695 /* FakeNotificationsChallengeView.swift */; };
 		F012C155455C3CBC3F4DECDF /* GameProgressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF75F7F9B092B742C56375FA /* GameProgressTests.swift */; };
@@ -84,6 +86,7 @@
 		14B35B0250244FC90DF26929 /* ChallengeExercises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeExercises.swift; sourceTree = "<group>"; };
 		1DEE8CD59B8FC4A434236DAB /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		22B17CFB71EB878207A67E7B /* AllChallengesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChallengesView.swift; sourceTree = "<group>"; };
+		24149BAB02C874F10BA73B0D /* UserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTests.swift; sourceTree = "<group>"; };
 		244DE710D7D58E21A83D9BA7 /* ProgressPathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPathView.swift; sourceTree = "<group>"; };
 		26E5EF2EE2C3B05E44331051 /* AchievementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementTests.swift; sourceTree = "<group>"; };
 		2A1D2BC76B876CE74C2C5692 /* ProgressPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPath.swift; sourceTree = "<group>"; };
@@ -116,6 +119,7 @@
 		8C8E39B9E5E9E8379D8F1B2F /* GlassComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassComponents.swift; sourceTree = "<group>"; };
 		8CAD608545BC76F272E9D482 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		94A38B26903E4527D53A0945 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		995CA50375993CE9F0ECEC71 /* ProgressPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPathTests.swift; sourceTree = "<group>"; };
 		99852AD5608C8EED645C6ACE /* AchievementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsView.swift; sourceTree = "<group>"; };
 		A244A9E11BC14987440F19CC /* HeartRefillManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRefillManager.swift; sourceTree = "<group>"; };
 		A45ED9A3D1FBDB0285F1E077 /* SyncQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncQueue.swift; sourceTree = "<group>"; };
@@ -290,6 +294,8 @@
 			children = (
 				26E5EF2EE2C3B05E44331051 /* AchievementTests.swift */,
 				EF75F7F9B092B742C56375FA /* GameProgressTests.swift */,
+				995CA50375993CE9F0ECEC71 /* ProgressPathTests.swift */,
+				24149BAB02C874F10BA73B0D /* UserTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -448,6 +454,8 @@
 			files = (
 				F97A8711DCB17F4DDB84A3A6 /* AchievementTests.swift in Sources */,
 				F012C155455C3CBC3F4DECDF /* GameProgressTests.swift in Sources */,
+				ECFF637CB4F207B978314A91 /* ProgressPathTests.swift in Sources */,
+				39B63691E8B5EA760550E8DD /* UserTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
