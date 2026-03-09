@@ -38,7 +38,9 @@ struct OnboardingFlowView: View {
                 CompletionPage(onComplete: { completeOnboarding() }).tag(10)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
+            .animation(.easeInOut(duration: 0.2), value: currentPage)
         }
+        .drawingGroup()
         .preferredColorScheme(theme == 0 ? .dark : .light)
     }
     
