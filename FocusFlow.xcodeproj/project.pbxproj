@@ -12,7 +12,6 @@
 		0A2C3142E8529FF886DA5503 /* UniversalChallengeView.swift.broken3 in Resources */ = {isa = PBXBuildFile; fileRef = 0F0D277B4955AC8D35AA9C77 /* UniversalChallengeView.swift.broken3 */; };
 		0A841C6E7A673590635B1215 /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619652A96ED7FC53389BB8EA /* SupabaseService.swift */; };
 		0AF234D08956B16DE5E483A4 /* BreathingExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52666F0B05379E2670AC6932 /* BreathingExerciseView.swift */; };
-		0B081C6C4FCE7EAA7D55BD59 /* WindingProgressPath.swift.backup in Resources */ = {isa = PBXBuildFile; fileRef = 53FC63DCF166E66E8D0FA8E1 /* WindingProgressPath.swift.backup */; };
 		0DF7BFA9DA55BBB0BB86BE5E /* ChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2505ECE7128F7B00B5D3EC /* ChallengeView.swift */; };
 		198C8A013D88BECB65C3E24A /* UniversalChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3DCE37315B42E2CAA191DC1 /* UniversalChallengeView.swift */; };
 		1F0F048B762982C7D862B598 /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC42C74D5637FA9E6A946E9F /* InsightsView.swift */; };
@@ -60,6 +59,7 @@
 		D2CE236CD4C89487E0723264 /* DuolingoPathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E6EF3D646C8DB229A91D0C /* DuolingoPathView.swift */; };
 		EECD71FCF0299B312137F639 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A38B26903E4527D53A0945 /* NotificationManager.swift */; };
 		EF321A8CE43CF65B58890B1A /* FakeNotificationsChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06A539CE472AC6239A1695 /* FakeNotificationsChallengeView.swift */; };
+		F012C155455C3CBC3F4DECDF /* GameProgressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF75F7F9B092B742C56375FA /* GameProgressTests.swift */; };
 		F3C599B801008C41B6ABED77 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40CB4BE7CF1F995E25536E /* AppConfig.swift */; };
 		F5E51C06E2FD7C5327823851 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831747B052CD9BF1B19B0123 /* ContentView.swift */; };
 		F97A8711DCB17F4DDB84A3A6 /* AchievementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E5EF2EE2C3B05E44331051 /* AchievementTests.swift */; };
@@ -95,7 +95,6 @@
 		4548CFE88CAE78080A2A0F42 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		4C8405765EFD7768023303DE /* ScrollStoppingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollStoppingView.swift; sourceTree = "<group>"; };
 		52666F0B05379E2670AC6932 /* BreathingExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathingExerciseView.swift; sourceTree = "<group>"; };
-		53FC63DCF166E66E8D0FA8E1 /* WindingProgressPath.swift.backup */ = {isa = PBXFileReference; path = WindingProgressPath.swift.backup; sourceTree = "<group>"; };
 		545230256D5F2A71262515B7 /* BiometricTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricTrackingView.swift; sourceTree = "<group>"; };
 		619652A96ED7FC53389BB8EA /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
 		64762F4DEDF251A68EC83208 /* AllChallenges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChallenges.swift; sourceTree = "<group>"; };
@@ -137,6 +136,7 @@
 		DB2505ECE7128F7B00B5D3EC /* ChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeView.swift; sourceTree = "<group>"; };
 		E2F6BD8E296AF1A9E065D31E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E7CE7EE6E98670688195C325 /* PracticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeView.swift; sourceTree = "<group>"; };
+		EF75F7F9B092B742C56375FA /* GameProgressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameProgressTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -231,7 +231,6 @@
 				244DE710D7D58E21A83D9BA7 /* ProgressPathView.swift */,
 				C78BC8B9AB0840EC35907819 /* ProgressView.swift */,
 				32FFCC417859C79EC5C7D41C /* WindingProgressPath.swift */,
-				53FC63DCF166E66E8D0FA8E1 /* WindingProgressPath.swift.backup */,
 			);
 			path = Progress;
 			sourceTree = "<group>";
@@ -290,6 +289,7 @@
 			isa = PBXGroup;
 			children = (
 				26E5EF2EE2C3B05E44331051 /* AchievementTests.swift */,
+				EF75F7F9B092B742C56375FA /* GameProgressTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -436,7 +436,6 @@
 				C0D25A4CFACECBD750997D59 /* UniversalChallengeView.swift.broken in Resources */,
 				25D1D29E71D4AD3FAD16E6D8 /* UniversalChallengeView.swift.broken2 in Resources */,
 				0A2C3142E8529FF886DA5503 /* UniversalChallengeView.swift.broken3 in Resources */,
-				0B081C6C4FCE7EAA7D55BD59 /* WindingProgressPath.swift.backup in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -448,6 +447,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F97A8711DCB17F4DDB84A3A6 /* AchievementTests.swift in Sources */,
+				F012C155455C3CBC3F4DECDF /* GameProgressTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
