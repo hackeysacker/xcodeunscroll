@@ -343,3 +343,117 @@ enum SkillType: String, CaseIterable {
         }
     }
 }
+
+// MARK: - Level Titles
+extension GameProgress {
+    /// Get the title based on current level
+    var levelTitle: String {
+        switch level {
+        case 1...4: return "Beginner"
+        case 5...9: return "Struggler"
+        case 10...14: return "Fighter"
+        case 15...19: return "Warrior"
+        case 20...29: return "Champion"
+        case 30...39: return "Legend"
+        default: return "Master"
+        }
+    }
+    
+    /// Get the title for a specific level
+    static func titleForLevel(_ level: Int) -> String {
+        switch level {
+        case 1...4: return "Beginner"
+        case 5...9: return "Struggler"
+        case 10...14: return "Fighter"
+        case 15...19: return "Warrior"
+        case 20...29: return "Champion"
+        case 30...39: return "Legend"
+        default: return "Master"
+        }
+    }
+    
+    /// Get the next title if upgrading
+    var nextLevelTitle: String {
+        GameProgress.titleForLevel(level + 1)
+    }
+    
+    /// Check if there's a title change at next level
+    var hasTitleChangeAtNextLevel: Bool {
+        let currentTitle = levelTitle
+        let nextTitle = GameProgress.titleForLevel(level + 1)
+        return currentTitle != nextTitle
+    }
+}
+
+// MARK: - XP Bonus System
+extension GameProgress {
+    /// Check if today is a weekend (Saturday or Sunday)
+    var isWeekend: Bool {
+        let calendar = Calendar.current
+        let weekday = calendar.component(.weekday, from: Date())
+        // Sunday = 1, Saturday = 7
+        return weekday == 1 || weekday == 7
+    }
+    
+    /// Weekend XP multiplier (1.25x)
+    static let weekendXPBonus: Double = 1.25
+    
+    /// Daily XP cap from check-ins
+    static let dailyXPCap: Int = 200
+    
+    /// Calculate XP with bonuses applied
+    func calculateXPWithBonus(baseXP: Int) -> Int {
+        var xp = Double(baseXP)
+        
+        // Apply weekend bonus
+        if isWeekend {
+            xp *= GameProgress.weekendXPBonus
+        }
+        
+        return Int(xp)
+    }
+    
+    /// Calculate difficulty multiplier for practice challenges
+    func calculateDifficultyMultiplier(for difficulty: Difficulty) -> Double {
+        // Base multiplier from difficulty
+        var multiplier = difficulty.xpMultiplier
+        
+        // Weekend bonus stacks with difficulty
+        if isWeekend {
+            multiplier *= GameProgress.weekendXPBonus
+        }
+        
+        return multiplier
+    }
+    
+    /// Track XP earned today for daily cap
+    private static var xpEarnedToday: Int = 0
+    
+    /// Get XP that can be earned today (remaining cap)
+    var xpRemainingToday: Int {
+        max(0, GameProgress.dailyXPCap - GameProgress.xpEarnedToday)
+    }
+    
+    /// Add XP with daily cap tracking
+    mutating func addXPWithCap(_ baseXP: Int) -> Int {
+        let bonusXP = calculateXPWithBonus(baseXP: baseXP)
+        let xpToAdd = min(bonusXP, xpRemainingToday)
+        
+        if xpToAdd > 0 {
+            GameProgress.xpEarnedToday += xpToAdd
+            totalXP += xpToAdd
+        }
+        
+        return xpToAdd
+    }
+    
+    /// Reset daily XP (call at midnight or app launch on new day)
+    static func resetDailyXP() {
+        xpEarnedToday = 0
+    }
+    
+    /// Initialize daily XP from stored value
+    static func initializeDailyXP(_ value: Int) {
+        xpEarnedToday = value
+    }
+}

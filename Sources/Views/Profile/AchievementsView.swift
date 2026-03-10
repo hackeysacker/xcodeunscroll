@@ -252,22 +252,31 @@ struct AchievementCard: View {
                     .foregroundColor(achievement.isUnlocked ? .white : .gray)
                     .lineLimit(1)
                 
-                // Rarity badge
+                // Tier badge and rarity
                 if achievement.isUnlocked {
                     HStack(spacing: 4) {
+                        // Show tier badge if available
+                        if achievement.tier != .bronze || achievement.rarity != .common {
+                            Text(achievement.tier.rawValue)
+                                .font(.system(size: 9, weight: .medium))
+                                .foregroundColor(achievement.tier.color)
+                            .padding(.horizontal, 4)
+                            .padding(.vertical, 2)
+                            .background(achievement.tier.color.opacity(0.2))
+                            .cornerRadius(4)
+                        }
                         Text(achievement.rarity.rawValue)
                             .font(.system(size: 9, weight: .medium))
                             .foregroundColor(achievement.rarity.color)
-                        Button(action: onShare) {
-                            Image(systemName: "square.and.arrow.up")
-                                .font(.system(size: 10))
-                                .foregroundColor(achievement.rarity.color)
-                        }
                     }
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
-                    .background(achievement.rarity.color.opacity(0.2))
-                    .cornerRadius(4)
+                    
+                    Button(action: onShare) {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.system(size: 10))
+                            .foregroundColor(achievement.rarity.color)
+                    }
                 } else {
                     // Progress indicator
                     HStack(spacing: 4) {

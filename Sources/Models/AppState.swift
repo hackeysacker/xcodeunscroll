@@ -848,7 +848,10 @@ class AppState: ObservableObject {
     func addXP(_ amount: Int) {
         guard var prog = progress else { return }
         let previousLevel = prog.level
-        prog.totalXP += amount
+        
+        // Apply weekend bonus if applicable
+        let finalXP = prog.calculateXPWithBonus(baseXP: amount)
+        prog.totalXP += finalXP
         
         // Check for level up
         let xpForNextLevel = prog.level * 100
@@ -875,8 +878,9 @@ class AppState: ObservableObject {
         guard var prog = progress else { return }
         let previousLevel = prog.level
         
-        // Add XP
-        prog.totalXP += xpEarned
+        // Add XP with weekend bonus applied
+        let finalXP = prog.calculateXPWithBonus(baseXP: xpEarned)
+        prog.totalXP += finalXP
         
         // Check level up
         let xpForNextLevel = prog.xpForNextLevel
@@ -898,7 +902,7 @@ class AppState: ObservableObject {
             score: score,
             duration: 0,
             isPerfect: score >= 100,
-            xpEarned: xpEarned,
+            xpEarned: finalXP,
             attemptedAt: Date()
         )
         prog.completedChallenges.append(attempt)
