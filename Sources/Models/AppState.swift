@@ -215,6 +215,13 @@ class AppState: ObservableObject {
             isAuthenticated = true
             isLoading = false
             
+            // Configure background sync with user info
+            BackgroundTaskManager.shared.configure(supabaseService: SupabaseService.shared, userId: session.user.id.uuidString)
+            BackgroundTaskManager.shared.setProgressGetter { [weak self] in
+                return self?.progress
+            }
+            BackgroundTaskManager.shared.scheduleBackgroundSync()
+            
             // Sync data after login
             await syncFromCloud(userId: session.user.id.uuidString)
         } catch {
@@ -241,6 +248,14 @@ class AppState: ObservableObject {
         do {
             let session = try await supabase.auth.session
             isAuthenticated = true
+            
+            // Configure background sync with user info
+            BackgroundTaskManager.shared.configure(supabaseService: SupabaseService.shared, userId: session.user.id.uuidString)
+            BackgroundTaskManager.shared.setProgressGetter { [weak self] in
+                return self?.progress
+            }
+            BackgroundTaskManager.shared.scheduleBackgroundSync()
+            
             await syncFromCloud(userId: session.user.id.uuidString)
         } catch {
             isAuthenticated = false

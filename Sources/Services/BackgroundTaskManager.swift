@@ -10,7 +10,22 @@ class BackgroundTaskManager {
     static let refreshTaskIdentifier = "com.focusflow.app.refresh"
     static let syncTaskIdentifier = "com.focusflow.app.sync"
     
+    private var supabaseService: SupabaseService?
+    private var currentUserId: String?
+    private var progressGetter: (() -> GameProgress?)?
+    
     private init() {}
+    
+    /// Set a closure to get current progress for background sync
+    func setProgressGetter(_ getter: @escaping () -> GameProgress?) {
+        self.progressGetter = getter
+    }
+    
+    /// Configure with Supabase service for sync operations
+    func configure(supabaseService: SupabaseService, userId: String) {
+        self.supabaseService = supabaseService
+        self.currentUserId = userId
+    }
     
     /// Register background tasks with the system
     func registerBackgroundTasks() {
@@ -67,12 +82,32 @@ class BackgroundTaskManager {
         // Create a task for the refresh
         let refreshTask = Task {
             do {
-                // Check for any pending sync operations
-                // This would sync data from cloud if needed
+                // Check for any pending sync operations and fetch latest cloud data
                 print("🔄 Running app refresh...")
                 
-                // Simulate some work
-                try await Task.sleep(nanoseconds: 1_000_000_000)
+                guard let supabase = supabaseService, let userId = currentUserId else {
+                    task.setTaskCompleted(success: false)
+                    return
+                }
+                
+                // Process any pending offline operations
+                await SyncQueue.shared.processQueue(supabaseService: supabase, userId: userId)
+                
+                // Fetch latest progress from cloud
+                do {
+                    _ = try await supabase.fetchGameProgress(userId: userId)
+                    print("☁️ Cloud data refreshed")
+                } catch {
+                    print("⚠️ Could not fetch cloud data: \(error)")
+                }
+                
+                // Fetch latest heart state
+                do {
+                    _ = try await supabase.fetchHeartState(userId: userId)
+                    print("❤️ Heart state refreshed")
+                } catch {
+                    print("⚠️ Could not fetch heart state: \(error)")
+                }
                 
                 task.setTaskCompleted(success: true)
             } catch {
@@ -97,10 +132,54 @@ class BackgroundTaskManager {
                 // Perform data sync
                 print("🔄 Running background sync...")
                 
-                // This would sync user data to/from cloud
-                // For now just simulate work
-                try await Task.sleep(nanoseconds: 2_000_000_000)
+                guard let supabase = supabaseService, let userId = currentUserId else {
+                    task.setTaskCompleted(success: false)
+                    return
+                }
                 
+                // Process pending operations from SyncQueue
+                await SyncQueue.shared.processQueue(supabaseService: supabase, userId: userId)
+                
+                // Upload latest progress to cloud
+                if let progress = progressGetter?() {
+                    let progressRecord = GameProgressRecord(
+                        userId: userId,
+                        level: progress.level,
+                        xp: progress.currentLevelXP,
+                        totalXp: progress.totalXP,
+                        streak: progress.streakDays,
+                        longestStreak: progress.streakDays,
+                        lastSessionDate: progress.lastActivityDate,
+                        streakFreezeUsed: progress.streakFreezeUsed,
+                        totalSessionsCompleted: progress.completedChallenges.count,
+                        totalChallengesCompleted: progress.completedChallenges.count,
+                        updatedAt: Date()
+                    )
+                    
+                    do {
+                        try await supabase.upsertGameProgress(progressRecord)
+                        print("☁️ Progress synced to cloud")
+                    } catch {
+                        print("⚠️ Could not sync progress: \(error)")
+                    }
+                }
+                
+                // Upload skill progress
+                if let progress = progressGetter?() {
+                    do {
+                        try await supabase.updateSkillProgress(
+                            userId: userId,
+                            focusScore: progress.focusScore,
+                            impulseControlScore: progress.impulseControlScore,
+                            distractionResistanceScore: progress.distractionResistanceScore
+                        )
+                        print("🧠 Skills synced to cloud")
+                    } catch {
+                        print("⚠️ Could not sync skills: \(error)")
+                    }
+                }
+                
+                print("✅ Background sync completed")
                 task.setTaskCompleted(success: true)
             } catch {
                 task.setTaskCompleted(success: false)
