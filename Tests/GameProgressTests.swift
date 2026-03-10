@@ -7,41 +7,41 @@ final class GameProgressTests: XCTestCase {
     
     func testXPForNextLevel() {
         // Level 1: 1 * 100 + 0 * 50 = 100 XP needed
-        XCTAssertEqual(GameProgress(level: 1, totalXP: 0, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:]).xpForNextLevel, 100)
+        XCTAssertEqual(GameProgress(level: 1, totalXP: 0, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:], focusScore: 10, impulseControlScore: 10, distractionResistanceScore: 10, streakFreezeUsed: false).xpForNextLevel, 100)
         
         // Level 2: 2 * 100 + 1 * 50 = 250 XP needed
-        XCTAssertEqual(GameProgress(level: 2, totalXP: 100, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:]).xpForNextLevel, 250)
+        XCTAssertEqual(GameProgress(level: 2, totalXP: 100, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:], focusScore: 10, impulseControlScore: 10, distractionResistanceScore: 10, streakFreezeUsed: false).xpForNextLevel, 250)
         
         // Level 3: 3 * 100 + 2 * 50 = 400 XP needed
-        XCTAssertEqual(GameProgress(level: 3, totalXP: 350, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:]).xpForNextLevel, 400)
+        XCTAssertEqual(GameProgress(level: 3, totalXP: 350, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:], focusScore: 10, impulseControlScore: 10, distractionResistanceScore: 10, streakFreezeUsed: false).xpForNextLevel, 400)
     }
     
     func testCurrentLevelXP() {
         // Fresh level 1 player has 0 current level XP
-        var progress = GameProgress(level: 1, totalXP: 0, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:])
+        var progress = GameProgress(level: 1, totalXP: 0, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:], focusScore: 10, impulseControlScore: 10, distractionResistanceScore: 10, streakFreezeUsed: false)
         XCTAssertEqual(progress.currentLevelXP, 0)
         
         // Level 2 with 150 total XP = 50 current level XP
-        progress = GameProgress(level: 2, totalXP: 150, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:])
+        progress = GameProgress(level: 2, totalXP: 150, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:], focusScore: 10, impulseControlScore: 10, distractionResistanceScore: 10, streakFreezeUsed: false)
         XCTAssertEqual(progress.currentLevelXP, 50)
     }
     
     func testProgressToNextLevel() {
-        var progress = GameProgress(level: 1, totalXP: 0, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:])
+        var progress = GameProgress(level: 1, totalXP: 0, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:], focusScore: 10, impulseControlScore: 10, distractionResistanceScore: 10, streakFreezeUsed: false)
         
         // 0/100 = 0%
         XCTAssertEqual(progress.progressToNextLevel, 0.0, accuracy: 0.001)
         
         // 50/100 = 50%
-        progress = GameProgress(level: 1, totalXP: 50, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:])
+        progress = GameProgress(level: 1, totalXP: 50, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:], focusScore: 10, impulseControlScore: 10, distractionResistanceScore: 10, streakFreezeUsed: false)
         XCTAssertEqual(progress.progressToNextLevel, 0.5, accuracy: 0.001)
         
         // 100/100 = 100% (capped)
-        progress = GameProgress(level: 1, totalXP: 100, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:])
+        progress = GameProgress(level: 1, totalXP: 100, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:], focusScore: 10, impulseControlScore: 10, distractionResistanceScore: 10, streakFreezeUsed: false)
         XCTAssertEqual(progress.progressToNextLevel, 1.0, accuracy: 0.001)
         
         // Over 100% should be capped at 1.0
-        progress = GameProgress(level: 1, totalXP: 150, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:])
+        progress = GameProgress(level: 1, totalXP: 150, streakDays: 0, hearts: 5, gems: 0, completedChallenges: [], skills: [:], focusScore: 10, impulseControlScore: 10, distractionResistanceScore: 10, streakFreezeUsed: false)
         XCTAssertEqual(progress.progressToNextLevel, 1.0, accuracy: 0.001)
     }
     

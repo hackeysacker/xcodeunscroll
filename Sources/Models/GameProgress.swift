@@ -27,6 +27,42 @@ struct GameProgress: Codable {
     static let defaultImpulseControlScore = 10
     static let defaultDistractionResistanceScore = 10
     
+    // Default initializer
+    init() {
+        self.level = 1
+        self.totalXP = 0
+        self.streakDays = 0
+        self.lastActivityDate = nil
+        self.hearts = 5
+        self.gems = 0
+        self.completedChallenges = []
+        self.skills = [:]
+        self.focusScore = Self.defaultFocusScore
+        self.impulseControlScore = Self.defaultImpulseControlScore
+        self.distractionResistanceScore = Self.defaultDistractionResistanceScore
+        self.dailyChallenges = nil
+        self.lastDailyRefreshDate = nil
+        self.streakFreezeUsed = false
+    }
+    
+    // Memberwise initializer
+    init(level: Int, totalXP: Int, streakDays: Int, lastActivityDate: Date? = nil, hearts: Int, gems: Int, completedChallenges: [ChallengeAttempt], skills: [String: Int], focusScore: Int, impulseControlScore: Int, distractionResistanceScore: Int, dailyChallenges: [DailyChallenge]? = nil, lastDailyRefreshDate: Date? = nil, streakFreezeUsed: Bool) {
+        self.level = level
+        self.totalXP = totalXP
+        self.streakDays = streakDays
+        self.lastActivityDate = lastActivityDate
+        self.hearts = hearts
+        self.gems = gems
+        self.completedChallenges = completedChallenges
+        self.skills = skills
+        self.focusScore = focusScore
+        self.impulseControlScore = impulseControlScore
+        self.distractionResistanceScore = distractionResistanceScore
+        self.dailyChallenges = dailyChallenges
+        self.lastDailyRefreshDate = lastDailyRefreshDate
+        self.streakFreezeUsed = streakFreezeUsed
+    }
+    
     var xpForNextLevel: Int {
         return level * 100 + (level - 1) * 50
     }
