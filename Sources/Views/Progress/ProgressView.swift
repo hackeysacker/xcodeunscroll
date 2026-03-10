@@ -113,11 +113,13 @@ struct ProgressView: View {
                 .font(.headline)
                 .foregroundColor(.white)
             
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                 StatCard(title: "Streak", value: "\(appState.progress?.streakDays ?? 0)", icon: "flame.fill", color: .orange)
                 StatCard(title: "Gems", value: "\(appState.progress?.gems ?? 0)", icon: "diamond.fill", color: .cyan)
                 StatCard(title: "Hearts", value: "\(appState.progress?.hearts ?? 5)", icon: "heart.fill", color: .red)
-                StatCard(title: "Badges", value: "0", icon: "trophy.fill", color: .yellow)
+                StatCard(title: "Badges", value: "\(appState.achievementStore.achievements.filter { $0.isUnlocked }.count)", icon: "trophy.fill", color: .yellow)
+                StatCard(title: "Challenges", value: "\(appState.progress?.completedChallenges.count ?? 0)", icon: "checkmark.circle.fill", color: .green)
+                StatCard(title: "Total XP", value: "\(appState.progress?.totalXP ?? 0)", icon: "star.fill", color: .purple)
             }
         }
         .padding()
@@ -131,15 +133,64 @@ struct ProgressView: View {
                 .font(.headline)
                 .foregroundColor(.white)
             
-            VStack(spacing: 8) {
-                ActivityRow(title: "Focus Challenge", subtitle: "Completed • +25 XP", icon: "brain.head.profile", color: .purple)
-                ActivityRow(title: "Breathing Exercise", subtitle: "Completed • +15 XP", icon: "wind", color: .blue)
-                ActivityRow(title: "Streak Maintained", subtitle: "7 day streak! • +50 XP", icon: "flame.fill", color: .orange)
+            let recentChallenges = Array((appState.progress?.completedChallenges ?? []).suffix(5).reversed())
+            
+            if recentChallenges.isEmpty {
+                VStack(spacing: 8) {
+                    Image(systemName: "clock.badge.questionmark")
+                        .font(.largeTitle)
+                        .foregroundColor(.gray)
+                    Text("No recent activity")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                    Text("Complete your first challenge to see it here!")
+                        .font(.caption)
+                        .foregroundColor(.gray.opacity(0.7))
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 20)
+            } else {
+                VStack(spacing: 8) {
+                    ForEach(recentChallenges) { attempt in
+                        ActivityRow(
+                            title: attempt.challenge.rawValue,
+                            subtitle: "\(formatDate(attempt.attemptedAt)) • +\(attempt.xpEarned) XP",
+                            icon: attempt.challenge.icon,
+                            color: categoryColor(for: attempt.challenge.category)
+                        )
+                    }
+                }
             }
         }
         .padding()
         .background(Color.white.opacity(0.05))
         .cornerRadius(16)
+    }
+    
+    func formatDate(_ date: Date) -> String {
+        let calendar = Calendar.current
+        if calendar.isDateInToday(date) {
+            return "Today"
+        } else if calendar.isDateInYesterday(date) {
+            return "Yesterday"
+        } else {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .short
+            return formatter.string(from: date)
+        }
+    }
+    
+    func categoryColor(for category: ChallengeCategory) -> Color {
+        switch category {
+        case .focus: return .purple
+        case .memory: return .blue
+        case .reaction: return .orange
+        case .breathing: return .cyan
+        case .discipline: return .green
+        case .speed: return .red
+        case .impulse: return .pink
+        case .calm: return .teal
+        }
     }
     
     var xpProgress: CGFloat {
