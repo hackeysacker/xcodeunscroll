@@ -8,6 +8,8 @@ struct AchievementsView: View {
     @State private var selectedCategory: Achievement.AchievementCategory?
     @State private var showUnlocked: Bool = false
     @State private var recentlyUnlocked: Achievement?
+    @State private var showShareSheet: Bool = false
+    @State private var achievementToShare: Achievement?
     
     var body: some View {
         ZStack {
@@ -40,6 +42,14 @@ struct AchievementsView: View {
             if let achievement = recentlyUnlocked {
                 AchievementUnlockSheet(achievement: achievement) {
                     showUnlocked = false
+                }
+            }
+        }
+        .sheet(isPresented: $showShareSheet) {
+            if let achievement = achievementToShare {
+                ShareAchievementSheet(achievement: achievement) {
+                    showShareSheet = false
+                    achievementToShare = nil
                 }
             }
         }
@@ -147,6 +157,9 @@ struct AchievementsView: View {
                 ForEach(filteredAchievements) { achievement in
                     AchievementCard(achievement: achievement) {
                         // Show detail
+                    } onShare: {
+                        achievementToShare = achievement
+                        showShareSheet = true
                     }
                 }
             }
@@ -212,6 +225,7 @@ struct CategoryTabButton: View {
 struct AchievementCard: View {
     let achievement: Achievement
     let action: () -> Void
+    let onShare: () -> Void
     
     var body: some View {
         Button(action: action) {
@@ -240,13 +254,20 @@ struct AchievementCard: View {
                 
                 // Rarity badge
                 if achievement.isUnlocked {
-                    Text(achievement.rarity.rawValue)
-                        .font(.system(size: 9, weight: .medium))
-                        .foregroundColor(achievement.rarity.color)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(achievement.rarity.color.opacity(0.2))
-                        .cornerRadius(4)
+                    HStack(spacing: 4) {
+                        Text(achievement.rarity.rawValue)
+                            .font(.system(size: 9, weight: .medium))
+                            .foregroundColor(achievement.rarity.color)
+                        Button(action: onShare) {
+                            Image(systemName: "square.and.arrow.up")
+                                .font(.system(size: 10))
+                                .foregroundColor(achievement.rarity.color)
+                        }
+                    }
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(achievement.rarity.color.opacity(0.2))
+                    .cornerRadius(4)
                 } else {
                     // Progress indicator
                     HStack(spacing: 4) {
@@ -365,6 +386,114 @@ struct AchievementUnlockSheet: View {
                 showAnimation = true
             }
         }
+    }
+}
+
+// MARK: - Share Achievement Sheet
+struct ShareAchievementSheet: View {
+    let achievement: Achievement
+    let onDismiss: () -> Void
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 24) {
+                // Preview card
+                VStack(spacing: 16) {
+                    // Icon
+                    ZStack {
+                        Circle()
+                            .fill(achievement.category.color.opacity(0.2))
+                            .frame(width: 80, height: 80)
+                        Image(systemName: achievement.icon)
+                            .font(.system(size: 36))
+                            .foregroundColor(achievement.category.color)
+                    }
+                    
+                    // Title
+                    Text(achievement.title)
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.white)
+                    
+                    // Description
+                    Text(achievement.description)
+                        .font(.system(size: 14))
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 24)
+                    
+                    // Category & Rarity
+                    HStack(spacing: 12) {
+                        HStack(spacing: 4) {
+                            Image(systemName: achievement.category.icon)
+                            Text(achievement.category.rawValue)
+                        }
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(achievement.category.color)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(achievement.category.color.opacity(0.2))
+                        .cornerRadius(12)
+                        
+                        Text(achievement.rarity.rawValue)
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(achievement.rarity.color)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(achievement.rarity.color.opacity(0.2))
+                            .cornerRadius(12)
+                    }
+                }
+                .padding(24)
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color(hex: "1E293B"))
+                )
+                .padding(.horizontal, 24)
+                .padding(.top, 24)
+                
+                // Share buttons
+                VStack(spacing: 12) {
+                    // Share button
+                    ShareLink(item: shareText) {
+                        Label("Share Achievement", systemImage: "square.and.arrow.up")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(LinearGradient(colors: [.purple, .indigo], startPoint: .leading, endPoint: .trailing))
+                            .cornerRadius(12)
+                    }
+                    .padding(.horizontal, 24)
+                    
+                    Button(action: onDismiss) {
+                        Text("Done")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.gray)
+                    }
+                    .padding(.top, 8)
+                }
+                
+                Spacer()
+            }
+            .background(Color(hex: "0A0F1C").ignoresSafeArea())
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Share Achievement")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(.white)
+                }
+            }
+            .toolbarBackground(Color(hex: "0A0F1C"), for: .navigationBar)
+        }
+    }
+    
+    var shareText: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        let dateString = achievement.unlockedAt.map { dateFormatter.string(from: $0) } ?? "today"
+        
+        return "🎉 I just unlocked the \"\(achievement.title)\" achievement in FocusFlow! \(achievement.description) #FocusFlow #Achievement"
     }
 }
 
