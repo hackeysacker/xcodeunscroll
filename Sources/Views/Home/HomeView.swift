@@ -20,6 +20,11 @@ struct HomeView: View {
                     // Level progress card
                     levelProgressCard
                     
+                    // Weekend bonus banner
+                    if isWeekend {
+                        weekendBonusBanner
+                    }
+                    
                     // Stats row
                     statsRow
                     
@@ -206,6 +211,58 @@ struct HomeView: View {
     var levelProgress: CGFloat {
         guard let progress = appState.progress else { return 0 }
         return CGFloat(progress.currentLevelXP) / CGFloat(max(progress.xpForNextLevel, 1))
+    }
+    
+    // MARK: - Weekend Bonus
+    var weekendBonus: Double {
+        let calendar = Calendar.current
+        let weekday = calendar.component(.weekday, from: Date())
+        // Sunday = 1, Saturday = 7
+        return (weekday == 1 || weekday == 7) ? 1.25 : 1.0
+    }
+    
+    var isWeekend: Bool {
+        let calendar = Calendar.current
+        let weekday = calendar.component(.weekday, from: Date())
+        return weekday == 1 || weekday == 7
+    }
+    
+    var weekendBonusBanner: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "sparkles")
+                .font(.system(size: 20))
+                .foregroundColor(.yellow)
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Weekend Bonus Active!")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.white)
+                Text("Earn 1.25x XP on all challenges today")
+                    .font(.system(size: 12))
+                    .foregroundColor(.gray)
+            }
+            
+            Spacer()
+            
+            Text("+25%")
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(.yellow)
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(
+                    LinearGradient(
+                        colors: [.yellow.opacity(0.2), .orange.opacity(0.2)],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.yellow.opacity(0.3), lineWidth: 1)
+        )
     }
     
     // MARK: - Stats Row
