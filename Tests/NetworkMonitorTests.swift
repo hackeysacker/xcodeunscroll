@@ -2,6 +2,7 @@ import XCTest
 @testable import FocusFlow
 import Network
 
+@MainActor
 final class NetworkMonitorTests: XCTestCase {
     
     // MARK: - Singleton Test

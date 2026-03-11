@@ -1,6 +1,8 @@
 import XCTest
+import SwiftUI
 @testable import FocusFlow
 
+@MainActor
 final class ThemeManagerTests: XCTestCase {
     
     var themeManager: ThemeManager!
