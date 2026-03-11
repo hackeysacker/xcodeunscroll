@@ -42,6 +42,7 @@
 		8A3C9B44783F971748A2BD1F /* ScreenTimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857A322FA2B7012519E495CA /* ScreenTimeManager.swift */; };
 		8AA86381B7F2CC33EE129582 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CAD608545BC76F272E9D482 /* AppState.swift */; };
 		8B56E05EDE9D04E4C1E7AA82 /* BiometricTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545230256D5F2A71262515B7 /* BiometricTrackingView.swift */; };
+		917045577D74639F48B12E1E /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985D6A6C573E36F0F259A02B /* CacheManager.swift */; };
 		92E5F5F021A9BF5A2D7AEF32 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3EBA258C9AD9784DA8E21B /* HomeView.swift */; };
 		944A129AECA5A222B36E9A85 /* NotificationManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E67AAFEF35CBD0B2D50C42E /* NotificationManagerTests.swift */; };
 		94CEA6AEA84AF1224308D6F9 /* ColorPatternMemoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F8881AB2FCA09C4A49E7F8 /* ColorPatternMemoryView.swift */; };
@@ -63,6 +64,7 @@
 		CC1675CD65722B4C03D7E4BF /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B135324C952FCE29E5967D85 /* BackgroundTaskManager.swift */; };
 		CCD1EA47C33F4552AAFFDAB9 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 712E75634EDDF39FE0EC2015 /* LeaderboardView.swift */; };
 		D2CE236CD4C89487E0723264 /* DuolingoPathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E6EF3D646C8DB229A91D0C /* DuolingoPathView.swift */; };
+		DB3C3FE3128DC6710E4FA8C5 /* CacheManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C3A68E3B8BD5E4077AFE43B /* CacheManagerTests.swift */; };
 		ECFF637CB4F207B978314A91 /* ProgressPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CA50375993CE9F0ECEC71 /* ProgressPathTests.swift */; };
 		EECD71FCF0299B312137F639 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A38B26903E4527D53A0945 /* NotificationManager.swift */; };
 		EF321A8CE43CF65B58890B1A /* FakeNotificationsChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06A539CE472AC6239A1695 /* FakeNotificationsChallengeView.swift */; };
@@ -103,6 +105,7 @@
 		391EDD392A163136D6EE989E /* FocusFlowApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusFlowApp.swift; sourceTree = "<group>"; };
 		3F31947429A4CB879F0BA04C /* LevelUpCelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelUpCelebrationView.swift; sourceTree = "<group>"; };
 		4548CFE88CAE78080A2A0F42 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		4C3A68E3B8BD5E4077AFE43B /* CacheManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManagerTests.swift; sourceTree = "<group>"; };
 		4C8405765EFD7768023303DE /* ScrollStoppingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollStoppingView.swift; sourceTree = "<group>"; };
 		4E67AAFEF35CBD0B2D50C42E /* NotificationManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManagerTests.swift; sourceTree = "<group>"; };
 		52666F0B05379E2670AC6932 /* BreathingExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathingExerciseView.swift; sourceTree = "<group>"; };
@@ -127,6 +130,7 @@
 		8CAD608545BC76F272E9D482 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		8CBD6A4D1EEFFE1FAEF1DD40 /* AllChallengesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChallengesTests.swift; sourceTree = "<group>"; };
 		94A38B26903E4527D53A0945 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		985D6A6C573E36F0F259A02B /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		995CA50375993CE9F0ECEC71 /* ProgressPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPathTests.swift; sourceTree = "<group>"; };
 		99852AD5608C8EED645C6ACE /* AchievementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsView.swift; sourceTree = "<group>"; };
 		A244A9E11BC14987440F19CC /* HeartRefillManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRefillManager.swift; sourceTree = "<group>"; };
@@ -227,6 +231,7 @@
 				7E5DE8F8C483D11D5CD1165C /* AudioHapticManager.swift */,
 				B135324C952FCE29E5967D85 /* BackgroundTaskManager.swift */,
 				D7CDCB6FA66F659CA26F3990 /* BreathingGuide.swift */,
+				985D6A6C573E36F0F259A02B /* CacheManager.swift */,
 				A244A9E11BC14987440F19CC /* HeartRefillManager.swift */,
 				4548CFE88CAE78080A2A0F42 /* NetworkMonitor.swift */,
 				94A38B26903E4527D53A0945 /* NotificationManager.swift */,
@@ -304,6 +309,7 @@
 			children = (
 				26E5EF2EE2C3B05E44331051 /* AchievementTests.swift */,
 				8CBD6A4D1EEFFE1FAEF1DD40 /* AllChallengesTests.swift */,
+				4C3A68E3B8BD5E4077AFE43B /* CacheManagerTests.swift */,
 				0A03D7E0788A76A00EE01AEA /* CoreChallengesTests.swift */,
 				EF75F7F9B092B742C56375FA /* GameProgressTests.swift */,
 				1EC9016393423ADE1F4FAF82 /* HeartRefillManagerTests.swift */,
@@ -455,6 +461,7 @@
 			files = (
 				F97A8711DCB17F4DDB84A3A6 /* AchievementTests.swift in Sources */,
 				C6D348FE5B639FAEF756F446 /* AllChallengesTests.swift in Sources */,
+				DB3C3FE3128DC6710E4FA8C5 /* CacheManagerTests.swift in Sources */,
 				AD93658AA5C2DFD78C0920A0 /* CoreChallengesTests.swift in Sources */,
 				F012C155455C3CBC3F4DECDF /* GameProgressTests.swift in Sources */,
 				BA99447CB86EEEF0CB19D15F /* HeartRefillManagerTests.swift in Sources */,
@@ -483,6 +490,7 @@
 				8B56E05EDE9D04E4C1E7AA82 /* BiometricTrackingView.swift in Sources */,
 				0AF234D08956B16DE5E483A4 /* BreathingExerciseView.swift in Sources */,
 				6171F9AAF71B5AA23103A17E /* BreathingGuide.swift in Sources */,
+				917045577D74639F48B12E1E /* CacheManager.swift in Sources */,
 				72EC4BF242F912EC1C6F6655 /* ChallengeExercises.swift in Sources */,
 				0DF7BFA9DA55BBB0BB86BE5E /* ChallengeView.swift in Sources */,
 				94CEA6AEA84AF1224308D6F9 /* ColorPatternMemoryView.swift in Sources */,

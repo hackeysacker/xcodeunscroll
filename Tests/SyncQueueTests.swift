@@ -85,24 +85,24 @@ final class SyncQueueTests: XCTestCase {
     
     func testSyncOperationTypeUpdateProgress() {
         let progress = GameProgressRecord(
-            id: UUID(),
             userId: UUID().uuidString,
-            totalXP: 1000,
-            currentLevel: 5,
-            currentStreak: 3,
+            level: 5,
+            xp: 250,
+            totalXp: 1000,
+            streak: 3,
             longestStreak: 7,
-            gems: 250,
-            hearts: 5,
+            lastSessionDate: nil,
+            streakFreezeUsed: nil,
+            totalSessionsCompleted: 10,
             totalChallengesCompleted: 50,
-            totalTimeSpent: 3600,
-            lastPlayedAt: Date()
+            updatedAt: Date()
         )
         let operation = SyncOperation(type: .updateProgress(progress))
         
         if case .updateProgress(let stored) = operation.type {
-            XCTAssertEqual(stored.totalXP, 1000)
-            XCTAssertEqual(stored.currentLevel, 5)
-            XCTAssertEqual(stored.currentStreak, 3)
+            XCTAssertEqual(stored.totalXp, 1000)
+            XCTAssertEqual(stored.level, 5)
+            XCTAssertEqual(stored.streak, 3)
         } else {
             XCTFail("Expected updateProgress operation type")
         }

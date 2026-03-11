@@ -171,7 +171,7 @@ final class ThemeManagerTests: XCTestCase {
     }
     
     func testThemeByIdNotFound() {
-        let nonexistentTheme = AppTheme.defaultThemes.first { $0.id =="nonexistent" }
+        let nonexistentTheme = AppTheme.defaultThemes.first { $0.id == "nonexistent" }
         
         XCTAssertNil(nonexistentTheme, "Should not find nonexistent theme")
     }
