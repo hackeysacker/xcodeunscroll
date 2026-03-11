@@ -3,7 +3,7 @@ import AVFoundation
 import UIKit
 
 // MARK: - Breath Phase Enum
-enum BreathPhase: String {
+enum BreathPhase: String, CaseIterable {
     case inhale = "Breathe In"
     case hold = "Hold"
     case exhale = "Breathe Out"
