@@ -447,3 +447,27 @@ struct StreakDisplay: View {
         )
     }
 }
+
+// MARK: - App Background Gradient
+
+/// Standard app background gradient modifier
+struct AppBackgroundModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .background(
+                LinearGradient(
+                    colors: [Color(hex: "0A0F1C"), Color(hex: "1E293B")],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea()
+            )
+    }
+}
+
+extension View {
+    /// Apply standard app background gradient
+    func appBackground() -> some View {
+        modifier(AppBackgroundModifier())
+    }
+}
