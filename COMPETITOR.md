@@ -1,7 +1,7 @@
-# FocusFlow - Competitive Research
+# Unscroll - Competitive Research
 
 ## App Overview
-- **Name:** FocusFlow
+- **Name:** Unscroll
 - **Type:** Productivity/Focus Timer iOS App
 - **Core Feature:** Gamified focus timer with challenges, streaks, gems, XP, levels
 - **Target:** Students, remote workers, productivity enthusiasts
@@ -84,7 +84,7 @@
 
 ## Feature Comparison
 
-| Feature | FocusFlow | Forest | Todoist | TickTick |
+| Feature | Unscroll | Forest | Todoist | TickTick |
 |---------|-----------|--------|---------|----------|
 | Focus Timer | ✅ | ✅ | ❌ | ✅ |
 | Gamification | ✅ (XP/Levels) | ✅ (trees) | ❌ | ❌ |
@@ -99,7 +99,7 @@
 
 ## Differentiation Strategy
 
-### FocusFlow's Edge
+### Unscroll's Edge
 1. **Deep Gamification** - XP, levels, gems, hearts - RPG-style progression
 2. **Challenge System** - Daily/weekly challenges with rewards
 3. **AI-Powered Insights** - Not just tracking, but AI analysis

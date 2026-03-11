@@ -1,5 +1,5 @@
 import XCTest
-@testable import FocusFlow
+@testable import Unscroll
 
 final class SkillProgressTests: XCTestCase {
     

@@ -426,7 +426,7 @@ struct SettingsView: View {
     
     var appInfoSection: some View {
         VStack(spacing: 8) {
-            Text("FocusFlow").font(.system(size: 16, weight: .bold)).foregroundColor(.white)
+            Text("Unscroll").font(.system(size: 16, weight: .bold)).foregroundColor(.white)
             Text("Version 1.0.0 (Build 1)").font(.system(size: 12)).foregroundColor(.gray)
             Text("Made with 🦞").font(.system(size: 12)).foregroundColor(.gray)
         }

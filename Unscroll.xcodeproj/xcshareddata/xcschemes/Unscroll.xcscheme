@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "DC4994EFAFF2408E8660C9BD"
-               BuildableName = "FocusFlow.app"
-               BlueprintName = "FocusFlow"
-               ReferencedContainer = "container:FocusFlow.xcodeproj">
+               BuildableName = "Unscroll.app"
+               BlueprintName = "Unscroll"
+               ReferencedContainer = "container:Unscroll.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DC4994EFAFF2408E8660C9BD"
-            BuildableName = "FocusFlow.app"
-            BlueprintName = "FocusFlow"
-            ReferencedContainer = "container:FocusFlow.xcodeproj">
+            BuildableName = "Unscroll.app"
+            BlueprintName = "Unscroll"
+            ReferencedContainer = "container:Unscroll.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -56,9 +56,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DC4994EFAFF2408E8660C9BD"
-            BuildableName = "FocusFlow.app"
-            BlueprintName = "FocusFlow"
-            ReferencedContainer = "container:FocusFlow.xcodeproj">
+            BuildableName = "Unscroll.app"
+            BlueprintName = "Unscroll"
+            ReferencedContainer = "container:Unscroll.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -75,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DC4994EFAFF2408E8660C9BD"
-            BuildableName = "FocusFlow.app"
-            BlueprintName = "FocusFlow"
-            ReferencedContainer = "container:FocusFlow.xcodeproj">
+            BuildableName = "Unscroll.app"
+            BlueprintName = "Unscroll"
+            ReferencedContainer = "container:Unscroll.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

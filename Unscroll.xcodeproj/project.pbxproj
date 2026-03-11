@@ -29,7 +29,7 @@
 		8AA86381B7F2CC33EE129582 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CAD608545BC76F272E9D482 /* AppState.swift */; };
 		8B56E05EDE9D04E4C1E7AA82 /* BiometricTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545230256D5F2A71262515B7 /* BiometricTrackingView.swift */; };
 		92E5F5F021A9BF5A2D7AEF32 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3EBA258C9AD9784DA8E21B /* HomeView.swift */; };
-		95F3126B773BF04B587B9D7B /* FocusFlowApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391EDD392A163136D6EE989E /* FocusFlowApp.swift */; };
+		95F3126B773BF04B587B9D7B /* UnscrollApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391EDD392A163136D6EE989E /* UnscrollApp.swift */; };
 		972388A1B7060903E5624EFA /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7D8D62786DF6C72DA3AA8B /* User.swift */; };
 		9DC5D40EFD2626DFAF890B25 /* GameProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1F61973C2A75C153C055B1 /* GameProgress.swift */; };
 		9EE136EB0CF46882CE5756E0 /* AchievementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99852AD5608C8EED645C6ACE /* AchievementsView.swift */; };
@@ -50,7 +50,7 @@
 		2A1D2BC76B876CE74C2C5692 /* ProgressPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPath.swift; sourceTree = "<group>"; };
 		2D3EBA258C9AD9784DA8E21B /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		32FFCC417859C79EC5C7D41C /* WindingProgressPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindingProgressPath.swift; sourceTree = "<group>"; };
-		391EDD392A163136D6EE989E /* FocusFlowApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusFlowApp.swift; sourceTree = "<group>"; };
+		391EDD392A163136D6EE989E /* UnscrollApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnscrollApp.swift; sourceTree = "<group>"; };
 		3F31947429A4CB879F0BA04C /* LevelUpCelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelUpCelebrationView.swift; sourceTree = "<group>"; };
 		4C8405765EFD7768023303DE /* ScrollStoppingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollStoppingView.swift; sourceTree = "<group>"; };
 		53FC63DCF166E66E8D0FA8E1 /* WindingProgressPath.swift.backup */ = {isa = PBXFileReference; path = WindingProgressPath.swift.backup; sourceTree = "<group>"; };
@@ -63,14 +63,14 @@
 		715FD3D1A0334C57536C3103 /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
 		831747B052CD9BF1B19B0123 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		857A322FA2B7012519E495CA /* ScreenTimeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeManager.swift; sourceTree = "<group>"; };
-		8B7534EBF1F29EF3901E3D5F /* FocusFlow.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FocusFlow.entitlements; sourceTree = "<group>"; };
+		8B7534EBF1F29EF3901E3D5F /* Unscroll.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Unscroll.entitlements; sourceTree = "<group>"; };
 		8C8E39B9E5E9E8379D8F1B2F /* GlassComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassComponents.swift; sourceTree = "<group>"; };
 		8CAD608545BC76F272E9D482 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		99852AD5608C8EED645C6ACE /* AchievementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsView.swift; sourceTree = "<group>"; };
 		A2A993EEF0DB7111F16DA6C1 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		AB1F61973C2A75C153C055B1 /* GameProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameProgress.swift; sourceTree = "<group>"; };
 		AC42C74D5637FA9E6A946E9F /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
-		AF2CA8D18F777F2E2A08CB53 /* FocusFlow.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FocusFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AF2CA8D18F777F2E2A08CB53 /* Unscroll.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Unscroll.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAD6F49FCDB02DBEA3A18B60 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		BE1DE0BBF78B4E9618F75302 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		C18E6DACB2F83EA4DD476994 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -119,7 +119,7 @@
 		3FEAAE055FC1FDD581F0881F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AF2CA8D18F777F2E2A08CB53 /* FocusFlow.app */,
+				AF2CA8D18F777F2E2A08CB53 /* Unscroll.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -198,8 +198,8 @@
 		9AB278A4668194C1484E9526 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				8B7534EBF1F29EF3901E3D5F /* FocusFlow.entitlements */,
-				391EDD392A163136D6EE989E /* FocusFlowApp.swift */,
+				8B7534EBF1F29EF3901E3D5F /* Unscroll.entitlements */,
+				391EDD392A163136D6EE989E /* UnscrollApp.swift */,
 				E2F6BD8E296AF1A9E065D31E /* Info.plist */,
 			);
 			path = App;
@@ -251,9 +251,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DC4994EFAFF2408E8660C9BD /* FocusFlow */ = {
+		DC4994EFAFF2408E8660C9BD /* Unscroll */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6F1FF262C8813E8AC5EDCF15 /* Build configuration list for PBXNativeTarget "FocusFlow" */;
+			buildConfigurationList = 6F1FF262C8813E8AC5EDCF15 /* Build configuration list for PBXNativeTarget "Unscroll" */;
 			buildPhases = (
 				75C0FE50CA8B08BF3C4E357C /* Sources */,
 				C5D0118D9E2806C109D9CAAD /* Resources */,
@@ -263,12 +263,12 @@
 			);
 			dependencies = (
 			);
-			name = FocusFlow;
+			name = Unscroll;
 			packageProductDependencies = (
 				C4EEDE06C567725C5C680400 /* Supabase */,
 			);
-			productName = FocusFlow;
-			productReference = AF2CA8D18F777F2E2A08CB53 /* FocusFlow.app */;
+			productName = Unscroll;
+			productReference = AF2CA8D18F777F2E2A08CB53 /* Unscroll.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -286,7 +286,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 0BB18131807E661ABE3537F8 /* Build configuration list for PBXProject "FocusFlow" */;
+			buildConfigurationList = 0BB18131807E661ABE3537F8 /* Build configuration list for PBXProject "Unscroll" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -303,7 +303,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				DC4994EFAFF2408E8660C9BD /* FocusFlow */,
+				DC4994EFAFF2408E8660C9BD /* Unscroll */,
 			);
 		};
 /* End PBXProject section */
@@ -333,7 +333,7 @@
 				72EC4BF242F912EC1C6F6655 /* ChallengeExercises.swift in Sources */,
 				0DF7BFA9DA55BBB0BB86BE5E /* ChallengeView.swift in Sources */,
 				F5E51C06E2FD7C5327823851 /* ContentView.swift in Sources */,
-				95F3126B773BF04B587B9D7B /* FocusFlowApp.swift in Sources */,
+				95F3126B773BF04B587B9D7B /* UnscrollApp.swift in Sources */,
 				9DC5D40EFD2626DFAF890B25 /* GameProgress.swift in Sources */,
 				A57123486EA5104C10DA6230 /* GlassComponents.swift in Sources */,
 				92E5F5F021A9BF5A2D7AEF32 /* HomeView.swift in Sources */,
@@ -366,7 +366,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Sources/App/FocusFlow.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Sources/App/Unscroll.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -377,7 +377,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.focusflow.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.unscroll.app;
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -447,7 +447,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Sources/App/FocusFlow.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Sources/App/Unscroll.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -458,7 +458,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.focusflow.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.unscroll.app;
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -534,7 +534,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0BB18131807E661ABE3537F8 /* Build configuration list for PBXProject "FocusFlow" */ = {
+		0BB18131807E661ABE3537F8 /* Build configuration list for PBXProject "Unscroll" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BE6F3938F2E8134B7556845E /* Debug */,
@@ -543,7 +543,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		6F1FF262C8813E8AC5EDCF15 /* Build configuration list for PBXNativeTarget "FocusFlow" */ = {
+		6F1FF262C8813E8AC5EDCF15 /* Build configuration list for PBXNativeTarget "Unscroll" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1C6FCA9812460553C0AAA8E2 /* Debug */,

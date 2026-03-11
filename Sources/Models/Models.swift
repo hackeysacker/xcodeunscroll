@@ -1,4 +1,4 @@
-// FocusFlow - Models
+// Unscroll - Models
 // Consolidated unique types only - duplicates removed
 
 import Foundation

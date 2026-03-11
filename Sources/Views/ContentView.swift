@@ -135,7 +135,7 @@ struct SplashScreen: View {
             .scaleEffect(scale)
             .opacity(opacity)
             
-            Text("FocusFlow")
+            Text("Unscroll")
                 .font(.system(size: 32, weight: .bold))
                 .foregroundColor(.white)
                 .opacity(opacity)

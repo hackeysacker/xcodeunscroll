@@ -9,7 +9,7 @@ class CacheService {
     
     private let userDefaults = UserDefaults.standard
     private let cacheKeys = CacheKeys.self
-    private let queue = DispatchQueue(label: "com.focusflow.cache", qos: .utility)
+    private let queue = DispatchQueue(label: "com.unscroll.cache", qos: .utility)
     
     // Pending sync operations when offline
     @Published private(set) var pendingSyncCount: Int = 0
@@ -158,11 +158,11 @@ enum SyncOperationType: String, Codable {
 }
 
 // MARK: - Network Monitor
-class FocusFlowNetworkMonitor: ObservableObject {
-    static let shared = FocusFlowNetworkMonitor()
+class UnscrollNetworkMonitor: ObservableObject {
+    static let shared = UnscrollNetworkMonitor()
     
     private let monitor = NWPathMonitor()
-    private let queue = DispatchQueue(label: "com.focusflow.network")
+    private let queue = DispatchQueue(label: "com.unscroll.network")
     
     @Published private(set) var isConnected: Bool = true
     @Published private(set) var connectionType: ConnectionType = .unknown

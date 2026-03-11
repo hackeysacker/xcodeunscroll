@@ -1931,7 +1931,7 @@ struct UniversalChallengeView: View {
         ("Facebook", "12 people reacted to your post"),
         ("Reddit", "Hot thread: Check it out"),
     ]
-    let wallRealTitle = ("FocusFlow", "COLLECT YOUR FOCUS REWARD!")
+    let wallRealTitle = ("Unscroll", "COLLECT YOUR FOCUS REWARD!")
 
     func initNotificationWall() {
         wallNotifs = []

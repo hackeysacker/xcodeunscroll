@@ -1,4 +1,4 @@
-# FocusFlow App - Improvement Roadmap
+# Unscroll App - Improvement Roadmap
 
 ## Priority 1: Core Functionality (Must Have)
 
@@ -166,12 +166,12 @@
 ## Current App Structure
 
 ```
-~/Desktop/FocusFlow/
+~/Desktop/Unscroll/
 ├── Sources/
 │   ├── App/
-│   │   ├── FocusFlowApp.swift
+│   │   ├── UnscrollApp.swift
 │   │   ├── Info.plist
-│   │   └── FocusFlow.entitlements
+│   │   └── Unscroll.entitlements
 │   ├── Models/
 │   │   ├── User.swift
 │   │   ├── AppState.swift
@@ -196,7 +196,7 @@
 │       ├── Settings/
 │       └── Onboarding/
 ├── Assets.xcassets/
-├── FocusFlow.xcodeproj
+├── Unscroll.xcodeproj
 └── project.yml
 ```
 
@@ -389,7 +389,7 @@ Tables created:
   - Profile, game progress, skill progress, and heart state caching
   - Last sync timestamp tracking
   - Pending sync queue for offline changes
-- [x] Created FocusFlowNetworkMonitor with real-time connection monitoring
+- [x] Created UnscrollNetworkMonitor with real-time connection monitoring
   - WiFi, cellular, ethernet detection
   - Connection status observable
 - [x] BUILD SUCCEEDED

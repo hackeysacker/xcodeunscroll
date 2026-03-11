@@ -1,4 +1,4 @@
-// FocusFlow - Level Up Celebration View
+// Unscroll - Level Up Celebration View
 // Shows celebration animation when user levels up
 
 import SwiftUI

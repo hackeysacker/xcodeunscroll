@@ -89,7 +89,7 @@ class OfflineQueue: ObservableObject {
         }
     }
     
-    private let userDefaultsKey = "focusflow_offline_queue"
+    private let userDefaultsKey = "unscroll_offline_queue"
     
     private init() {
         loadPersistedQueue()

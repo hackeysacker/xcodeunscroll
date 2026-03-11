@@ -5,8 +5,8 @@ import Network
 import UIKit
 
 // MARK: - Network Monitor (Inline)
-class FocusFlowNetworkMonitor: ObservableObject {
-    static let shared = FocusFlowNetworkMonitor()
+class UnscrollNetworkMonitor: ObservableObject {
+    static let shared = UnscrollNetworkMonitor()
     
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "NetworkMonitor")
@@ -63,7 +63,7 @@ class AppState: ObservableObject {
     @Published var newlyUnlockedAchievements: [Achievement] = []
     
     // Network monitor
-    private let networkMonitor = FocusFlowNetworkMonitor.shared
+    private let networkMonitor = UnscrollNetworkMonitor.shared
     
     // Supabase client
     private let supabaseUrl = "https://sxgpcsfwbzptlmwfddda.supabase.co"
@@ -264,13 +264,13 @@ class AppState: ObservableObject {
     
     func loadUserData() {
         // Load from UserDefaults
-        if let data = UserDefaults.standard.data(forKey: "focusflow_user"),
+        if let data = UserDefaults.standard.data(forKey: "unscroll_user"),
            let user = try? JSONDecoder().decode(User.self, from: data) {
             currentUser = user
             isOnboarded = user.goal != nil
         }
         
-        if let progressData = UserDefaults.standard.data(forKey: "focusflow_progress"),
+        if let progressData = UserDefaults.standard.data(forKey: "unscroll_progress"),
            let prog = try? JSONDecoder().decode(GameProgress.self, from: progressData) {
             progress = prog
             // Process any missed heart refills when loading
@@ -368,12 +368,12 @@ class AppState: ObservableObject {
     func saveData() {
         if let user = currentUser,
            let data = try? JSONEncoder().encode(user) {
-            UserDefaults.standard.set(data, forKey: "focusflow_user")
+            UserDefaults.standard.set(data, forKey: "unscroll_user")
         }
         
         if let prog = progress,
            let data = try? JSONEncoder().encode(prog) {
-            UserDefaults.standard.set(data, forKey: "focusflow_progress")
+            UserDefaults.standard.set(data, forKey: "unscroll_progress")
         }
     }
     
@@ -382,8 +382,8 @@ class AppState: ObservableObject {
         progress = nil
         isOnboarded = false
         isAuthenticated = false
-        UserDefaults.standard.removeObject(forKey: "focusflow_user")
-        UserDefaults.standard.removeObject(forKey: "focusflow_progress")
+        UserDefaults.standard.removeObject(forKey: "unscroll_user")
+        UserDefaults.standard.removeObject(forKey: "unscroll_progress")
     }
     
     // MARK: - Gems System

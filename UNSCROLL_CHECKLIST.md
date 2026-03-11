@@ -1,4 +1,4 @@
-# FocusFlow iOS App Checklist
+# Unscroll iOS App Checklist
 
 ## Views
 - [x] HomeView.swift - Main home screen
@@ -38,5 +38,5 @@
 - Need to consolidate types to fix build
 
 ## Notes
-- FocusFlow project at ~/Desktop/FocusFlow
-- Build command: xcodebuild -project FocusFlow.xcodeproj -scheme FocusFlow -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
+- Unscroll project at ~/Desktop/Unscroll
+- Build command: xcodebuild -project Unscroll.xcodeproj -scheme Unscroll -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
