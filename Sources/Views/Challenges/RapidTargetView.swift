@@ -105,6 +105,8 @@ struct RapidTargetView: View {
             spawnTarget()
             cleanupOldTargets()
         }
+        // Performance: drawingGroup for smoother compositing with rapid animations
+        .drawingGroup()
     }
     
     // MARK: - Header

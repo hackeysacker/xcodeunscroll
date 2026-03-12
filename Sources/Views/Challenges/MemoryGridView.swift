@@ -59,6 +59,8 @@ struct MemoryGridView: View {
         .onAppear {
             startRound()
         }
+        // Performance: drawingGroup for smoother compositing with grid animations
+        .drawingGroup()
     }
     
     var header: some View {

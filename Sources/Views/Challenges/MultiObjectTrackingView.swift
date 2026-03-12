@@ -82,6 +82,8 @@ struct MultiObjectTrackingView: View {
         .onAppear {
             startRound()
         }
+        // Performance: drawingGroup for smoother compositing with multiple moving objects
+        .drawingGroup()
     }
     
     // MARK: - Header

@@ -59,6 +59,8 @@ struct UniversalChallengeView: View {
                 previewView
             }
         }
+        // Performance: drawingGroup for smoother compositing on complex animations
+        .drawingGroup()
     }
 
     // MARK: - Preview

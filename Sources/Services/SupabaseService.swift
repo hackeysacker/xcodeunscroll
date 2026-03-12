@@ -1,11 +1,19 @@
 import Foundation
 import Supabase
 
-// Create Supabase client using centralized config
-let supabase = SupabaseClient(
-    supabaseURL: URL(string: AppConfig.supabaseUrl)!,
-    supabaseKey: AppConfig.supabaseAnonKey
-)
+// Lazy Supabase client - only initialized when first accessed
+// This improves app launch time by deferring network client creation
+var supabase: SupabaseClient {
+    if _supabaseClient == nil {
+        _supabaseClient = SupabaseClient(
+            supabaseURL: URL(string: AppConfig.supabaseUrl)!,
+            supabaseKey: AppConfig.supabaseAnonKey
+        )
+    }
+    return _supabaseClient!
+}
+
+private var _supabaseClient: SupabaseClient?
 
 // MARK: - Database Models (matching Supabase schema)
 

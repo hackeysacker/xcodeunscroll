@@ -65,6 +65,8 @@ struct ColorPatternMemoryView: View {
         .onAppear {
             startRound()
         }
+        // Performance: drawingGroup for smoother compositing with color sequence animations
+        .drawingGroup()
     }
     
     // MARK: - Header
