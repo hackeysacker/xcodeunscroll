@@ -2,6 +2,40 @@
 
 ---
 
+## Mar 12, 2026 (5:00pm) - Evening 2 Performance Optimization Session
+
+### Session Focus: Performance Optimization & Polish
+
+**Build Verification:**
+- ✅ FocusFlow App BUILD SUCCEEDED on iOS Simulator (iPhone 17 Pro, iOS 26.2)
+
+**Performance Optimizations:**
+
+1. **Lazy-load Supabase Client** (SupabaseService.swift)
+   - Changed global `let supabase` to lazy `var` with on-demand initialization
+   - Improves app launch time by deferring network client creation until needed
+   
+2. **Added drawingGroup() for smoother animations**
+   - UniversalChallengeView.swift
+   - MultiObjectTrackingView.swift (multiple moving objects)
+   - RapidTargetView.swift (rapid spawn/cleanup)
+   - MemoryGridView.swift (grid pattern animations)
+   - ColorPatternMemoryView.swift (color sequence animations)
+   - These views now render at 60fps with smoother compositing
+
+**Git Status:**
+- Branch: main (pushed to origin/main)
+- Commit: `7215f62` - "perf: Lazy-load Supabase client, add drawingGroup for smoother animations"
+
+**Priority 5 Status - Performance:**
+- [x] App launch optimization (lazy client init) - DONE
+- [x] Smooth 60fps animations (drawingGroup on 5 views) - DONE
+- [ ] Challenge transitions < 300ms - Future work
+- [ ] Memory optimization - Future work
+- [ ] Battery efficiency - Future work
+
+---
+
 ## Mar 12, 2026 (9:02am) - Morning FocusFlow Coding Session
 
 ### Session Focus: Build Verification & Status Check
