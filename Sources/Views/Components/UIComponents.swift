@@ -471,3 +471,205 @@ extension View {
         modifier(AppBackgroundModifier())
     }
 }
+
+// MARK: - Reusable Challenge Header
+
+struct ChallengeHeader: View {
+    let title: String
+    let score: Int
+    let timeRemaining: Double
+    let hearts: Int
+    let maxHearts: Int
+    let gems: Int
+    let onClose: () -> Void
+    
+    var body: some View {
+        HStack {
+            // Close button
+            Button(action: onClose) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(width: 36, height: 36)
+                    .background(Color.white.opacity(0.1))
+                    .clipShape(Circle())
+            }
+            
+            Spacer()
+            
+            // Hearts display
+            HStack(spacing: 4) {
+                Image(systemName: "heart.fill")
+                    .foregroundColor(.red)
+                Text("\(hearts)/\(maxHearts)")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.white)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(Color.red.opacity(0.2))
+            .clipShape(Capsule())
+            
+            Spacer()
+            
+            // Score
+            HStack(spacing: 4) {
+                Image(systemName: "star.fill")
+                    .foregroundColor(.yellow)
+                Text("\(score)")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.white)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(Color.yellow.opacity(0.2))
+            .clipShape(Capsule())
+            
+            Spacer()
+            
+            // Timer
+            HStack(spacing: 4) {
+                Image(systemName: "timer")
+                    .foregroundColor(timeRemaining < 10 ? .red : .green)
+                Text(String(format: "%.0fs", timeRemaining))
+                    .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                    .foregroundColor(.white)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background((timeRemaining < 10 ? Color.red : Color.green).opacity(0.2))
+            .clipShape(Capsule())
+        }
+        .padding(.horizontal)
+        .padding(.top, 8)
+    }
+}
+
+// MARK: - Reusable Results Overlay
+
+struct ChallengeResultsOverlay: View {
+    let title: String
+    let score: Int
+    let perfectHits: Int
+    let goodHits: Int
+    let misses: Int
+    let gemsEarned: Int
+    let isNewHighScore: Bool
+    let onPlayAgain: () -> Void
+    let onDismiss: () -> Void
+    
+    var totalAttempts: Int {
+        perfectHits + goodHits + misses
+    }
+    
+    var accuracy: Double {
+        guard totalAttempts > 0 else { return 0 }
+        return Double(perfectHits + goodHits) / Double(totalAttempts) * 100
+    }
+    
+    var body: some View {
+        ZStack {
+            // Dimmed background
+            Color.black.opacity(0.7)
+                .ignoresSafeArea()
+            
+            // Results card
+            VStack(spacing: 24) {
+                // Title
+                Text(title)
+                    .font(.system(size: 28, weight: .bold))
+                    .foregroundColor(.white)
+                
+                // Score
+                VStack(spacing: 4) {
+                    Text("SCORE")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(.gray)
+                    Text("\(score)")
+                        .font(.system(size: 48, weight: .bold))
+                        .foregroundColor(.white)
+                    
+                    if isNewHighScore {
+                        Text("NEW HIGH SCORE!")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(.yellow)
+                    }
+                }
+                
+                // Stats
+                HStack(spacing: 20) {
+                    ChallengeStatBox(title: "Perfect", value: "\(perfectHits)", color: .green)
+                    ChallengeStatBox(title: "Good", value: "\(goodHits)", color: .blue)
+                    ChallengeStatBox(title: "Miss", value: "\(misses)", color: .red)
+                    ChallengeStatBox(title: "Accuracy", value: String(format: "%.0f%%", accuracy), color: .purple)
+                }
+                
+                // Gems earned
+                if gemsEarned > 0 {
+                    HStack(spacing: 8) {
+                        Image(systemName: "gem.fill")
+                            .foregroundColor(.cyan)
+                        Text("+\(gemsEarned) Gems")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(.cyan)
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 10)
+                    .background(Color.cyan.opacity(0.2))
+                    .clipShape(Capsule())
+                }
+                
+                // Buttons
+                HStack(spacing: 16) {
+                    Button(action: onDismiss) {
+                        Text("Done")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 52)
+                            .background(Color.white.opacity(0.1))
+                            .cornerRadius(26)
+                    }
+                    
+                    Button(action: onPlayAgain) {
+                        Text("Play Again")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 52)
+                            .background(
+                                LinearGradient(colors: [.purple, .indigo], startPoint: .leading, endPoint: .trailing)
+                            )
+                            .cornerRadius(26)
+                    }
+                }
+            }
+            .padding(32)
+            .background(
+                RoundedRectangle(cornerRadius: 24)
+                    .fill(Color(hex: "1E293B"))
+            )
+            .padding(.horizontal, 24)
+        }
+    }
+}
+
+struct ChallengeStatBox: View {
+    let title: String
+    let value: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 4) {
+            Text(title)
+                .font(.system(size: 10, weight: .medium))
+                .foregroundColor(.gray)
+            Text(value)
+                .font(.system(size: 20, weight: .bold))
+                .foregroundColor(color)
+        }
+        .frame(width: 70, height: 60)
+        .background(color.opacity(0.15))
+        .cornerRadius(12)
+    }
+}
