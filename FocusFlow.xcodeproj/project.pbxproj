@@ -19,6 +19,7 @@
 		2BE0EBED66405724D67383A9 /* NetworkMonitorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B5EA9FE4D8C6F050CB7802 /* NetworkMonitorTests.swift */; };
 		2D0845C97D74A5F350DD937B /* Achievement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BCB2E1C4A2FC0A1FEB843DD /* Achievement.swift */; };
 		2D5D08E8CBB2619C000B110E /* ThemeSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0E7607542C76D03EE63312C /* ThemeSelectionView.swift */; };
+		2DEA0BABF01703D2EEFAB17B /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = AA5852FE9FDF05BA51A2C9FB /* FirebaseCore */; };
 		2E8D047A6A18C937ACE3512C /* PracticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CE7EE6E98670688195C325 /* PracticeView.swift */; };
 		39B63691E8B5EA760550E8DD /* UserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24149BAB02C874F10BA73B0D /* UserTests.swift */; };
 		3C0690F5D14302D8277669FE /* RapidTargetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 811988AD8805B57941182496 /* RapidTargetView.swift */; };
@@ -155,6 +156,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A753F4680E153CFC046B31C2 /* Supabase in Frameworks */,
+				2DEA0BABF01703D2EEFAB17B /* FirebaseCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,6 +397,7 @@
 			name = FocusFlow;
 			packageProductDependencies = (
 				C4EEDE06C567725C5C680400 /* Supabase */,
+				AA5852FE9FDF05BA51A2C9FB /* FirebaseCore */,
 			);
 			productName = FocusFlow;
 			productReference = AF2CA8D18F777F2E2A08CB53 /* FocusFlow.app */;
@@ -430,6 +433,7 @@
 			mainGroup = 894B6BA12AC8F45C650AF178;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				6CF78F5180C94FBD9EA494CF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				54FD1C8DAE01A0A40E492EFA /* XCRemoteSwiftPackageReference "supabase-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -785,9 +789,22 @@
 				minimumVersion = 2.0.0;
 			};
 		};
+		6CF78F5180C94FBD9EA494CF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		AA5852FE9FDF05BA51A2C9FB /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6CF78F5180C94FBD9EA494CF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
 		C4EEDE06C567725C5C680400 /* Supabase */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 54FD1C8DAE01A0A40E492EFA /* XCRemoteSwiftPackageReference "supabase-swift" */;
