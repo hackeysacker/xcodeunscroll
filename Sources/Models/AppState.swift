@@ -9,7 +9,17 @@ class AppState: ObservableObject {
     @Published var isLoading: Bool = true
     @Published var currentUser: User?
     @Published var progress: GameProgress?
-    @Published var achievementStore = AchievementStore()
+    // Achievement store - lazy-loaded to improve app launch time
+    @Published private var _achievementStore: AchievementStore?
+    
+    var achievementStore: AchievementStore {
+        if let existing = _achievementStore {
+            return existing
+        }
+        let store = AchievementStore()
+        _achievementStore = store
+        return store
+    }
     @Published var selectedTab: Tab = .home
     @Published var showSettings: Bool = false
     @Published var showLeaderboard: Bool = false
