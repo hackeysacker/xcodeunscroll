@@ -85,12 +85,15 @@ final class ChallengeTests: XCTestCase {
     
     func testChallengeCategoryAllCases() {
         let categories = ChallengeCategory.allCases
-        XCTAssertEqual(categories.count, 5, "Should have 5 challenge categories")
+        XCTAssertEqual(categories.count, 8, "Should have 8 challenge categories")
         XCTAssertTrue(categories.contains(.focus))
         XCTAssertTrue(categories.contains(.memory))
         XCTAssertTrue(categories.contains(.reaction))
         XCTAssertTrue(categories.contains(.breathing))
         XCTAssertTrue(categories.contains(.discipline))
+        XCTAssertTrue(categories.contains(.speed))
+        XCTAssertTrue(categories.contains(.impulse))
+        XCTAssertTrue(categories.contains(.calm))
     }
     
     func testChallengeCategoryIcons() {
