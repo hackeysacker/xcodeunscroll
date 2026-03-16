@@ -54,6 +54,7 @@
 		A6C8D49A3DD0127FE64E4710 /* LevelUpCelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F31947429A4CB879F0BA04C /* LevelUpCelebrationView.swift */; };
 		A753F4680E153CFC046B31C2 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = C4EEDE06C567725C5C680400 /* Supabase */; };
 		A95CC104D706CE210006D113 /* HeartRefillManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A244A9E11BC14987440F19CC /* HeartRefillManager.swift */; };
+		B2E501F40B1A9D84EDF3534C /* AdditionalModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BDD542BD6CCB3C4F715B1C /* AdditionalModelTests.swift */; };
 		BA36BBFDCFDA309DB438A012 /* CoreChallenges.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FF345F88B9807E1FEF9785 /* CoreChallenges.swift */; };
 		BB9378CC51F44777365F070B /* DailyLoginRewardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EBDE604339063B817FD81C1 /* DailyLoginRewardView.swift */; };
 		BF858A1D9E2B7475C16A209C /* FocusFlowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F3FFD705639E39B2A2FCF2 /* FocusFlowUITests.swift */; };
@@ -114,6 +115,7 @@
 		6EBDE604339063B817FD81C1 /* DailyLoginRewardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyLoginRewardView.swift; sourceTree = "<group>"; };
 		712E75634EDDF39FE0EC2015 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		715FD3D1A0334C57536C3103 /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
+		73BDD542BD6CCB3C4F715B1C /* AdditionalModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalModelTests.swift; sourceTree = "<group>"; };
 		7413DB7A1650203D1F4E7135 /* UIComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIComponents.swift; sourceTree = "<group>"; };
 		7747EB4FB092647203FEDFF5 /* ChallengeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeTests.swift; sourceTree = "<group>"; };
 		7E5DE8F8C483D11D5CD1165C /* AudioHapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioHapticManager.swift; sourceTree = "<group>"; };
@@ -304,6 +306,7 @@
 			isa = PBXGroup;
 			children = (
 				26E5EF2EE2C3B05E44331051 /* AchievementTests.swift */,
+				73BDD542BD6CCB3C4F715B1C /* AdditionalModelTests.swift */,
 				F6A7B09006EFB1A0762100FF /* AppAudioManagerTests.swift */,
 				B3F767AF28058D78DB27C828 /* BreathingGuideTests.swift */,
 				4C3A68E3B8BD5E4077AFE43B /* CacheManagerTests.swift */,
@@ -455,6 +458,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F97A8711DCB17F4DDB84A3A6 /* AchievementTests.swift in Sources */,
+				B2E501F40B1A9D84EDF3534C /* AdditionalModelTests.swift in Sources */,
 				E0860B914F957E4DC132E583 /* AppAudioManagerTests.swift in Sources */,
 				5ACEA234ED350B82E929BF09 /* BreathingGuideTests.swift in Sources */,
 				DB3C3FE3128DC6710E4FA8C5 /* CacheManagerTests.swift in Sources */,
