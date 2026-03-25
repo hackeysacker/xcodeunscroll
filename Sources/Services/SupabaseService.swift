@@ -1,15 +1,19 @@
 import Foundation
 import Supabase
 
-// Supabase configuration
-let supabaseUrl = "https://sxgpcsfwbzptlmwfddda.supabase.co"
-let supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4Z3Bjc2Z3YnpwdGxtd2ZkZGRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM3NTI0NzYsImV4cCI6MjA3OTMyODQ3Nn0.kkQc632Gu8ozuCD5HoZVS35yGbxA4l2kmuq96bCBg4w"
+// Lazy Supabase client - only initialized when first accessed
+// This improves app launch time by deferring network client creation
+var supabase: SupabaseClient {
+    if _supabaseClient == nil {
+        _supabaseClient = SupabaseClient(
+            supabaseURL: URL(string: AppConfig.supabaseUrl)!,
+            supabaseKey: AppConfig.supabaseAnonKey
+        )
+    }
+    return _supabaseClient!
+}
 
-// Create Supabase client
-let supabase = SupabaseClient(
-    supabaseURL: URL(string: supabaseUrl)!,
-    supabaseKey: supabaseAnonKey
-)
+private var _supabaseClient: SupabaseClient?
 
 // MARK: - Database Models (matching Supabase schema)
 
@@ -112,6 +116,11 @@ class SupabaseService: ObservableObject {
     
     private init() {}
     
+    /// Get the Supabase client (instance or global)
+    private var client: SupabaseClient {
+        return supabase // Uses global
+    }
+    
     // MARK: - User Management
     
     /// Sign up a new user
@@ -159,6 +168,7 @@ class SupabaseService: ObservableObject {
     /// Fetch user profile
     func fetchProfile(userId: String) async throws -> Profile? {
         let response: [Profile] = try await supabase
+            .database
             .from("profiles")
             .select()
             .eq("id", value: userId)
@@ -171,6 +181,7 @@ class SupabaseService: ObservableObject {
     /// Update user profile
     func updateProfile(userId: String, updates: Profile) async throws {
         try await supabase
+            .database
             .from("profiles")
             .update(updates)
             .eq("id", value: userId)
@@ -180,6 +191,7 @@ class SupabaseService: ObservableObject {
     /// Update gems
     func updateGems(userId: String, gems: Int) async throws {
         try await supabase
+            .database
             .from("profiles")
             .update(Profile(id: userId, gems: gems))
             .eq("id", value: userId)
@@ -191,6 +203,7 @@ class SupabaseService: ObservableObject {
     /// Fetch game progress
     func fetchGameProgress(userId: String) async throws -> GameProgressRecord? {
         let response: [GameProgressRecord] = try await supabase
+            .database
             .from("game_progress")
             .select()
             .eq("user_id", value: userId)
@@ -203,6 +216,7 @@ class SupabaseService: ObservableObject {
     /// Update game progress
     func updateGameProgress(userId: String, progress: GameProgressRecord) async throws {
         try await supabase
+            .database
             .from("game_progress")
             .update(progress)
             .eq("user_id", value: userId)
@@ -212,6 +226,7 @@ class SupabaseService: ObservableObject {
     /// Create or update game progress
     func upsertGameProgress(_ progress: GameProgressRecord) async throws {
         try await supabase
+            .database
             .from("game_progress")
             .upsert(progress, onConflict: "user_id")
             .execute()
@@ -222,6 +237,7 @@ class SupabaseService: ObservableObject {
     /// Fetch skill progress
     func fetchSkillProgress(userId: String) async throws -> SkillProgressRecord? {
         let response: [SkillProgressRecord] = try await supabase
+            .database
             .from("skill_progress")
             .select()
             .eq("user_id", value: userId)
@@ -233,14 +249,18 @@ class SupabaseService: ObservableObject {
     
     /// Update skill progress
     func updateSkillProgress(userId: String, focusScore: Int, impulseControlScore: Int, distractionResistanceScore: Int) async throws {
+        let skillData = SkillProgressRecord(
+            userId: userId,
+            focusScore: focusScore,
+            impulseControlScore: impulseControlScore,
+            distractionResistanceScore: distractionResistanceScore,
+            updatedAt: Date()
+        )
+        
         try await supabase
+            .database
             .from("skill_progress")
-            .update([
-                "focus_score": focusScore,
-                "impulse_control_score": impulseControlScore,
-                "distraction_resistance_score": distractionResistanceScore
-            ])
-            .eq("user_id", value: userId)
+            .upsert(skillData, onConflict: "user_id")
             .execute()
     }
     
@@ -249,6 +269,7 @@ class SupabaseService: ObservableObject {
     /// Fetch heart state
     func fetchHeartState(userId: String) async throws -> HeartStateRecord? {
         let response: [HeartStateRecord] = try await supabase
+            .database
             .from("heart_state")
             .select()
             .eq("user_id", value: userId)
@@ -261,6 +282,7 @@ class SupabaseService: ObservableObject {
     /// Update heart state
     func updateHeartState(userId: String, currentHearts: Int) async throws {
         try await supabase
+            .database
             .from("heart_state")
             .update(["current_hearts": currentHearts])
             .eq("user_id", value: userId)
@@ -311,6 +333,7 @@ class SupabaseService: ObservableObject {
         )
         
         try await supabase
+            .database
             .from("challenge_results")
             .insert(result)
             .execute()
@@ -348,5 +371,71 @@ class SupabaseService: ObservableObject {
         async let hearts = fetchHeartState(userId: userId)
         
         return try await (progress, profile, skills, hearts)
+    }
+    
+    // MARK: - Leaderboard Operations
+    
+    /// Leaderboard entry model
+    struct LeaderboardEntryData: Codable, Identifiable {
+        var id: String { userId }
+        let userId: String
+        let displayName: String
+        let avatarEmoji: String?
+        let totalXp: Int
+        let level: Int
+        let streak: Int
+        let rank: Int
+        
+        enum CodingKeys: String, CodingKey {
+            case userId = "user_id"
+            case displayName = "display_name"
+            case avatarEmoji = "avatar_emoji"
+            case totalXp = "total_xp"
+            case level
+            case streak
+            case rank
+        }
+    }
+    
+    /// Fetch global leaderboard
+    func fetchLeaderboard(limit: Int = 50) async throws -> [LeaderboardEntryData] {
+        // Try to fetch from user_stats view/table
+        let response: [LeaderboardEntryData] = try await supabase
+            .from("user_stats")
+            .select("user_id, display_name, avatar_emoji, total_xp, level, streak")
+            .order("total_xp", ascending: false)
+            .limit(limit)
+            .execute()
+            .value
+        
+        // Add rank based on order
+        return response.enumerated().map { index, entry in
+            LeaderboardEntryData(
+                userId: entry.userId,
+                displayName: entry.displayName,
+                avatarEmoji: entry.avatarEmoji,
+                totalXp: entry.totalXp,
+                level: entry.level,
+                streak: entry.streak,
+                rank: index + 1
+            )
+        }
+    }
+    
+    /// Fetch user's rank
+    func fetchUserRank(userId: String) async throws -> Int {
+        let allUsers: [LeaderboardEntryData] = try await supabase
+            .from("user_stats")
+            .select("user_id, total_xp")
+            .order("total_xp", ascending: false)
+            .execute()
+            .value
+        
+        for (index, user) in allUsers.enumerated() {
+            if user.userId == userId {
+                return index + 1
+            }
+        }
+        return allUsers.count + 1
     }
 }

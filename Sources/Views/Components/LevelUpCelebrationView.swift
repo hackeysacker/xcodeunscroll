@@ -1,118 +1,97 @@
-// Unscroll - Level Up Celebration View
-// Shows celebration animation when user levels up
-
 import SwiftUI
 
 struct LevelUpCelebrationView: View {
-    let newLevel: Int
-    let xpReward: Int
-    let gemReward: Int
-    let onDismiss: () -> Void
-    
-    @State private var showContent = false
+    @EnvironmentObject var appState: AppState
     @State private var scale: CGFloat = 0.5
+    @State private var opacity: Double = 0
+    @State private var gemOffset: CGFloat = 50
     @State private var rotation: Double = 0
+    @State private var sparkleRotation: Double = 0
+    
+    let newLevel: Int
+    let gemsEarned: Int
+    let onDismiss: () -> Void
     
     var body: some View {
         ZStack {
-            // Background blur
+            // Background overlay
             Color.black.opacity(0.7)
                 .ignoresSafeArea()
+                .opacity(opacity)
             
-            // Celebration content
+            // Main card
             VStack(spacing: 24) {
-                // Star burst animation
+                // Level up icon with glow
                 ZStack {
-                    ForEach(0..<8, id: \.self) { index in
-                        Circle()
-                            .fill(
-                                AngularGradient(
-                                    gradient: Gradient(colors: [.yellow, .orange, .pink]),
-                                    center: .center
-                                )
+                    // Glow effect
+                    Circle()
+                        .fill(
+                            RadialGradient(
+                                colors: [.yellow.opacity(0.6), .orange.opacity(0.3), .clear],
+                                center: .center,
+                                startRadius: 0,
+                                endRadius: 80
                             )
-                            .frame(width: 20, height: 20)
-                            .offset(y: -80)
-                            .rotationEffect(.degrees(Double(index) * 45))
-                            .opacity(showContent ? 1 : 0)
-                            .animation(
-                                .easeOut(duration: 0.8).delay(Double(index) * 0.1),
-                                value: showContent
-                            )
-                    }
+                        )
+                        .frame(width: 160, height: 160)
+                        .scaleEffect(scale)
                     
-                    // Main star icon
-                    Image(systemName: "star.fill")
-                        .font(.system(size: 80))
-                        .foregroundStyle(
+                    // Main circle
+                    Circle()
+                        .fill(
                             LinearGradient(
                                 colors: [.yellow, .orange],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             )
                         )
-                        .rotationEffect(.degrees(rotation))
-                        .scaleEffect(scale)
+                        .frame(width: 120, height: 120)
+                        .shadow(color: .yellow.opacity(0.8), radius: 20)
+                    
+                    Image(systemName: "star.fill")
+                        .font(.system(size: 50))
+                        .foregroundColor(.white)
+                        .shadow(color: .white.opacity(0.5), radius: 5)
                 }
+                .scaleEffect(scale)
+                .rotationEffect(.degrees(rotation))
                 
-                // Level up text
+                // Text
                 VStack(spacing: 8) {
                     Text("LEVEL UP!")
-                        .font(.system(size: 36, weight: .black))
+                        .font(.system(size: 32, weight: .black))
                         .foregroundStyle(
                             LinearGradient(
-                                colors: [.yellow, .orange, .pink],
+                                colors: [.yellow, .orange, .red],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )
                         )
-                        .shadow(color: .orange.opacity(0.5), radius: 10, x: 0, y: 5)
+                        .shadow(color: .orange.opacity(0.5), radius: 2)
                     
                     Text("Level \(newLevel)")
                         .font(.system(size: 48, weight: .bold))
                         .foregroundColor(.white)
                 }
-                .opacity(showContent ? 1 : 0)
-                .offset(y: showContent ? 0 : 20)
-                .animation(.easeOut(duration: 0.5).delay(0.3), value: showContent)
+                .opacity(opacity)
                 
                 // Rewards
-                HStack(spacing: 32) {
-                    // XP Reward
-                    HStack(spacing: 8) {
-                        Image(systemName: "sparkles")
-                            .foregroundColor(.yellow)
-                        Text("+\(xpReward) XP")
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.white)
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .background(Color.white.opacity(0.15))
-                    .cornerRadius(20)
-                    
-                    // Gem Reward
-                    HStack(spacing: 8) {
-                        Image(systemName: "gem.fill")
-                            .foregroundColor(.cyan)
-                        Text("+\(gemReward)")
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.white)
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .background(Color.white.opacity(0.15))
-                    .cornerRadius(20)
+                HStack(spacing: 20) {
+                    RewardBadge(icon: "gem.fill", value: "+\(gemsEarned)", color: .green)
                 }
-                .opacity(showContent ? 1 : 0)
-                .animation(.easeOut(duration: 0.5).delay(0.5), value: showContent)
+                .opacity(opacity)
                 
                 // Continue button
-                Button(action: onDismiss) {
+                Button(action: {
+                    withAnimation(.spring(response: 0.3)) {
+                        appState.showLevelUpCelebration = false
+                    }
+                    onDismiss()
+                }) {
                     Text("AWESOME!")
-                        .font(.system(size: 20, weight: .bold))
+                        .font(.system(size: 18, weight: .bold))
                         .foregroundColor(.black)
-                        .frame(width: 200, height: 56)
+                        .frame(width: 200, height: 50)
                         .background(
                             LinearGradient(
                                 colors: [.yellow, .orange],
@@ -120,35 +99,62 @@ struct LevelUpCelebrationView: View {
                                 endPoint: .trailing
                             )
                         )
-                        .cornerRadius(28)
-                        .shadow(color: .orange.opacity(0.5), radius: 10, x: 0, y: 5)
+                        .cornerRadius(25)
+                        .shadow(color: .yellow.opacity(0.5), radius: 10)
                 }
-                .padding(.top, 16)
-                .opacity(showContent ? 1 : 0)
-                .animation(.easeOut(duration: 0.5).delay(0.7), value: showContent)
+                .opacity(opacity)
             }
             .padding(32)
         }
         .onAppear {
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.6)) {
+            // Haptic feedback
+            let generator = UINotificationFeedbackGenerator()
+            generator.notificationOccurred(.success)
+            
+            // Animate in
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
                 scale = 1.0
+                opacity = 1.0
             }
-            withAnimation(.linear(duration: 2).repeatForever(autoreverses: false)) {
+            
+            // Continuous rotation animation
+            withAnimation(.linear(duration: 10).repeatForever(autoreverses: false)) {
                 rotation = 360
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                showContent = true
+            
+            // Sparkle rotation
+            withAnimation(.linear(duration: 3).repeatForever(autoreverses: true)) {
+                sparkleRotation = 15
             }
         }
     }
 }
 
-// Preview
+struct RewardBadge: View {
+    let icon: String
+    let value: String
+    let color: Color
+    
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: icon)
+                .foregroundColor(color)
+                .font(.system(size: 20))
+            
+            Text(value)
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(.white)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(color.opacity(0.2))
+        .cornerRadius(20)
+    }
+}
+
 #Preview {
-    LevelUpCelebrationView(
-        newLevel: 5,
-        xpReward: 100,
-        gemReward: 25,
-        onDismiss: {}
-    )
+    LevelUpCelebrationView(newLevel: 5, gemsEarned: 10) {
+        print("Dismissed")
+    }
+    .environmentObject(AppState())
 }

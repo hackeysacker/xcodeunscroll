@@ -1,342 +1,363 @@
 import SwiftUI
 
-// MARK: - All Challenge Types (35 fully interactive challenges)
+// MARK: - All Challenge Types
 enum AllChallengeType: String, CaseIterable, Identifiable, Codable {
-    // Focus & Attention (6)
-    case targetHunt      = "Target Hunt"
-    case numberRush      = "Number Rush"
-    case laserLock       = "Laser Lock"
-    case peripheralScan  = "Peripheral Scan"
-    case dualTask        = "Dual Task"
-    case bubbleBurst     = "Bubble Burst"
-
-    // Memory (7)
-    case numberVault     = "Number Vault"
-    case gridRecall      = "Grid Recall"
-    case colorChain      = "Color Chain"
-    case sequenceEcho    = "Sequence Echo"
-    case mathBlitz       = "Math Blitz"
-    case digitStorm      = "Digit Storm"
-    case patternClone    = "Pattern Clone"
-
-    // Reaction (7)
-    case goNoGo          = "Go / No-Go"
-    case timingGate      = "Timing Gate"
-    case flashMatch      = "Flash Match"
-    case reflexTap       = "Reflex Tap"
-    case colorSurge      = "Color Surge"
-    case colorBlitz      = "Color Blitz"
-    case syncBeat        = "Sync Beat"
-
-    // Breathing & Calm (6)
-    case breathBalloon   = "Breath Balloon"
-    case boxMaster       = "Box Master"
-    case relaxRelease    = "Relax & Release"
-    case fourSevenEight  = "4-7-8 Master"
-    case rhythmBreath    = "Rhythm Breath"
-    case pulseLock       = "Pulse Lock"
-
-    // Discipline & Resistance (9)
-    case notificationWall = "Notification Wall"
-    case greenLightOnly   = "Green Light Only"
-    case impulseFortress  = "Impulse Fortress"
-    case tapDelay         = "Tap Delay"
-    case silentCounter    = "Silent Counter"
-    case wordZen          = "Word Zen"
-    case calmScroll       = "Calm Scroll"
-    case shapeDrop        = "Shape Drop"
-    case memoryMaze       = "Memory Maze"
-
+    // Focus & Attention
+    case movingTarget = "Moving Target"
+    case multiObjectTracking = "Multi-Object Tracking"
+    case gazeHold = "Gaze Hold"
+    case focusHold = "Focus Hold"
+    case focusSprint = "Focus Sprint"
+    case stillnessTest = "Stillness Test"
+    case slowTracking = "Slow Tracking"
+    
+    // Memory
+    case memoryFlash = "Memory Flash"
+    case memoryPuzzle = "Memory Puzzle"
+    case numberSequence = "Number Sequence"
+    case patternMatching = "Pattern Matching"
+    case colorPattern = "Color Pattern"
+    case tapPattern = "Tap Pattern"
+    case spatialPuzzle = "Spatial Puzzle"
+    
+    // Reaction
+    case reactionInhibition = "Reaction Inhibition"
+    case impulseSpikeTest = "Impulse Spike Test"
+    case rhythmTap = "Rhythm Tap"
+    case delayUnlock = "Delay Unlock"
+    case resetChallenge = "Reset Challenge"
+    
+    // Breathing & Calm
+    case boxBreathing = "Box Breathing"
+    case controlledBreathing = "Controlled Breathing"
+    case breathPacing = "Breath Pacing"
+    case slowBreathing = "Slow Breathing"
+    case bodyScan = "Body Scan"
+    case fiveSenses = "Five Senses"
+    case urgeSurfing = "Urge Surfing"
+    case calmVisual = "Calm Visual"
+    case breathingBasics = "Breathing Basics"
+    case calmFocus = "Calm Focus"
+    case stressRelief = "Stress Relief"
+    case energyBoost = "Energy Boost"
+    case deepBreath = "Deep Breath"
+    case breathingAdvanced = "Breathing Advanced"
+    case focusEndurance = "Focus Endurance"
+    case meditationMaster = "Meditation Master"
+    
+    // Discipline & Resistance
+    case antiScrollSwipe = "Anti-Scroll Swipe"
+    case appSwitchResistance = "App Switch Resistance"
+    case fakeNotifications = "Fake Notifications"
+    case fingerHold = "Finger Hold"
+    case fingerTracing = "Finger Tracing"
+    case impulseDelay = "Impulse Delay"
+    case distractionLog = "Distraction Log"
+    case lookAway = "Look Away"
+    case multiTaskTap = "Multi-Task Tap"
+    case notificationResistance = "Notification Resistance"
+    case popupIgnore = "Popup Ignore"
+    case tapOnlyCorrect = "Tap Only Correct"
+    case wordPuzzle = "Word Puzzle"
+    case logicPuzzle = "Logic Puzzle"
+    
     var id: String { rawValue }
-
-    // MARK: - Category
+    
     var category: ChallengeCategory {
         switch self {
-        case .targetHunt, .numberRush, .laserLock, .peripheralScan, .dualTask, .bubbleBurst:
+        case .movingTarget, .multiObjectTracking, .gazeHold, .focusHold, .focusSprint, .stillnessTest, .slowTracking, .focusEndurance:
             return .focus
-        case .numberVault, .gridRecall, .colorChain, .sequenceEcho, .mathBlitz, .digitStorm, .patternClone:
+        case .memoryFlash, .memoryPuzzle, .numberSequence, .patternMatching, .colorPattern, .tapPattern, .spatialPuzzle:
             return .memory
-        case .goNoGo, .timingGate, .flashMatch, .reflexTap, .colorSurge, .colorBlitz, .syncBeat:
+        case .reactionInhibition, .impulseSpikeTest, .rhythmTap, .delayUnlock, .resetChallenge:
             return .reaction
-        case .breathBalloon, .boxMaster, .relaxRelease, .fourSevenEight, .rhythmBreath, .pulseLock:
+        case .boxBreathing, .controlledBreathing, .breathPacing, .slowBreathing, .bodyScan, .fiveSenses, .urgeSurfing, .calmVisual, .breathingBasics, .calmFocus, .stressRelief, .energyBoost, .deepBreath, .breathingAdvanced, .meditationMaster:
             return .breathing
-        case .notificationWall, .greenLightOnly, .impulseFortress, .tapDelay, .silentCounter,
-             .wordZen, .calmScroll, .shapeDrop, .memoryMaze:
+        case .antiScrollSwipe, .appSwitchResistance, .fakeNotifications, .fingerHold, .fingerTracing, .impulseDelay, .distractionLog, .lookAway, .multiTaskTap, .notificationResistance, .popupIgnore, .tapOnlyCorrect, .wordPuzzle, .logicPuzzle:
             return .discipline
         }
     }
-
-    // MARK: - Icon
+    
     var icon: String {
         switch self {
-        case .targetHunt:       return "scope"
-        case .numberRush:       return "number.circle.fill"
-        case .laserLock:        return "laser.burst"
-        case .peripheralScan:   return "eye.circle.fill"
-        case .dualTask:         return "rectangle.split.2x1.fill"
-        case .bubbleBurst:      return "bubbles.and.sparkles.fill"
-        case .numberVault:      return "lock.fill"
-        case .gridRecall:       return "square.grid.3x3.fill"
-        case .colorChain:       return "circle.hexagongrid.fill"
-        case .sequenceEcho:     return "waveform.circle.fill"
-        case .mathBlitz:        return "function"
-        case .digitStorm:       return "bolt.ring.closed"
-        case .patternClone:     return "square.grid.2x2.fill"
-        case .goNoGo:           return "hand.raised.circle.fill"
-        case .timingGate:       return "gauge.with.needle.fill"
-        case .flashMatch:       return "bolt.horizontal.fill"
-        case .reflexTap:        return "hand.tap.fill"
-        case .colorSurge:       return "paintpalette.fill"
-        case .colorBlitz:       return "rectangle.split.3x3.fill"
-        case .syncBeat:         return "metronome.fill"
-        case .breathBalloon:    return "balloon.fill"
-        case .boxMaster:        return "square.dashed"
-        case .relaxRelease:     return "wind"
-        case .fourSevenEight:   return "lungs.fill"
-        case .rhythmBreath:     return "waveform.path.ecg"
-        case .pulseLock:        return "heart.circle.fill"
-        case .notificationWall: return "bell.slash.fill"
-        case .greenLightOnly:   return "circle.fill"
-        case .impulseFortress:  return "shield.fill"
-        case .tapDelay:         return "clock.badge.checkmark.fill"
-        case .silentCounter:    return "minus.circle.fill"
-        case .wordZen:          return "text.word.spacing"
-        case .calmScroll:       return "iphone.smartbatterycase.gen2"
-        case .shapeDrop:        return "arrow.down.circle.fill"
-        case .memoryMaze:       return "map.fill"
+        case .movingTarget: return "target"
+        case .multiObjectTracking: return "eye.trianglebadge.exclamationmark"
+        case .gazeHold: return "eye.fill"
+        case .focusHold: return "scope"
+        case .focusSprint: return "bolt.fill"
+        case .stillnessTest: return "figure.stand"
+        case .slowTracking: return "hare.fill"
+        case .memoryFlash: return "brain.head.profile"
+        case .memoryPuzzle: return "puzzlepiece.fill"
+        case .numberSequence: return "number"
+        case .patternMatching: return "square.grid.3x3.fill"
+        case .colorPattern: return "square.fill"
+        case .tapPattern: return "hand.tap.fill"
+        case .spatialPuzzle: return "cube.fill"
+        case .reactionInhibition: return "hand.raised.fill"
+        case .impulseSpikeTest: return "waveform.path.ecg"
+        case .rhythmTap: return "music.note"
+        case .delayUnlock: return "lock.fill"
+        case .resetChallenge: return "arrow.counterclockwise"
+        case .boxBreathing: return "wind"
+        case .controlledBreathing: return "lungs.fill"
+        case .breathPacing: return "timer"
+        case .slowBreathing: return "leaf.fill"
+        case .bodyScan: return "figure.roll"
+        case .fiveSenses: return "sensor.tag.radiowaves.forward"
+        case .urgeSurfing: return "water.waves"
+        case .calmVisual: return "sparkles"
+        case .breathingBasics: return "wind"
+        case .calmFocus: return "leaf.fill"
+        case .stressRelief: return "water.drop.fill"
+        case .energyBoost: return "bolt.fill"
+        case .deepBreath: return "lungs.fill"
+        case .breathingAdvanced: return "wind.circle.fill"
+        case .focusEndurance: return "hourglass"
+        case .meditationMaster: return "brain.head.profile"
+        case .antiScrollSwipe: return "hand.swipe.left"
+        case .appSwitchResistance: return "app.badge"
+        case .fakeNotifications: return "bell.badge.fill"
+        case .fingerHold: return "hand.point.up.fill"
+        case .fingerTracing: return "hand.draw.fill"
+        case .impulseDelay: return "clock.fill"
+        case .distractionLog: return "list.bullet.clipboard"
+        case .lookAway: return "eye.slash.fill"
+        case .multiTaskTap: return "hand.tap.fill"
+        case .notificationResistance: return "bell.slash.fill"
+        case .popupIgnore: return "xmark.square.fill"
+        case .tapOnlyCorrect: return "checkmark.circle.fill"
+        case .wordPuzzle: return "textformat.abc"
+        case .logicPuzzle: return "brain"
         }
     }
-
-    // MARK: - Difficulty (1 easy – 3 hard)
-    var difficulty: Int {
-        switch category {
-        case .breathing:  return 1
-        case .focus:      return 2
-        case .memory:     return 2
-        case .reaction:   return 3
-        case .discipline: return 3
-        }
-    }
-
-    // MARK: - Color
+    
     var color: Color {
         switch category {
-        case .focus:      return .purple
-        case .memory:     return .blue
-        case .reaction:   return .orange
-        case .breathing:  return .green
+        case .focus: return .purple
+        case .memory: return .blue
+        case .reaction: return .orange
+        case .breathing: return .green
         case .discipline: return .red
+        case .speed: return .yellow
+        case .impulse: return .pink
+        case .calm: return .teal
         }
     }
-
-    // MARK: - Description
+    
     var description: String {
         switch self {
-        case .targetHunt:
-            return "Shapes swarm the screen—only tap the target shape. Combo hits stack your multiplier. 3 lives."
-        case .numberRush:
-            return "Numbers scatter randomly. Tap 1, 2, 3… in order as fast as you can. Time bonus per digit."
-        case .laserLock:
-            return "A needle sweeps back and forth. Tap when it hits the glowing target zone—precision wins."
-        case .peripheralScan:
-            return "Shapes flash around the screen. The target shape is shown in the center. Tap target shapes quickly—ignore the distractors."
-        case .dualTask:
-            return "Two tasks run at once: track a moving target on top AND tap the correct number on the bottom. Split your focus without cracking."
-        case .bubbleBurst:
-            return "Numbered bubbles float upward. Tap them in ascending order — 1, 2, 3… — before they escape the screen. Miss one and lose a life. Speed up every round!"
-        case .numberVault:
-            return "A number sequence flashes briefly. Enter it exactly on the numpad. 3 lives. Sequences grow."
-        case .gridRecall:
-            return "Watch which grid cells light up, then recreate the pattern from memory. More cells each round."
-        case .colorChain:
-            return "Watch the color sequence flash. Repeat it exactly. Each round adds one more step. 3 lives."
-        case .sequenceEcho:
-            return "Watch the colored pads light up in a sequence. Then repeat it exactly. Each round adds one more step. 3 lives."
-        case .mathBlitz:
-            return "A math equation flashes for 1.5 seconds. Pick the correct answer from 4 choices. Wrong answers cost lives. Equations get harder as your streak grows."
-        case .digitStorm:
-            return "Individual digits flash one by one. After the storm ends — add them all up and enter the sum! More digits each round. Your mental math gets a full workout."
-        case .patternClone:
-            return "A colorful 3×3 pattern appears for 2 seconds, then vanishes. Tap each cell to recreate the exact color pattern from memory. Grows harder each round."
-        case .goNoGo:
-            return "Green circle: tap it fast. Red circle: hold back. False taps cost you. Speed ramps up."
-        case .timingGate:
-            return "Tap the moving needle precisely as it enters the target zone. The zone shrinks as you level up."
-        case .flashMatch:
-            return "Two symbols flash in quick succession. Tap if they match. Wait if they differ. Accuracy + speed."
-        case .reflexTap:
-            return "A glowing target blinks onto the screen. Tap it before it vanishes. Speed earns bonus points. Miss 3 and you're out."
-        case .colorSurge:
-            return "A wave of color floods the screen. Tap only when the target color fills the screen. Every hesitation costs points—every wrong tap costs a life."
-        case .colorBlitz:
-            return "The screen splits into 4 colored zones. A target color flashes in the center — tap the matching zone INSTANTLY. Zones shuffle each round. Stay sharp!"
-        case .syncBeat:
-            return "A metronome pulses at a steady rhythm. Tap in perfect sync with every beat. Timing within 100ms earns max points. The tempo increases — can you keep up?"
-        case .breathBalloon:
-            return "Hold to inflate on inhale. Release to deflate on exhale. Sync your breath with the balloon."
-        case .boxMaster:
-            return "A dot traces a square: inhale → hold → exhale → hold. Tap each corner to confirm your breath."
-        case .relaxRelease:
-            return "Follow the 4-7-8 pattern: breathe in 4, hold 7, out 8. Tap each phase to confirm. 3 full cycles."
-        case .fourSevenEight:
-            return "Inhale for 4 seconds, hold for 7, exhale for 8. Follow the ring and confirm each phase. 3 complete cycles to finish."
-        case .rhythmBreath:
-            return "A pulsing wave sets your breathing rhythm. Match your inhale and exhale to the wave peaks. Stay in sync for 5 full cycles to complete."
-        case .pulseLock:
-            return "A glowing orb expands and contracts with perfect breathing rhythm. Hold the screen as it expands (inhale), release as it contracts (exhale). Sync = score."
-        case .notificationWall:
-            return "Fake banners flood the screen. Tap ✕ to dismiss each. Real green targets appear—tap those too."
-        case .greenLightOnly:
-            return "Tap every green circle that appears. Red circles appear where green ones just were—don't be fooled."
-        case .impulseFortress:
-            return "The giant pulsing button WILL trick you. Tap the small safe buttons around it. Never the big one."
-        case .tapDelay:
-            return "A target appears and a bar fills slowly. Wait until it's fully green, then tap as fast as possible. Tapping early costs you a life."
-        case .silentCounter:
-            return "A hidden counter ticks up randomly in your mind—you can't see it. When you think it hits 10, press STOP. The closer you are, the more points you earn. No peeking, no cheating your own brain."
-        case .wordZen:
-            return "Words float across the screen — social media buzz words like TRENDING, VIRAL, LIKE fly past. But hidden among the noise are ZEN words: Breathe, Peace, Calm. Tap ONLY the zen words."
-        case .calmScroll:
-            return "A fake social media feed scrolls past. Post after post screams for your attention. Resist every like and comment button — only tap the rare FOCUS post marked in green."
-        case .shapeDrop:
-            return "Shapes rain down from the top of the screen. The target shape is shown at the top — only tap that shape as it falls. Wrong taps and escapes cost lives. Gets faster each level!"
-        case .memoryMaze:
-            return "A glowing path lights up on a 4×4 grid, cell by cell. Watch carefully — then recreate the exact path from memory. The maze grows longer every round."
+        case .movingTarget: return "Track and tap the moving target"
+        case .multiObjectTracking: return "Follow multiple objects simultaneously"
+        case .gazeHold: return "Maintain focus on a single point"
+        case .focusHold: return "Hold your focus steady"
+        case .focusSprint: return "Complete a focus task quickly"
+        case .stillnessTest: return "Stay completely still"
+        case .slowTracking: return "Track slowly moving objects"
+        case .memoryFlash: return "Remember flashing patterns"
+        case .memoryPuzzle: return "Solve memory puzzles"
+        case .numberSequence: return "Remember number sequences"
+        case .patternMatching: return "Match the patterns"
+        case .colorPattern: return "Remember and repeat color sequences"
+        case .tapPattern: return "Recreate the tap pattern"
+        case .spatialPuzzle: return "Solve spatial puzzles"
+        case .reactionInhibition: return "Practice impulse control"
+        case .impulseSpikeTest: return "Test your impulse responses"
+        case .rhythmTap: return "Follow the rhythm"
+        case .delayUnlock: return "Wait before unlocking"
+        case .resetChallenge: return "Reset and start fresh"
+        case .boxBreathing: return "Practice 4-4-4-4 breathing"
+        case .controlledBreathing: return "Controlled breathing exercise"
+        case .breathPacing: return "Match the breath pace"
+        case .slowBreathing: return "Deep slow breathing"
+        case .bodyScan: return "Mindful body scan"
+        case .fiveSenses: return "Ground with 5 senses"
+        case .urgeSurfing: return "Ride the urge waves"
+        case .calmVisual: return "Calming visual meditation"
+        case .breathingBasics: return "Learn the basics of breathing"
+        case .calmFocus: return "Calm your mind and focus"
+        case .stressRelief: return "Release tension and stress"
+        case .energyBoost: return "Boost your energy with breath"
+        case .deepBreath: return "Deep breathing exercise"
+        case .breathingAdvanced: return "Advanced breathing techniques"
+        case .focusEndurance: return "Build focus stamina"
+        case .meditationMaster: return "Master meditation practices"
+        case .antiScrollSwipe: return "Resist scrolling"
+        case .appSwitchResistance: return "Don't switch apps"
+        case .fakeNotifications: return "Ignore fake notifications"
+        case .fingerHold: return "Hold your finger steady"
+        case .fingerTracing: return "Trace patterns carefully"
+        case .impulseDelay: return "Delay your impulses"
+        case .distractionLog: return "Log distractions mindfully"
+        case .lookAway: return "Look away mindfully"
+        case .multiTaskTap: return "Handle multiple tasks"
+        case .notificationResistance: return "Ignore notifications"
+        case .popupIgnore: return "Close popups without tapping"
+        case .tapOnlyCorrect: return "Only tap correct targets"
+        case .wordPuzzle: return "Solve word puzzles"
+        case .logicPuzzle: return "Complete logic puzzles"
         }
     }
-
-    // MARK: - Duration (seconds)
+    
     var duration: Int {
         switch self {
-        case .targetHunt:       return 60
-        case .numberRush:       return 60
-        case .laserLock:        return 45
-        case .peripheralScan:   return 60
-        case .dualTask:         return 60
-        case .bubbleBurst:      return 60
-        case .numberVault:      return 90
-        case .gridRecall:       return 90
-        case .colorChain:       return 90
-        case .sequenceEcho:     return 90
-        case .mathBlitz:        return 60
-        case .digitStorm:       return 90
-        case .patternClone:     return 90
-        case .goNoGo:           return 45
-        case .timingGate:       return 45
-        case .flashMatch:       return 45
-        case .reflexTap:        return 45
-        case .colorSurge:       return 50
-        case .colorBlitz:       return 45
-        case .syncBeat:         return 60
-        case .breathBalloon:    return 90
-        case .boxMaster:        return 64
-        case .relaxRelease:     return 57
-        case .fourSevenEight:   return 76
-        case .rhythmBreath:     return 80
-        case .pulseLock:        return 80
-        case .notificationWall: return 60
-        case .greenLightOnly:   return 60
-        case .impulseFortress:  return 60
-        case .tapDelay:         return 60
-        case .silentCounter:    return 60
-        case .wordZen:          return 60
-        case .calmScroll:       return 60
-        case .shapeDrop:        return 50
-        case .memoryMaze:       return 90
+        case .movingTarget, .gazeHold, .focusHold: return 30
+        case .multiObjectTracking, .focusSprint: return 45
+        case .stillnessTest, .slowTracking: return 60
+        case .memoryFlash, .memoryPuzzle: return 60
+        case .numberSequence: return 45
+        case .patternMatching, .colorPattern, .tapPattern: return 90
+        case .spatialPuzzle: return 120
+        case .reactionInhibition: return 30
+        case .impulseSpikeTest: return 45
+        case .rhythmTap: return 60
+        case .delayUnlock: return 30
+        case .resetChallenge: return 45
+        case .boxBreathing, .controlledBreathing: return 120
+        case .breathPacing, .slowBreathing: return 90
+        case .bodyScan: return 180
+        case .fiveSenses: return 60
+        case .urgeSurfing: return 120
+        case .calmVisual: return 90
+        case .breathingBasics: return 60
+        case .calmFocus: return 90
+        case .stressRelief: return 120
+        case .energyBoost: return 60
+        case .deepBreath: return 90
+        case .breathingAdvanced: return 150
+        case .focusEndurance: return 120
+        case .meditationMaster: return 180
+        case .antiScrollSwipe: return 30
+        case .appSwitchResistance: return 60
+        case .fakeNotifications: return 45
+        case .fingerHold: return 30
+        case .fingerTracing: return 60
+        case .impulseDelay: return 45
+        case .distractionLog: return 60
+        case .lookAway: return 30
+        case .multiTaskTap: return 45
+        case .notificationResistance: return 60
+        case .popupIgnore: return 45
+        case .tapOnlyCorrect: return 60
+        case .wordPuzzle: return 120
+        case .logicPuzzle: return 180
         }
     }
-
-    // MARK: - XP Reward
+    
     var xpReward: Int {
         switch self {
-        case .targetHunt:       return 25
-        case .numberRush:       return 25
-        case .laserLock:        return 30
-        case .peripheralScan:   return 30
-        case .dualTask:         return 40
-        case .bubbleBurst:      return 30
-        case .numberVault:      return 30
-        case .gridRecall:       return 30
-        case .colorChain:       return 25
-        case .sequenceEcho:     return 35
-        case .mathBlitz:        return 35
-        case .digitStorm:       return 40
-        case .patternClone:     return 35
-        case .goNoGo:           return 25
-        case .timingGate:       return 30
-        case .flashMatch:       return 25
-        case .reflexTap:        return 25
-        case .colorSurge:       return 30
-        case .colorBlitz:       return 35
-        case .syncBeat:         return 30
-        case .breathBalloon:    return 20
-        case .boxMaster:        return 25
-        case .relaxRelease:     return 25
-        case .fourSevenEight:   return 25
-        case .rhythmBreath:     return 30
-        case .pulseLock:        return 25
-        case .notificationWall: return 30
-        case .greenLightOnly:   return 25
-        case .impulseFortress:  return 35
-        case .tapDelay:         return 30
-        case .silentCounter:    return 40
-        case .wordZen:          return 35
-        case .calmScroll:       return 40
-        case .shapeDrop:        return 30
-        case .memoryMaze:       return 45
-        }
-    }
-
-    // MARK: - Gem Reward
-    var gemReward: Int {
-        switch self {
-        case .dualTask, .silentCounter, .mathBlitz, .digitStorm, .memoryMaze, .calmScroll:
-            return 8
-        case .impulseFortress, .sequenceEcho, .colorBlitz, .wordZen, .patternClone:
-            return 7
-        case .laserLock, .gridRecall, .numberVault, .timingGate, .tapDelay, .peripheralScan,
-             .colorSurge, .rhythmBreath, .syncBeat, .bubbleBurst, .shapeDrop:
-            return 6
-        default:
-            return 5
+        case .movingTarget, .gazeHold, .focusHold: return 15
+        case .multiObjectTracking, .focusSprint: return 20
+        case .stillnessTest, .slowTracking: return 25
+        case .memoryFlash, .memoryPuzzle: return 20
+        case .numberSequence: return 15
+        case .patternMatching, .colorPattern, .tapPattern: return 25
+        case .spatialPuzzle: return 30
+        case .reactionInhibition: return 20
+        case .impulseSpikeTest: return 25
+        case .rhythmTap: return 15
+        case .delayUnlock: return 10
+        case .resetChallenge: return 15
+        case .boxBreathing, .controlledBreathing: return 20
+        case .breathPacing, .slowBreathing: return 15
+        case .bodyScan: return 30
+        case .fiveSenses: return 15
+        case .urgeSurfing: return 25
+        case .calmVisual: return 20
+        case .breathingBasics: return 10
+        case .calmFocus: return 15
+        case .stressRelief: return 20
+        case .energyBoost: return 15
+        case .deepBreath: return 20
+        case .breathingAdvanced: return 25
+        case .focusEndurance: return 25
+        case .meditationMaster: return 30
+        case .antiScrollSwipe: return 15
+        case .appSwitchResistance: return 20
+        case .fakeNotifications: return 25
+        case .fingerHold: return 10
+        case .fingerTracing: return 20
+        case .impulseDelay: return 15
+        case .distractionLog: return 20
+        case .lookAway: return 10
+        case .multiTaskTap: return 25
+        case .notificationResistance: return 20
+        case .popupIgnore: return 15
+        case .tapOnlyCorrect: return 25
+        case .wordPuzzle: return 30
+        case .logicPuzzle: return 35
         }
     }
 }
 
-// MARK: - Category
 enum ChallengeCategory: String, CaseIterable {
-    case focus      = "Focus"
-    case memory     = "Memory"
-    case reaction   = "Reaction"
-    case breathing  = "Breathing"
+    case focus = "Focus"
+    case memory = "Memory"
+    case reaction = "Reaction"
+    case breathing = "Breathing"
     case discipline = "Discipline"
-
+    case speed = "Speed"
+    case impulse = "Impulse"
+    case calm = "Calm"
+    
     var icon: String {
         switch self {
-        case .focus:      return "eye.fill"
-        case .memory:     return "brain.head.profile"
-        case .reaction:   return "bolt.fill"
-        case .breathing:  return "wind"
+        case .focus: return "eye.fill"
+        case .memory: return "brain.head.profile"
+        case .reaction: return "bolt.fill"
+        case .breathing: return "wind"
         case .discipline: return "hand.raised.fill"
+        case .speed: return "hare.fill"
+        case .impulse: return "waveform.path.ecg"
+        case .calm: return "leaf.fill"
+        }
+    }
+    
+    var categoryColor: Color {
+        switch self {
+        case .focus: return .purple
+        case .memory: return .blue
+        case .reaction: return .orange
+        case .breathing: return .green
+        case .discipline: return .red
+        case .speed: return .yellow
+        case .impulse: return .pink
+        case .calm: return .teal
         }
     }
 }
 
 // MARK: - Daily Challenges
+
 extension AllChallengeType {
+    /// Returns daily challenges based on the current date
+    /// Each day gets 3 different challenges (one from each category)
     static func dailyChallenges() -> [AllChallengeType] {
-        let dayOfYear = Calendar.current.ordinality(of: .day, in: .year, for: Date()) ?? 1
-        let focus:     [AllChallengeType] = [.targetHunt, .numberRush, .laserLock, .peripheralScan, .dualTask, .bubbleBurst]
-        let memory:    [AllChallengeType] = [.numberVault, .gridRecall, .colorChain, .sequenceEcho, .mathBlitz, .digitStorm, .patternClone]
-        let reaction:  [AllChallengeType] = [.goNoGo, .timingGate, .flashMatch, .reflexTap, .colorSurge, .colorBlitz, .syncBeat]
+        let calendar = Calendar.current
+        let dayOfYear = calendar.ordinality(of: .day, in: .year, for: Date()) ?? 1
+        
+        // Rotate through challenges based on day
+        let focusChallenges: [AllChallengeType] = [.movingTarget, .multiObjectTracking, .gazeHold, .focusSprint, .focusHold]
+        let memoryChallenges: [AllChallengeType] = [.memoryFlash, .numberSequence, .patternMatching, .colorPattern, .tapPattern, .spatialPuzzle]
+        let reactionChallenges: [AllChallengeType] = [.reactionInhibition, .rhythmTap, .delayUnlock, .resetChallenge, .impulseSpikeTest]
+        
+        let focusIdx = (dayOfYear - 1) % focusChallenges.count
+        let memoryIdx = (dayOfYear - 1) % memoryChallenges.count
+        let reactionIdx = (dayOfYear - 1) % reactionChallenges.count
+        
         return [
-            focus[(dayOfYear - 1) % focus.count],
-            memory[(dayOfYear - 1) % memory.count],
-            reaction[(dayOfYear - 1) % reaction.count],
+            focusChallenges[focusIdx],
+            memoryChallenges[memoryIdx],
+            reactionChallenges[reactionIdx]
         ]
     }
-
+    
+    /// Check if today's daily challenges are completed
     static func isDailyChallenge(_ challenge: AllChallengeType) -> Bool {
-        dailyChallenges().contains(challenge)
+        let today = dailyChallenges()
+        return today.contains(challenge)
     }
 }
+
+// MARK: - Additional Challenge Types
+

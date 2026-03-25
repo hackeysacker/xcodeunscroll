@@ -1,6 +1,6 @@
-name: Unscroll
+name: FocusFlow
 options:
-  bundleId: com.unscroll.app
+  bundleId: com.focusflow.app
   deploymentTarget:
     iOS: "17.0"
   xcodeVersion: "15.0"
@@ -10,6 +10,9 @@ packages:
   Supabase:
     url: https://github.com/supabase/supabase-swift
     from: "2.0.0"
+  Firebase:
+    url: https://github.com/firebase/firebase-ios-sdk
+    from: "11.0.0"
 
 settings:
   base:
@@ -17,9 +20,10 @@ settings:
     DEVELOPMENT_TEAM: ""
     CODE_SIGN_STYLE: Automatic
     INFOPLIST_FILE: Sources/App/Info.plist
+    CODE_SIGN_IDENTITY: "Apple Development"
 
 targets:
-  Unscroll:
+  FocusFlow:
     type: application
     platform: iOS
     sources:
@@ -27,26 +31,68 @@ targets:
         type: group
     dependencies:
       - package: Supabase
+      - package: Firebase
+        product: FirebaseCore
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.unscroll.app
+        PRODUCT_BUNDLE_IDENTIFIER: com.focusflow.app
         MARKETING_VERSION: "1.0.0"
         CURRENT_PROJECT_VERSION: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        GENERATE_INFOPLIST_FILE: false
+        GENERATE_INFPLIST_FILE: false
         SWIFT_EMIT_LOC_STRINGS: "YES"
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        CODE_SIGNING_ALLOWED: YES
+        CODE_SIGNING_REQUIRED: YES
+        CODE_SIGN_IDENTITY: "Apple Development"
     entitlements:
-      path: Sources/App/Unscroll.entitlements
+      path: Sources/App/FocusFlow.entitlements
       properties:
         com.apple.developer.family-controls: true
 
+  FocusFlowTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests
+        type: group
+    dependencies:
+      - target: FocusFlow
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.focusflow.app.tests
+        GENERATE_INFOPLIST_FILE: true
+        CODE_SIGNING_ALLOWED: YES
+        CODE_SIGNING_REQUIRED: YES
+        CODE_SIGN_IDENTITY: "Apple Development"
+
 schemes:
-  Unscroll:
+  FocusFlow:
     build:
       targets:
-        Unscroll: all
+        FocusFlow: all
     run:
+      config: Debug
+    test:
+      config: Debug
+    profile:
+      config: Release
+    analyze:
       config: Debug
     archive:
       config: Release
+  FocusFlowTests:
+    build:
+      targets:
+        FocusFlowTests: all
+    run:
+      config: Debug
+      commandLineArguments:
+        "-skipMacroValidation": ""
+    test:
+      config: Debug
+      commandLineArguments:
+        "-skipMacroValidation": ""
+      targets:
+        - FocusFlowTests
+        - FocusFlow

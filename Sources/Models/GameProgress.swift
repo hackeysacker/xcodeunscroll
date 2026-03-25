@@ -1,140 +1,5 @@
 import Foundation
 
-// MARK: - Skill Types
-enum SkillType: String, CaseIterable, Codable, Identifiable {
-    case focus = "Focus"
-    case impulseControl = "Impulse Control"
-    case distractionResistance = "Distraction Resistance"
-    case memory = "Memory"
-    case reactionTime = "Reaction Time"
-    case discipline = "Discipline"
-    
-    var id: String { rawValue }
-    
-    var description: String {
-        switch self {
-        case .focus: return "Your ability to concentrate on tasks"
-        case .impulseControl: return "Your ability to resist immediate urges"
-        case .distractionResistance: return "Your ability to stay on task despite interruptions"
-        case .memory: return "Your working memory capacity"
-        case .reactionTime: return "Your speed of cognitive processing"
-        case .discipline: return "Your overall self-discipline"
-        }
-    }
-    
-    var icon: String {
-        switch self {
-        case .focus: return "eye.fill"
-        case .impulseControl: return "hand.raised.fill"
-        case .distractionResistance: return "shield.fill"
-        case .memory: return "brain.head.profile"
-        case .reactionTime: return "bolt.fill"
-        case .discipline: return "star.fill"
-        }
-    }
-    
-    var color: String {
-        switch self {
-        case .focus: return "6366F1" // Indigo
-        case .impulseControl: return "EF4444" // Red
-        case .distractionResistance: return "F59E0B" // Amber
-        case .memory: return "3B82F6" // Blue
-        case .reactionTime: return "10B981" // Emerald
-        case .discipline: return "8B5CF6" // Purple
-        }
-    }
-    
-    /// Maps challenge categories to skills
-    static func from(category: ChallengeCategory) -> [SkillType] {
-        switch category {
-        case .focus:
-            return [.focus]
-        case .memory:
-            return [.memory]
-        case .reaction:
-            return [.reactionTime]
-        case .breathing:
-            return [.focus, .discipline]
-        case .discipline:
-            return [.impulseControl, .distractionResistance]
-        }
-    }
-    
-    /// Max level for any skill
-    static let maxLevel = 100
-}
-
-// MARK: - Skill Progress
-struct SkillProgress: Codable, Identifiable {
-    var id: String { skillType.rawValue }
-    let skillType: SkillType
-    var level: Int
-    var xp: Int
-    var lastUpdated: Date
-    
-    var xpForNextLevel: Int {
-        return level * 100 + (level - 1) * 25
-    }
-    
-    var progressToNextLevel: Double {
-        guard xpForNextLevel > 0 else { return 1.0 }
-        return min(Double(xp) / Double(xpForNextLevel), 1.0)
-    }
-    
-    var tier: SkillTier {
-        switch level {
-        case 0..<10: return .beginner
-        case 10..<25: return .intermediate
-        case 25..<50: return .advanced
-        case 50..<75: return .expert
-        default: return .master
-        }
-    }
-    
-    enum SkillTier: String {
-        case beginner = "Beginner"
-        case intermediate = "Intermediate"
-        case advanced = "Advanced"
-        case expert = "Expert"
-        case master = "Master"
-        
-        var icon: String {
-            switch self {
-            case .beginner: return "leaf.fill"
-            case .intermediate: return "star.fill"
-            case .advanced: return "sparkles"
-            case .expert: return "crown.fill"
-            case .master: return "burst.fill"
-            }
-        }
-    }
-    
-    init(skillType: SkillType) {
-        self.skillType = skillType
-        self.level = 1
-        self.xp = 0
-        self.lastUpdated = Date()
-    }
-    
-    mutating func addXP(_ amount: Int) {
-        xp += amount
-        lastUpdated = Date()
-        
-        // Check for level up
-        while xp >= xpForNextLevel && level < SkillType.maxLevel {
-            xp -= xpForNextLevel
-            level += 1
-        }
-        
-        // Cap at max
-        if level >= SkillType.maxLevel {
-            level = SkillType.maxLevel
-            xp = xpForNextLevel
-        }
-    }
-}
-
-// MARK: - Game Progress
 struct GameProgress: Codable {
     var level: Int
     var totalXP: Int
@@ -143,38 +8,26 @@ struct GameProgress: Codable {
     var hearts: Int
     var gems: Int
     var completedChallenges: [ChallengeAttempt]
-    var skills: [String: SkillProgress]
+    var skills: [String: Int]
     
-    // Heart refill system
-    var lastHeartRefill: Date?
-    var heartRefillSlots: Int  // Max 3 refill slots
+    // Skill scores (0-100)
+    var focusScore: Int
+    var impulseControlScore: Int
+    var distractionResistanceScore: Int
     
-    // Streak freeze (can use to preserve streak when missing a day)
-    var streakFreezeUsed: Bool
-    var streakFreezesAvailable: Int
+    // Daily challenges
+    var dailyChallenges: [DailyChallenge]?
+    var lastDailyRefreshDate: Date?
     
-    // Daily login rewards
-    var lastLoginDate: Date?
-    var consecutiveLoginDays: Int
-    var dailyRewardsClaimed: [Date]
-    var totalDailyRewardsEarned: Int
+    // Streak protection
+    var streakFreezeUsed: Bool  // True if streak freeze was used today
     
-    // Constants
-    static let maxHearts = 5
-    static let maxRefillSlots = 3
-    static let refillIntervalMinutes = 30  // Hearts refill every 30 minutes
+    // Default skill values
+    static let defaultFocusScore = 10
+    static let defaultImpulseControlScore = 10
+    static let defaultDistractionResistanceScore = 10
     
-    // Daily login reward schedule (day -> gems, xp)
-    static let dailyRewardSchedule: [(gems: Int, xp: Int)] = [
-        (5, 50),    // Day 1
-        (10, 75),   // Day 2
-        (15, 100),  // Day 3
-        (25, 150),  // Day 4
-        (35, 200),  // Day 5
-        (50, 300),  // Day 6
-        (75, 500),  // Day 7 - Weekly bonus!
-    ]
-    
+    // Default initializer
     init() {
         self.level = 1
         self.totalXP = 0
@@ -184,193 +37,51 @@ struct GameProgress: Codable {
         self.gems = 0
         self.completedChallenges = []
         self.skills = [:]
-        self.lastHeartRefill = Date()
-        self.heartRefillSlots = 3
+        self.focusScore = Self.defaultFocusScore
+        self.impulseControlScore = Self.defaultImpulseControlScore
+        self.distractionResistanceScore = Self.defaultDistractionResistanceScore
+        self.dailyChallenges = nil
+        self.lastDailyRefreshDate = nil
         self.streakFreezeUsed = false
-        self.streakFreezesAvailable = 1  // Start with 1 free freeze
-        self.lastLoginDate = nil
-        self.consecutiveLoginDays = 0
-        self.dailyRewardsClaimed = []
-        self.totalDailyRewardsEarned = 0
-        
-        // Initialize all skills
-        for skillType in SkillType.allCases {
-            skills[skillType.rawValue] = SkillProgress(skillType: skillType)
-        }
     }
     
-    /// Time until next heart refill
-    var timeUntilRefill: TimeInterval? {
-        guard let lastRefill = lastHeartRefill,
-              hearts < GameProgress.maxHearts,
-              heartRefillSlots > 0 else {
-            return nil
-        }
-        
-        let nextRefill = lastRefill.addingTimeInterval(TimeInterval(GameProgress.refillIntervalMinutes * 60))
-        let remaining = nextRefill.timeIntervalSince(Date())
-        return remaining > 0 ? remaining : 0
+    // Memberwise initializer
+    init(level: Int, totalXP: Int, streakDays: Int, lastActivityDate: Date? = nil, hearts: Int, gems: Int, completedChallenges: [ChallengeAttempt], skills: [String: Int], focusScore: Int, impulseControlScore: Int, distractionResistanceScore: Int, dailyChallenges: [DailyChallenge]? = nil, lastDailyRefreshDate: Date? = nil, streakFreezeUsed: Bool) {
+        self.level = level
+        self.totalXP = totalXP
+        self.streakDays = streakDays
+        self.lastActivityDate = lastActivityDate
+        self.hearts = hearts
+        self.gems = gems
+        self.completedChallenges = completedChallenges
+        self.skills = skills
+        self.focusScore = focusScore
+        self.impulseControlScore = impulseControlScore
+        self.distractionResistanceScore = distractionResistanceScore
+        self.dailyChallenges = dailyChallenges
+        self.lastDailyRefreshDate = lastDailyRefreshDate
+        self.streakFreezeUsed = streakFreezeUsed
     }
     
-    /// Progress toward next heart refill (0.0 to 1.0)
-    var refillProgress: Double {
-        guard let remaining = timeUntilRefill else { return 1.0 }
-        let totalInterval = TimeInterval(GameProgress.refillIntervalMinutes * 60)
-        return 1.0 - (remaining / totalInterval)
-    }
-    
-    /// Check if hearts can be refilled
-    var canRefill: Bool {
-        return hearts < GameProgress.maxHearts && heartRefillSlots > 0
-    }
-    
-    /// XP required to reach the NEXT level from the current one
     var xpForNextLevel: Int {
         return level * 100 + (level - 1) * 50
     }
-
-    /// XP accumulated within the current level (totalXP is the running balance)
-    var currentLevelXP: Int { totalXP }
-
-    /// Progress bar 0–1 toward the next level
+    
+    var currentLevelXP: Int {
+        var xp = 0
+        for i in 1..<level {
+            xp += i * 100 + (i - 1) * 50
+        }
+        return totalXP - xp
+    }
+    
     var progressToNextLevel: Double {
         let needed = xpForNextLevel
         guard needed > 0 else { return 1.0 }
-        return min(Double(totalXP) / Double(needed), 1.0)
-    }
-    
-    /// Get skill progress for a specific skill
-    func getSkill(_ type: SkillType) -> SkillProgress {
-        if let existing = skills[type.rawValue] {
-            return existing
-        }
-        return SkillProgress(skillType: type)
-    }
-    
-    /// Update skill XP after completing a challenge
-    mutating func updateSkills(for category: ChallengeCategory, score: Int) {
-        let relevantSkills = SkillType.from(category: category)
-        
-        // Calculate XP based on score (higher score = more XP)
-        let baseXP = 10
-        let scoreBonus = score / 10
-        let xpEarned = baseXP + scoreBonus
-        
-        for skillType in relevantSkills {
-            if var skill = skills[skillType.rawValue] {
-                skill.addXP(xpEarned)
-                skills[skillType.rawValue] = skill
-            } else {
-                var newSkill = SkillProgress(skillType: skillType)
-                newSkill.addXP(xpEarned)
-                skills[newSkill.id] = newSkill
-            }
-        }
-    }
-    
-    // MARK: - Daily Login Rewards
-    
-    /// Check if user can claim daily reward today
-    var canClaimDailyReward: Bool {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        
-        // Already claimed today?
-        if let lastClaim = dailyRewardsClaimed.last {
-            let lastClaimDay = calendar.startOfDay(for: lastClaim)
-            if lastClaimDay == today {
-                return false
-            }
-        }
-        
-        return true
-    }
-    
-    /// Get the reward for the current login streak (day 1-7, then repeats day 7)
-    var currentDayReward: (gems: Int, xp: Int) {
-        let dayIndex = min(consecutiveLoginDays, 6)  // 0-indexed, max at day 6 (day 7)
-        return GameProgress.dailyRewardSchedule[dayIndex]
-    }
-    
-    /// Get reward for a specific day (1-7)
-    static func reward(forDay day: Int) -> (gems: Int, xp: Int) {
-        let index = min(day - 1, 6)  // 1-indexed input
-        return dailyRewardSchedule[index]
-    }
-    
-    /// Check and update login streak - call on app launch
-    mutating func checkDailyLogin() {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        
-        if let lastLogin = lastLoginDate {
-            let lastLoginDay = calendar.startOfDay(for: lastLogin)
-            let daysDiff = calendar.dateComponents([.day], from: lastLoginDay, to: today).day ?? 0
-            
-            if daysDiff == 1 {
-                // Consecutive day - increment streak
-                consecutiveLoginDays += 1
-            } else if daysDiff > 1 {
-                // Missed days - reset streak
-                consecutiveLoginDays = 1
-            }
-            // Same day - don't change streak
-        } else {
-            // First login ever
-            consecutiveLoginDays = 1
-        }
-        
-        lastLoginDate = Date()
-    }
-    
-    /// Claim today's daily reward - returns (gems, xp) earned
-    mutating func claimDailyReward() -> (gems: Int, xp: Int) {
-        guard canClaimDailyReward else {
-            return (0, 0)
-        }
-        
-        let reward = currentDayReward
-        gems += reward.gems
-        totalXP += reward.xp
-        dailyRewardsClaimed.append(Date())
-        totalDailyRewardsEarned += 1
-        
-        // Check for level up
-        while totalXP >= xpForNextLevel {
-            totalXP -= xpForNextLevel
-            level += 1
-        }
-        
-        return reward
-    }
-    
-    /// Days until next weekly bonus (day 7)
-    var daysUntilWeeklyBonus: Int {
-        let dayInCycle = ((consecutiveLoginDays - 1) % 7) + 1
-        return 7 - dayInCycle
-    }
-    
-    /// Current streak as formatted string
-    var streakDescription: String {
-        if consecutiveLoginDays == 0 {
-            return "Start your streak today!"
-        } else if consecutiveLoginDays == 1 {
-            return "1 day streak"
-        } else if consecutiveLoginDays < 7 {
-            return "\(consecutiveLoginDays) day streak"
-        } else {
-            let weeks = consecutiveLoginDays / 7
-            let days = consecutiveLoginDays % 7
-            if days == 0 {
-                return "\(weeks) week streak!"
-            } else {
-                return "\(weeks)w \(days)d streak"
-            }
-        }
+        return min(Double(currentLevelXP) / Double(needed), 1.0)
     }
 }
 
-// MARK: - Challenge Attempt
 struct ChallengeAttempt: Codable, Identifiable {
     var id: String
     var challengeTypeRaw: String
@@ -382,7 +93,7 @@ struct ChallengeAttempt: Codable, Identifiable {
     var attemptedAt: Date
     
     var challenge: AllChallengeType {
-        AllChallengeType.allCases.first { $0.rawValue == challengeTypeRaw } ?? .targetHunt
+        AllChallengeType.allCases.first { $0.rawValue == challengeTypeRaw } ?? .movingTarget
     }
 }
 
@@ -399,5 +110,350 @@ enum Difficulty: String, Codable {
         case .hard: return 2.0
         case .extreme: return 3.0
         }
+    }
+}
+
+// MARK: - Daily Challenge
+
+struct DailyChallenge: Codable, Identifiable {
+    var id: String { challengeType.rawValue }
+    var challengeType: AllChallengeType
+    var difficulty: Difficulty
+    var isCompleted: Bool
+    var score: Int?
+    var xpEarned: Int?
+    
+    var title: String { challengeType.rawValue }
+    var icon: String { challengeType.icon }
+    var category: ChallengeCategory { challengeType.category }
+    
+    var xpReward: Int {
+        switch difficulty {
+        case .easy: return 20
+        case .medium: return 35
+        case .hard: return 50
+        case .extreme: return 80
+        }
+    }
+    
+    var gemReward: Int {
+        switch difficulty {
+        case .easy: return 2
+        case .medium: return 5
+        case .hard: return 8
+        case .extreme: return 15
+        }
+    }
+}
+
+extension GameProgress {
+    mutating func generateDailyChallenges() {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        
+        // Check if we already have today's challenges
+        if let lastRefresh = lastDailyRefreshDate,
+           calendar.isDate(lastRefresh, inSameDayAs: today),
+           let existing = dailyChallenges, !existing.isEmpty {
+            return
+        }
+        
+        // Generate 3 random challenges for today
+        let allChallenges = AllChallengeType.allCases
+        var selectedChallenges: [DailyChallenge] = []
+        
+        // Seed random with today's date for consistency throughout the day
+        let seed = calendar.component(.day, from: today) + 
+                   calendar.component(.month, from: today) * 31 +
+                   calendar.component(.year, from: today) * 366
+        srand48(seed)
+        
+        // Select one challenge from each category
+        let focusChallenges = allChallenges.filter { $0.category == .focus }
+        let memoryChallenges = allChallenges.filter { $0.category == .memory }
+        let reactionChallenges = allChallenges.filter { $0.category == .reaction }
+        
+        if let focus = focusChallenges.randomElement() {
+            selectedChallenges.append(DailyChallenge(
+                challengeType: focus,
+                difficulty: .medium,
+                isCompleted: false,
+                score: nil,
+                xpEarned: nil
+            ))
+        }
+        
+        if let memory = memoryChallenges.randomElement() {
+            selectedChallenges.append(DailyChallenge(
+                challengeType: memory,
+                difficulty: .medium,
+                isCompleted: false,
+                score: nil,
+                xpEarned: nil
+            ))
+        }
+        
+        if let reaction = reactionChallenges.randomElement() {
+            selectedChallenges.append(DailyChallenge(
+                challengeType: reaction,
+                difficulty: .easy,
+                isCompleted: false,
+                score: nil,
+                xpEarned: nil
+            ))
+        }
+        
+        dailyChallenges = selectedChallenges
+        lastDailyRefreshDate = today
+    }
+    
+    var dailyChallengesCompleted: Int {
+        dailyChallenges?.filter { $0.isCompleted }.count ?? 0
+    }
+    
+    var dailyChallengesTotal: Int {
+        dailyChallenges?.count ?? 0
+    }
+    
+    var allDailyChallengesCompleted: Bool {
+        guard let challenges = dailyChallenges else { return false }
+        return !challenges.isEmpty && challenges.allSatisfy { $0.isCompleted }
+    }
+    
+    // MARK: - Streak Rewards
+    
+    /// Returns bonus gems for reaching streak milestones
+    var streakBonusGems: Int {
+        switch streakDays {
+        case 7: return 50   // 1 week
+        case 14: return 75  // 2 weeks
+        case 30: return 150 // 1 month
+        case 60: return 200 // 2 months
+        case 100: return 500 // 100 days
+        case 365: return 2000 // 1 year
+        default: return 0
+        }
+    }
+    
+    /// Check if a streak milestone was just reached (call after incrementing streak)
+    var justReachedMilestone: Bool {
+        [7, 14, 30, 60, 100, 365].contains(streakDays)
+    }
+    
+    /// Streak milestone name if at a milestone
+    var streakMilestoneName: String? {
+        switch streakDays {
+        case 7: return "1 Week Streak!"
+        case 14: return "2 Week Streak!"
+        case 30: return "1 Month Streak!"
+        case 60: return "2 Month Streak!"
+        case 100: return "100 Day Streak!"
+        case 365: return "1 Year Streak!"
+        default: return nil
+        }
+    }
+    
+    // MARK: - Skill Progress
+    
+    /// Update skill score with a new value, capped at 100
+    mutating func updateSkill(_ skillType: SkillType, score: Int) {
+        let cappedScore = min(max(score, 0), 100)
+        switch skillType {
+        case .focus:
+            focusScore = cappedScore
+        case .impulseControl:
+            impulseControlScore = cappedScore
+        case .distractionResistance:
+            distractionResistanceScore = cappedScore
+        }
+    }
+    
+    /// Increment skill score based on performance (0-100 score maps to 1-5 skill points)
+    mutating func incrementSkill(_ skillType: SkillType, performanceScore: Int) {
+        let currentScore: Int
+        switch skillType {
+        case .focus:
+            currentScore = focusScore
+        case .impulseControl:
+            currentScore = impulseControlScore
+        case .distractionResistance:
+            currentScore = distractionResistanceScore
+        }
+        
+        // Score 80+ = +5, 60+ = +3, 40+ = +2, <40 = +1
+        let increment: Int
+        if performanceScore >= 80 {
+            increment = 5
+        } else if performanceScore >= 60 {
+            increment = 3
+        } else if performanceScore >= 40 {
+            increment = 2
+        } else {
+            increment = 1
+        }
+        
+        let newScore = min(currentScore + increment, 100)
+        updateSkill(skillType, score: newScore)
+    }
+    
+    /// Get skill score for a specific type
+    func getSkillScore(_ skillType: SkillType) -> Int {
+        switch skillType {
+        case .focus:
+            return focusScore
+        case .impulseControl:
+            return impulseControlScore
+        case .distractionResistance:
+            return distractionResistanceScore
+        }
+    }
+    
+    /// Get skill level description
+    func getSkillLevel(_ skillType: SkillType) -> String {
+        let score = getSkillScore(skillType)
+        switch score {
+        case 0..<20: return "Beginner"
+        case 20..<40: return "Developing"
+        case 40..<60: return "Intermediate"
+        case 60..<80: return "Advanced"
+        case 80..<100: return "Expert"
+        default: return "Master"
+        }
+    }
+}
+
+enum SkillType: String, CaseIterable {
+    case focus = "Focus"
+    case impulseControl = "Impulse Control"
+    case distractionResistance = "Distraction Resistance"
+    
+    var description: String {
+        switch self {
+        case .focus: return "Your ability to concentrate on tasks"
+        case .impulseControl: return "Your ability to resist urges"
+        case .distractionResistance: return "Your ability to stay on task"
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .focus: return "target"
+        case .impulseControl: return "hand.raised.fill"
+        case .distractionResistance: return "shield.fill"
+        }
+    }
+}
+
+// MARK: - Level Titles
+extension GameProgress {
+    /// Get the title based on current level
+    var levelTitle: String {
+        switch level {
+        case 1...4: return "Beginner"
+        case 5...9: return "Struggler"
+        case 10...14: return "Fighter"
+        case 15...19: return "Warrior"
+        case 20...29: return "Champion"
+        case 30...39: return "Legend"
+        default: return "Master"
+        }
+    }
+    
+    /// Get the title for a specific level
+    static func titleForLevel(_ level: Int) -> String {
+        switch level {
+        case 1...4: return "Beginner"
+        case 5...9: return "Struggler"
+        case 10...14: return "Fighter"
+        case 15...19: return "Warrior"
+        case 20...29: return "Champion"
+        case 30...39: return "Legend"
+        default: return "Master"
+        }
+    }
+    
+    /// Get the next title if upgrading
+    var nextLevelTitle: String {
+        GameProgress.titleForLevel(level + 1)
+    }
+    
+    /// Check if there's a title change at next level
+    var hasTitleChangeAtNextLevel: Bool {
+        let currentTitle = levelTitle
+        let nextTitle = GameProgress.titleForLevel(level + 1)
+        return currentTitle != nextTitle
+    }
+}
+
+// MARK: - XP Bonus System
+extension GameProgress {
+    /// Check if today is a weekend (Saturday or Sunday)
+    var isWeekend: Bool {
+        let calendar = Calendar.current
+        let weekday = calendar.component(.weekday, from: Date())
+        // Sunday = 1, Saturday = 7
+        return weekday == 1 || weekday == 7
+    }
+    
+    /// Weekend XP multiplier (1.25x)
+    static let weekendXPBonus: Double = 1.25
+    
+    /// Daily XP cap from check-ins
+    static let dailyXPCap: Int = 200
+    
+    /// Calculate XP with bonuses applied
+    func calculateXPWithBonus(baseXP: Int) -> Int {
+        var xp = Double(baseXP)
+        
+        // Apply weekend bonus
+        if isWeekend {
+            xp *= GameProgress.weekendXPBonus
+        }
+        
+        return Int(xp)
+    }
+    
+    /// Calculate difficulty multiplier for practice challenges
+    func calculateDifficultyMultiplier(for difficulty: Difficulty) -> Double {
+        // Base multiplier from difficulty
+        var multiplier = difficulty.xpMultiplier
+        
+        // Weekend bonus stacks with difficulty
+        if isWeekend {
+            multiplier *= GameProgress.weekendXPBonus
+        }
+        
+        return multiplier
+    }
+    
+    /// Track XP earned today for daily cap
+    private static var xpEarnedToday: Int = 0
+    
+    /// Get XP that can be earned today (remaining cap)
+    var xpRemainingToday: Int {
+        max(0, GameProgress.dailyXPCap - GameProgress.xpEarnedToday)
+    }
+    
+    /// Add XP with daily cap tracking
+    mutating func addXPWithCap(_ baseXP: Int) -> Int {
+        let bonusXP = calculateXPWithBonus(baseXP: baseXP)
+        let xpToAdd = min(bonusXP, xpRemainingToday)
+        
+        if xpToAdd > 0 {
+            GameProgress.xpEarnedToday += xpToAdd
+            totalXP += xpToAdd
+        }
+        
+        return xpToAdd
+    }
+    
+    /// Reset daily XP (call at midnight or app launch on new day)
+    static func resetDailyXP() {
+        xpEarnedToday = 0
+    }
+    
+    /// Initialize daily XP from stored value
+    static func initializeDailyXP(_ value: Int) {
+        xpEarnedToday = value
     }
 }

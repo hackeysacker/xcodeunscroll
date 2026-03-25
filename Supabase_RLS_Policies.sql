@@ -1,4 +1,4 @@
--- Unscroll Supabase RLS Policies
+-- FocusFlow Supabase RLS Policies
 -- Row Level Security policies for all tables
 
 -- Enable RLS on all tables

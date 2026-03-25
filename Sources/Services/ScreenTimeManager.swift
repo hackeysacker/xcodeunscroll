@@ -146,7 +146,7 @@ class ScreenTimeManager: ObservableObject {
         Task {
             do {
                 // Try to fetch real data from DeviceActivity
-                try await fetchDeviceActivity()
+                let activity = try await fetchDeviceActivity()
                 
                 await MainActor.run {
                     self.processActivityData()
@@ -230,7 +230,7 @@ class ScreenTimeManager: ObservableObject {
         // store.shield.applications = Set(blockedBundleIds)
         // store.shield.webDomains = Set(["twitter.com", "instagram.com"])
         
-        print("Work mode activated - blocking \(blockedBundleIds.count) entertainment apps")
+        print("Work mode activated - blocking entertainment apps")
     }
     
     private func configureStudyMode() {
@@ -241,7 +241,7 @@ class ScreenTimeManager: ObservableObject {
             "com.apple.Numbers"
         ]
         
-        print("Study mode activated - allowing \(allowedApps.count) educational apps")
+        print("Study mode activated - blocking non-educational apps")
     }
     
     private func configurePersonalMode() {
@@ -297,9 +297,9 @@ class ScreenTimeManager: ObservableObject {
     
     // MARK: - Routines
     
-    @Published var routines: [ScreenTimeFocusRoutine] = []
+    @Published var routines: [FocusRoutine] = []
     
-    func addRoutine(_ routine: ScreenTimeFocusRoutine) {
+    func addRoutine(_ routine: FocusRoutine) {
         routines.append(routine)
     }
     
@@ -308,7 +308,7 @@ class ScreenTimeManager: ObservableObject {
         routines.remove(at: index)
     }
     
-    func activateRoutine(_ routine: ScreenTimeFocusRoutine) {
+    func activateRoutine(_ routine: FocusRoutine) {
         activateFocusMode(routine.mode)
         blockedApps = routine.blockedApps
     }
@@ -330,7 +330,7 @@ class ScreenTimeManager: ObservableObject {
 }
 
 // MARK: - Focus Routine Model
-struct ScreenTimeFocusRoutine: Identifiable, Codable {
+struct FocusRoutine: Identifiable, Codable {
     let id: String
     var name: String
     var startTime: Date

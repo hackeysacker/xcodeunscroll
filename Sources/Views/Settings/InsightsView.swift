@@ -4,7 +4,6 @@ import Charts
 struct InsightsView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) var dismiss
-    @StateObject private var purchaseService = PurchaseService.shared
     
     @State private var selectedTimeRange: TimeRange = .week
     @State private var selectedCategory: ChallengeCategory?
@@ -48,9 +47,6 @@ struct InsightsView: View {
                     
                     // Predictions
                     predictionsSection
-
-                    // Advanced analytics
-                    advancedAnalyticsSection
                 }
                 .padding(.bottom, 100)
             }
@@ -340,57 +336,6 @@ struct InsightsView: View {
         }
         .padding(.horizontal, 16)
     }
-
-    var advancedAnalyticsSection: some View {
-        Group {
-            if purchaseService.advancedAnalyticsEnabled {
-                GlassCard(tint: .purple) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack {
-                            Image(systemName: "waveform.path.ecg")
-                                .foregroundColor(.purple)
-                            Text("Advanced Analytics")
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundColor(.white)
-                        }
-
-                        AdvancedMetricRow(title: "Consistency Score", value: "\(consistencyScore)%", color: .green)
-                        AdvancedMetricRow(title: "Recovery Rate", value: "\(recoveryRate)%", color: .cyan)
-                        AdvancedMetricRow(title: "Focus Stability", value: "\(focusStability)%", color: .orange)
-                    }
-                }
-                .padding(.horizontal, 16)
-            } else {
-                GlassCard(tint: .orange) {
-                    VStack(alignment: .leading, spacing: 10) {
-                        HStack {
-                            Image(systemName: "lock.fill")
-                                .foregroundColor(.orange)
-                            Text("Advanced Analytics")
-                                .font(.system(size: 17, weight: .bold))
-                                .foregroundColor(.white)
-                        }
-                        Text("Unlock deeper trends, consistency metrics, and performance forecasting.")
-                            .font(.system(size: 13))
-                            .foregroundColor(.gray)
-                        Button {
-                            Task {
-                                _ = await purchaseService.purchase(.advancedAnalytics, appState: appState)
-                            }
-                        } label: {
-                            Text("Unlock \(purchaseService.displayPrice(for: .advancedAnalytics))")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 8)
-                                .background(Capsule().fill(Color.orange.opacity(0.3)))
-                        }
-                    }
-                }
-                .padding(.horizontal, 16)
-            }
-        }
-    }
     
     // MARK: - Computed Properties
     var periodLabel: String {
@@ -433,11 +378,11 @@ struct InsightsView: View {
     var skillData: [SkillData] {
         let skills = appState.progress?.skills ?? [:]
         return [
-            SkillData(name: "Focus", level: skills["Focus"]?.level ?? 1, color: .purple, icon: "target"),
-            SkillData(name: "Memory", level: skills["Memory"]?.level ?? 1, color: .blue, icon: "brain.head.profile"),
-            SkillData(name: "Discipline", level: skills["Discipline"]?.level ?? 1, color: .green, icon: "hand.raised.fill"),
-            SkillData(name: "Reaction", level: skills["Reaction Time"]?.level ?? 1, color: .orange, icon: "bolt.fill"),
-            SkillData(name: "Breathing", level: skills["Focus"]?.level ?? 1, color: .cyan, icon: "wind")
+            SkillData(name: "Focus", level: skills["focus"] ?? 1, color: .purple, icon: "target"),
+            SkillData(name: "Memory", level: skills["memory"] ?? 1, color: .blue, icon: "brain.head.profile"),
+            SkillData(name: "Discipline", level: skills["discipline"] ?? 1, color: .green, icon: "hand.raised.fill"),
+            SkillData(name: "Reaction", level: skills["reaction"] ?? 1, color: .orange, icon: "bolt.fill"),
+            SkillData(name: "Breathing", level: skills["breathing"] ?? 1, color: .cyan, icon: "wind")
         ]
     }
     
@@ -480,21 +425,6 @@ struct InsightsView: View {
     
     var weeklyXPPrediction: String {
         return "~350 XP this week"
-    }
-
-    var consistencyScore: Int {
-        let streak = appState.progress?.streakDays ?? 0
-        return min(100, 35 + streak * 2)
-    }
-
-    var recoveryRate: Int {
-        let attempts = appState.progress?.completedChallenges.count ?? 0
-        return max(40, min(98, 50 + attempts / 2))
-    }
-
-    var focusStability: Int {
-        let avg = filteredProgress.averageScore
-        return max(30, min(99, avg))
     }
 }
 
@@ -686,24 +616,6 @@ struct PredictionRow: View {
     }
 }
 
-struct AdvancedMetricRow: View {
-    let title: String
-    let value: String
-    let color: Color
-
-    var body: some View {
-        HStack {
-            Text(title)
-                .font(.system(size: 13))
-                .foregroundColor(.white.opacity(0.85))
-            Spacer()
-            Text(value)
-                .font(.system(size: 14, weight: .bold))
-                .foregroundColor(color)
-        }
-    }
-}
-
 // MARK: - Challenge Category Color Extension
 extension ChallengeCategory {
     var color: Color {
@@ -713,6 +625,9 @@ extension ChallengeCategory {
         case .reaction: return .orange
         case .breathing: return .cyan
         case .discipline: return .green
+        case .speed: return .yellow
+        case .impulse: return .pink
+        case .calm: return .teal
         }
     }
 }

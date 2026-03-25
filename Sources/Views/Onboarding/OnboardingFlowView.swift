@@ -38,7 +38,9 @@ struct OnboardingFlowView: View {
                 CompletionPage(onComplete: { completeOnboarding() }).tag(10)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
+            .animation(.easeInOut(duration: 0.2), value: currentPage)
         }
+        .drawingGroup()
         .preferredColorScheme(theme == 0 ? .dark : .light)
     }
     
@@ -56,7 +58,20 @@ struct OnboardingFlowView: View {
         user.displayName = displayName.isEmpty ? username : displayName
         appState.currentUser = user
         appState.isOnboarded = true
-        appState.progress = GameProgress()
+        appState.progress = GameProgress(
+            level: 1,
+            totalXP: 100,
+            streakDays: 0,
+            lastActivityDate: nil,
+            hearts: 5,
+            gems: 10,
+            completedChallenges: [],
+            skills: [:],
+            focusScore: GameProgress.defaultFocusScore,
+            impulseControlScore: GameProgress.defaultImpulseControlScore,
+            distractionResistanceScore: GameProgress.defaultDistractionResistanceScore,
+            streakFreezeUsed: false
+        )
         appState.saveData()
     }
 }
@@ -86,7 +101,7 @@ struct SplashPage: View {
                     Image(systemName: "brain.head.profile").font(.system(size: 50, weight: .bold)).foregroundColor(.white)
                 }
                 VStack(spacing: 12) {
-                    Text("Unscroll").font(.system(size: 40, weight: .bold)).foregroundColor(.white)
+                    Text("FocusFlow").font(.system(size: 40, weight: .bold)).foregroundColor(.white)
                     Text("Master your mind").font(.system(size: 18)).foregroundColor(.gray)
                 }
                 VStack(spacing: 8) {
@@ -262,7 +277,7 @@ struct CompletionPage: View {
     var body: some View {
         ZStack {
             LinearGradient(colors: [Color(hex: "0A0F1C"), Color(hex: "1E293B")], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
-            VStack(spacing: 32) { Spacer(); Text("🎉").font(.system(size: 80)); VStack(spacing: 16) { Text("Welcome to Unscroll!").font(.system(size: 32, weight: .bold)).foregroundColor(.white); Text("Your journey starts now").foregroundColor(.gray) }
+            VStack(spacing: 32) { Spacer(); Text("🎉").font(.system(size: 80)); VStack(spacing: 16) { Text("Welcome to FocusFlow!").font(.system(size: 32, weight: .bold)).foregroundColor(.white); Text("Your journey starts now").foregroundColor(.gray) }
                 if showRewards { HStack(spacing: 24) { VStack { Image(systemName: "star.fill").font(.system(size: 30)).foregroundColor(.purple); Text("+100").font(.system(size: 20, weight: .bold)).foregroundColor(.white); Text("XP").foregroundColor(.gray) }; VStack { Image(systemName: "diamond.fill").font(.system(size: 30)).foregroundColor(.cyan); Text("+10").font(.system(size: 20, weight: .bold)).foregroundColor(.white); Text("Gems").foregroundColor(.gray) }; VStack { Image(systemName: "heart.fill").font(.system(size: 30)).foregroundColor(.red); Text("+5").font(.system(size: 20, weight: .bold)).foregroundColor(.white); Text("Hearts").foregroundColor(.gray) } }.transition(.scale.combined(with: .opacity)) }
                 Spacer()
                 Button(action: onComplete) { Text("Start Training").font(.system(size: 18, weight: .bold)).foregroundColor(.white).frame(maxWidth: .infinity).frame(height: 56).background(LinearGradient(colors: [.purple, .indigo], startPoint: .leading, endPoint: .trailing)).cornerRadius(28) }.padding(.horizontal, 32).padding(.bottom, 40) }
