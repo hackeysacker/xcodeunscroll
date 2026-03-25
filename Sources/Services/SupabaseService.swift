@@ -159,7 +159,6 @@ class SupabaseService: ObservableObject {
     /// Fetch user profile
     func fetchProfile(userId: String) async throws -> Profile? {
         let response: [Profile] = try await supabase
-            .database
             .from("profiles")
             .select()
             .eq("id", value: userId)
@@ -172,7 +171,6 @@ class SupabaseService: ObservableObject {
     /// Update user profile
     func updateProfile(userId: String, updates: Profile) async throws {
         try await supabase
-            .database
             .from("profiles")
             .update(updates)
             .eq("id", value: userId)
@@ -182,7 +180,6 @@ class SupabaseService: ObservableObject {
     /// Update gems
     func updateGems(userId: String, gems: Int) async throws {
         try await supabase
-            .database
             .from("profiles")
             .update(Profile(id: userId, gems: gems))
             .eq("id", value: userId)
@@ -194,7 +191,6 @@ class SupabaseService: ObservableObject {
     /// Fetch game progress
     func fetchGameProgress(userId: String) async throws -> GameProgressRecord? {
         let response: [GameProgressRecord] = try await supabase
-            .database
             .from("game_progress")
             .select()
             .eq("user_id", value: userId)
@@ -207,7 +203,6 @@ class SupabaseService: ObservableObject {
     /// Update game progress
     func updateGameProgress(userId: String, progress: GameProgressRecord) async throws {
         try await supabase
-            .database
             .from("game_progress")
             .update(progress)
             .eq("user_id", value: userId)
@@ -217,7 +212,6 @@ class SupabaseService: ObservableObject {
     /// Create or update game progress
     func upsertGameProgress(_ progress: GameProgressRecord) async throws {
         try await supabase
-            .database
             .from("game_progress")
             .upsert(progress, onConflict: "user_id")
             .execute()
@@ -228,7 +222,6 @@ class SupabaseService: ObservableObject {
     /// Fetch skill progress
     func fetchSkillProgress(userId: String) async throws -> SkillProgressRecord? {
         let response: [SkillProgressRecord] = try await supabase
-            .database
             .from("skill_progress")
             .select()
             .eq("user_id", value: userId)
@@ -241,7 +234,6 @@ class SupabaseService: ObservableObject {
     /// Update skill progress
     func updateSkillProgress(userId: String, focusScore: Int, impulseControlScore: Int, distractionResistanceScore: Int) async throws {
         try await supabase
-            .database
             .from("skill_progress")
             .update([
                 "focus_score": focusScore,
@@ -257,7 +249,6 @@ class SupabaseService: ObservableObject {
     /// Fetch heart state
     func fetchHeartState(userId: String) async throws -> HeartStateRecord? {
         let response: [HeartStateRecord] = try await supabase
-            .database
             .from("heart_state")
             .select()
             .eq("user_id", value: userId)
@@ -270,7 +261,6 @@ class SupabaseService: ObservableObject {
     /// Update heart state
     func updateHeartState(userId: String, currentHearts: Int) async throws {
         try await supabase
-            .database
             .from("heart_state")
             .update(["current_hearts": currentHearts])
             .eq("user_id", value: userId)
@@ -321,7 +311,6 @@ class SupabaseService: ObservableObject {
         )
         
         try await supabase
-            .database
             .from("challenge_results")
             .insert(result)
             .execute()

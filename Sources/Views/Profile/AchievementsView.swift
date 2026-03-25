@@ -9,6 +9,8 @@ struct AchievementsView: View {
     @State private var showUnlockSheet = false
     @State private var recentlyUnlocked: Achievement?
     @State private var progressAnim: Double = 0
+    @State private var showShareSheet = false
+    @State private var shareMessage = ""
 
     var body: some View {
         ZStack {
@@ -41,6 +43,9 @@ struct AchievementsView: View {
                 AchievementUnlockSheet(achievement: a) { showUnlockSheet = false }
             }
         }
+        .sheet(isPresented: $showShareSheet) {
+            ActivityShareSheet(items: [shareMessage])
+        }
     }
 
     // MARK: - Nav Bar
@@ -59,12 +64,28 @@ struct AchievementsView: View {
                 .font(.system(size: 19, weight: .bold))
                 .foregroundColor(.white)
             Spacer()
-            // Spacer button for alignment
-            Color.clear.frame(width: 40, height: 40)
+            Button {
+                shareMessage = buildShareMessage()
+                showShareSheet = true
+            } label: {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(width: 40, height: 40)
+                    .background(Color.white.opacity(0.07))
+                    .clipShape(Circle())
+            }
         }
         .padding(.horizontal, 20)
         .padding(.top, 16)
         .padding(.bottom, 8)
+    }
+
+    func buildShareMessage() -> String {
+        let unlocked = store.unlockedCount()
+        let total = store.achievements.count
+        let streak = appState.progress?.streakDays ?? 0
+        return "I just unlocked \(unlocked)/\(total) achievements on Unscroll with a \(streak)-day streak."
     }
 
     // MARK: - Overview Card

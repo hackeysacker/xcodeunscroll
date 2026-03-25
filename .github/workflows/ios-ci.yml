@@ -1,0 +1,68 @@
+name: iOS CI
+
+on:
+  push:
+    branches:
+      - main
+      - "codex/**"
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Resolve Swift packages
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -project Unscroll.xcodeproj \
+            -scheme Unscroll
+
+      - name: Select simulator destination
+        id: simulator
+        run: |
+          SIMULATOR_NAME=$(xcrun simctl list devices available | grep -Eo 'iPhone [^()]+' | head -n 1 | xargs)
+          if [ -z "$SIMULATOR_NAME" ]; then
+            echo "No available iPhone simulator found."
+            exit 1
+          fi
+          echo "destination=platform=iOS Simulator,name=$SIMULATOR_NAME" >> "$GITHUB_OUTPUT"
+          echo "Using destination: platform=iOS Simulator,name=$SIMULATOR_NAME"
+
+      - name: Build app
+        run: |
+          xcodebuild -project Unscroll.xcodeproj \
+            -scheme Unscroll \
+            -destination '${{ steps.simulator.outputs.destination }}' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Run tests (if configured)
+        run: |
+          SHOW_TEST_PLANS_OUTPUT=$(xcodebuild \
+            -project Unscroll.xcodeproj \
+            -scheme Unscroll \
+            -showTestPlans 2>&1 || true)
+
+          echo "$SHOW_TEST_PLANS_OUTPUT"
+
+          if echo "$SHOW_TEST_PLANS_OUTPUT" | grep -qi "not configured"; then
+            echo "Scheme has no configured test action. Skipping tests."
+            exit 0
+          fi
+
+          xcodebuild -project Unscroll.xcodeproj \
+            -scheme Unscroll \
+            -destination '${{ steps.simulator.outputs.destination }}' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            test

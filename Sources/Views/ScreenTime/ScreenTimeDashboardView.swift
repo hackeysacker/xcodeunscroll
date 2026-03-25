@@ -138,6 +138,7 @@ struct ScreenTimeDashboardView: View {
                 Text("FOCUS")
                     .font(.system(size: 11, weight: .black, design: .rounded))
                     .foregroundColor(.white.opacity(0.35)).tracking(2)
+                    .textCase(.uppercase)
                 Text("Shield & Routines")
                     .font(.system(size: 24, weight: .bold)).foregroundColor(.white)
             }
@@ -152,34 +153,97 @@ struct ScreenTimeDashboardView: View {
                         .foregroundColor(screenTime.isAuthorized ? .green : .orange)
                 }
                 .padding(.horizontal, 12).padding(.vertical, 7)
-                .background(Capsule().fill(Color.white.opacity(0.06)).overlay(Capsule().stroke(Color.white.opacity(0.1), lineWidth: 1)))
+                .background(
+                    Capsule().fill(
+                        LinearGradient(
+                            colors: [
+                                (screenTime.isAuthorized ? Color.green : Color.orange).opacity(0.1),
+                                (screenTime.isAuthorized ? Color.green : Color.orange).opacity(0.05)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .overlay(
+                        Capsule().stroke(
+                            (screenTime.isAuthorized ? Color.green : Color.orange).opacity(0.4),
+                            lineWidth: 1.5
+                        )
+                    )
+                )
             }
         }
-        .padding(.horizontal, 20).padding(.top, 60).padding(.bottom, 12)
+        .padding(.horizontal, 20).padding(.top, 58).padding(.bottom, 12)
     }
 
     var tabBar: some View {
-        HStack(spacing: 0) {
-            FocusTabButton(icon: "chart.bar.fill",             title: "Today",    isSelected: selectedTab == 0) { selectedTab = 0 }
-            FocusTabButton(icon: "shield.checkered",           title: "Shield",   isSelected: selectedTab == 1) { selectedTab = 1 }
-            FocusTabButton(icon: "clock.badge.checkmark.fill", title: "Routines", isSelected: selectedTab == 2) { selectedTab = 2 }
-            FocusTabButton(icon: "app.badge.fill",             title: "Apps",     isSelected: selectedTab == 3) { selectedTab = 3 }
+        HStack(spacing: 8) {
+            ForEach([
+                ("chart.bar.fill", "Today", 0),
+                ("shield.checkered", "Shield", 1),
+                ("clock.badge.checkmark.fill", "Routines", 2),
+                ("app.badge.fill", "Apps", 3)
+            ], id: \.2) { icon, title, index in
+                LiquidGlassTabButton(
+                    icon: icon,
+                    title: title,
+                    isSelected: selectedTab == index,
+                    action: { selectedTab = index }
+                )
+            }
         }
-        .padding(.horizontal, 16).padding(.bottom, 4)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 12)
+        .background(
+            Capsule().fill(
+                LinearGradient(
+                    colors: [Color.white.opacity(0.04), Color.white.opacity(0.02)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .overlay(
+                Capsule().stroke(Color.white.opacity(0.08), lineWidth: 1)
+            )
+        )
+        .padding(.horizontal, 12)
+        .padding(.bottom, 12)
     }
 }
 
-struct FocusTabButton: View {
-    let icon: String; let title: String; let isSelected: Bool; let action: () -> Void
+struct LiquidGlassTabButton: View {
+    let icon: String
+    let title: String
+    let isSelected: Bool
+    let action: () -> Void
+
     var body: some View {
         Button(action: action) {
             VStack(spacing: 4) {
                 Image(systemName: icon).font(.system(size: 16))
                 Text(title).font(.system(size: 10, weight: .semibold))
             }
-            .foregroundColor(isSelected ? .purple : .gray)
-            .frame(maxWidth: .infinity).padding(.vertical, 10)
-            .background(RoundedRectangle(cornerRadius: 10).fill(isSelected ? Color.purple.opacity(0.15) : Color.clear))
+            .foregroundColor(isSelected ? .white : .gray)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .background(
+                isSelected
+                    ? AnyView(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(
+                                LinearGradient(
+                                    colors: [Color.purple.opacity(0.25), Color.purple.opacity(0.1)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.purple.opacity(0.35), lineWidth: 1)
+                            )
+                    )
+                    : AnyView(RoundedRectangle(cornerRadius: 12).fill(Color.clear))
+            )
         }
     }
 }
@@ -193,7 +257,7 @@ struct TodayView: View {
             mainRing
             quickStats
             categoriesSection
-        }.padding(.top, 8)
+        }.padding(.top, 8).padding(.horizontal, 12)
     }
 
     var mainRing: some View {
@@ -215,10 +279,10 @@ struct TodayView: View {
 
     var quickStats: some View {
         HStack(spacing: 12) {
-            TodayStatBox(icon: "flame.fill",    value: "\(screenTime.pickupCount)",        label: "Pickups",   color: .orange)
-            TodayStatBox(icon: "bell.badge.fill", value: "\(screenTime.notificationsCount)", label: "Alerts",    color: .red)
-            TodayStatBox(icon: "clock.fill",    value: "\(screenTime.weeklyMinutes/60)h",  label: "This Week", color: .cyan)
-        }.padding(.horizontal)
+            TodayStatBoxGlass(icon: "flame.fill",    value: "\(screenTime.pickupCount)",        label: "Pickups",   color: .orange)
+            TodayStatBoxGlass(icon: "bell.badge.fill", value: "\(screenTime.notificationsCount)", label: "Alerts",    color: .red)
+            TodayStatBoxGlass(icon: "clock.fill",    value: "\(screenTime.weeklyMinutes/60)h",  label: "This Week", color: .cyan)
+        }
     }
 
     var categoriesSection: some View {
@@ -233,12 +297,15 @@ struct TodayView: View {
             }
         }
         .padding(16)
-        .background(RoundedRectangle(cornerRadius: 20).fill(Color.white.opacity(0.04)).overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.white.opacity(0.07), lineWidth: 1)))
-        .padding(.horizontal)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(LinearGradient(colors: [Color.white.opacity(0.06), Color.white.opacity(0.02)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.white.opacity(0.1), lineWidth: 1))
+        )
     }
 }
 
-struct TodayStatBox: View {
+struct TodayStatBoxGlass: View {
     let icon: String; let value: String; let label: String; let color: Color
     var body: some View {
         VStack(spacing: 6) {
@@ -247,7 +314,11 @@ struct TodayStatBox: View {
             Text(label).font(.system(size: 10)).foregroundColor(.gray)
         }
         .frame(maxWidth: .infinity).padding(.vertical, 14)
-        .background(RoundedRectangle(cornerRadius: 14).fill(Color.white.opacity(0.04)))
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(LinearGradient(colors: [color.opacity(0.08), color.opacity(0.03)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .overlay(RoundedRectangle(cornerRadius: 16).stroke(color.opacity(0.2), lineWidth: 1))
+        )
     }
 }
 
@@ -273,7 +344,7 @@ struct GamifiedShieldView: View {
             modeSelector
             if sessionActive { activeSessionCard }
             rewardsSection
-        }.padding(.top, 8)
+        }.padding(.top, 8).padding(.horizontal, 12)
         .onDisappear { stopSession() }
     }
 
@@ -309,7 +380,16 @@ struct GamifiedShieldView: View {
                         .font(.system(size: 12, weight: .semibold)).foregroundColor(.cyan)
                 }
                 .padding(.horizontal, 16).padding(.vertical, 8)
-                .background(Capsule().fill(Color.white.opacity(0.07)).overlay(Capsule().stroke(Color.white.opacity(0.1), lineWidth: 1)))
+                .background(
+                    Capsule().fill(
+                        LinearGradient(
+                            colors: [Color.white.opacity(0.08), Color.white.opacity(0.03)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .overlay(Capsule().stroke(Color.white.opacity(0.15), lineWidth: 1))
+                )
             }
         }
     }
@@ -317,7 +397,7 @@ struct GamifiedShieldView: View {
     var modeSelector: some View {
         VStack(spacing: 10) {
             ForEach(FocusMode.allCases.filter { $0 != .custom && $0 != .off }, id: \.self) { mode in
-                ShieldModeButton(mode: mode, isSelected: selectedMode == mode) {
+                ShieldModeButtonGlass(mode: mode, isSelected: selectedMode == mode) {
                     withAnimation(.spring(response: 0.4)) {
                         if selectedMode == mode {
                             selectedMode = .off; stopSession()
@@ -329,17 +409,31 @@ struct GamifiedShieldView: View {
                     }
                 }
             }
-        }.padding(.horizontal)
+        }
     }
 
     var activeSessionCard: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
-                .fill(selectedMode.color.opacity(0.1))
+                .fill(
+                    LinearGradient(
+                        colors: [selectedMode.color.opacity(0.12), selectedMode.color.opacity(0.05)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
                 .overlay(RoundedRectangle(cornerRadius: 20).stroke(selectedMode.color.opacity(0.35), lineWidth: 1))
             HStack(spacing: 14) {
                 ZStack {
-                    Circle().fill(selectedMode.color.opacity(0.2)).frame(width: 48, height: 48)
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [selectedMode.color.opacity(0.25), selectedMode.color.opacity(0.1)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 48, height: 48)
                     Image(systemName: "timer").font(.system(size: 20)).foregroundColor(selectedMode.color)
                 }
                 VStack(alignment: .leading, spacing: 3) {
@@ -352,18 +446,25 @@ struct GamifiedShieldView: View {
                     Text("+\(sessionElapsed / 300) gems").font(.system(size: 12)).foregroundColor(.cyan)
                 }
             }.padding(16)
-        }.padding(.horizontal)
+        }
     }
 
     var rewardsSection: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("Shield Achievements")
-                .font(.system(size: 18, weight: .bold)).foregroundColor(.white).padding(.horizontal)
+                .font(.system(size: 18, weight: .bold)).foregroundColor(.white).padding(.horizontal, 4)
             ForEach(rewards) { reward in
                 HStack(spacing: 14) {
                     ZStack {
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.white.opacity(0.06)).frame(width: 48, height: 48)
+                            .fill(
+                                LinearGradient(
+                                    colors: [Color.white.opacity(0.08), Color.white.opacity(0.03)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 48, height: 48)
                         Image(systemName: reward.icon).font(.system(size: 20)).foregroundColor(.white.opacity(0.4))
                     }
                     VStack(alignment: .leading, spacing: 3) {
@@ -383,8 +484,11 @@ struct GamifiedShieldView: View {
                     }
                 }
                 .padding(14)
-                .background(RoundedRectangle(cornerRadius: 18).fill(Color.white.opacity(0.03)).overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.white.opacity(0.06), lineWidth: 1)))
-                .padding(.horizontal)
+                .background(
+                    RoundedRectangle(cornerRadius: 18)
+                        .fill(LinearGradient(colors: [Color.white.opacity(0.05), Color.white.opacity(0.02)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.white.opacity(0.08), lineWidth: 1))
+                )
             }
         }
     }
@@ -410,14 +514,18 @@ struct GamifiedShieldView: View {
     }
 }
 
-struct ShieldModeButton: View {
+struct ShieldModeButtonGlass: View {
     let mode: FocusMode; let isSelected: Bool; let action: () -> Void
     var body: some View {
         Button(action: action) {
             HStack(spacing: 14) {
                 ZStack {
                     Circle()
-                        .fill(isSelected ? mode.color.opacity(0.25) : Color.white.opacity(0.06))
+                        .fill(
+                            isSelected
+                                ? LinearGradient(colors: [mode.color.opacity(0.3), mode.color.opacity(0.15)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                : LinearGradient(colors: [Color.white.opacity(0.08), Color.white.opacity(0.03)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                        )
                         .frame(width: 44, height: 44)
                     Image(systemName: mode.icon).font(.system(size: 20))
                         .foregroundColor(isSelected ? mode.color : .white.opacity(0.5))
@@ -433,8 +541,17 @@ struct ShieldModeButton: View {
             .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 18)
-                    .fill(isSelected ? mode.color.opacity(0.1) : Color.white.opacity(0.04))
-                    .overlay(RoundedRectangle(cornerRadius: 18).stroke(isSelected ? mode.color.opacity(0.45) : Color.white.opacity(0.07), lineWidth: 1.5))
+                    .fill(
+                        isSelected
+                            ? LinearGradient(colors: [mode.color.opacity(0.12), mode.color.opacity(0.05)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                            : LinearGradient(colors: [Color.white.opacity(0.05), Color.white.opacity(0.02)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 18).stroke(
+                            isSelected ? mode.color.opacity(0.45) : Color.white.opacity(0.08),
+                            lineWidth: 1.5
+                        )
+                    )
             )
         }
     }
@@ -453,6 +570,7 @@ struct CustomRoutinesView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("ROUTINES")
                         .font(.system(size: 11, weight: .black)).foregroundColor(.white.opacity(0.35)).tracking(2)
+                        .textCase(.uppercase)
                     Text("Your Focus Schedule")
                         .font(.system(size: 20, weight: .bold)).foregroundColor(.white)
                 }
@@ -466,7 +584,7 @@ struct CustomRoutinesView: View {
             if routines.isEmpty { emptyState }
             else {
                 ForEach($routines) { $routine in
-                    RoutineCard2(routine: $routine) {
+                    RoutineCard2Glass(routine: $routine) {
                         editingRoutine = routine
                     } onDelete: {
                         routines.removeAll { $0.id == routine.id }
@@ -475,6 +593,7 @@ struct CustomRoutinesView: View {
                 }
             }
         }
+        .padding(.horizontal, 12)
         .onAppear { routines = appState.savedRoutines }
         .sheet(isPresented: $showAddRoutine) {
             RoutineEditorView(routine: nil) { r in routines.append(r); appState.saveRoutines(routines) }
@@ -504,7 +623,7 @@ struct CustomRoutinesView: View {
     }
 }
 
-struct RoutineCard2: View {
+struct RoutineCard2Glass: View {
     @Binding var routine: FocusRoutine
     let onEdit: () -> Void; let onDelete: () -> Void
     var body: some View {
@@ -543,10 +662,23 @@ struct RoutineCard2: View {
         }
         .background(
             RoundedRectangle(cornerRadius: 20)
-                .fill(Color.white.opacity(0.04))
-                .overlay(RoundedRectangle(cornerRadius: 20).stroke(routine.isEnabled ? Color.purple.opacity(0.35) : Color.white.opacity(0.07), lineWidth: 1))
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(routine.isEnabled ? 0.07 : 0.04),
+                            Color.white.opacity(routine.isEnabled ? 0.03 : 0.01)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20).stroke(
+                        routine.isEnabled ? Color.purple.opacity(0.35) : Color.white.opacity(0.08),
+                        lineWidth: 1
+                    )
+                )
         )
-        .padding(.horizontal)
     }
 }
 
@@ -579,7 +711,13 @@ struct RoutineEditorView: View {
                                 ForEach(emojiOptions, id: \.self) { e in
                                     Button { emoji = e } label: {
                                         Text(e).font(.system(size: 28)).frame(width: 52, height: 52)
-                                            .background(Circle().fill(emoji == e ? Color.purple.opacity(0.3) : Color.white.opacity(0.06)))
+                                            .background(
+                                                Circle().fill(
+                                                    emoji == e
+                                                        ? LinearGradient(colors: [Color.purple.opacity(0.35), Color.purple.opacity(0.15)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                                        : LinearGradient(colors: [Color.white.opacity(0.07), Color.white.opacity(0.02)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                                )
+                                            )
                                     }
                                 }
                             }.padding(.horizontal)
@@ -589,7 +727,11 @@ struct RoutineEditorView: View {
                             Text("Routine Name").font(.system(size: 13, weight: .semibold)).foregroundColor(.gray)
                             TextField("e.g. Morning Deep Work", text: $name)
                                 .foregroundColor(.white).padding(14)
-                                .background(RoundedRectangle(cornerRadius: 14).fill(Color.white.opacity(0.06)))
+                                .background(
+                                    RoundedRectangle(cornerRadius: 14)
+                                        .fill(LinearGradient(colors: [Color.white.opacity(0.08), Color.white.opacity(0.03)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                                        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.white.opacity(0.1), lineWidth: 1))
+                                )
                         }.padding(.horizontal)
 
                         VStack(alignment: .leading, spacing: 12) {
@@ -611,7 +753,11 @@ struct RoutineEditorView: View {
                                     }
                                 }
                                 .padding(12)
-                                .background(RoundedRectangle(cornerRadius: 12).fill(Color.white.opacity(0.04)))
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(LinearGradient(colors: [Color.white.opacity(0.05), Color.white.opacity(0.01)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.white.opacity(0.07), lineWidth: 1))
+                                )
                             }
                         }.padding(.horizontal)
 
@@ -645,7 +791,11 @@ struct RoutineEditorView: View {
             Text("New Step").font(.system(size: 14, weight: .semibold)).foregroundColor(.white)
             TextField("Step label", text: $newStepLabel)
                 .foregroundColor(.white).padding(12)
-                .background(RoundedRectangle(cornerRadius: 12).fill(Color.white.opacity(0.06)))
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(LinearGradient(colors: [Color.white.opacity(0.07), Color.white.opacity(0.02)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.white.opacity(0.08), lineWidth: 1))
+                )
             Stepper("\(newStepMinutes) minutes", value: $newStepMinutes, in: 1...180).foregroundColor(.white)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
@@ -654,7 +804,13 @@ struct RoutineEditorView: View {
                             Image(systemName: ic).font(.system(size: 18))
                                 .foregroundColor(newStepIcon == ic ? .purple : .white.opacity(0.4))
                                 .frame(width: 40, height: 40)
-                                .background(Circle().fill(newStepIcon == ic ? Color.purple.opacity(0.2) : Color.white.opacity(0.05)))
+                                .background(
+                                    Circle().fill(
+                                        newStepIcon == ic
+                                            ? LinearGradient(colors: [Color.purple.opacity(0.25), Color.purple.opacity(0.1)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                            : LinearGradient(colors: [Color.white.opacity(0.07), Color.white.opacity(0.02)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                    )
+                                )
                         }
                     }
                 }
@@ -663,7 +819,10 @@ struct RoutineEditorView: View {
                 Button { showAddStep = false } label: {
                     Text("Cancel").font(.system(size: 14)).foregroundColor(.gray)
                         .frame(maxWidth: .infinity).padding(.vertical, 12)
-                        .background(RoundedRectangle(cornerRadius: 12).fill(Color.white.opacity(0.05)))
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(LinearGradient(colors: [Color.white.opacity(0.06), Color.white.opacity(0.02)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        )
                 }
                 Button {
                     guard !newStepLabel.isEmpty else { return }
@@ -672,12 +831,20 @@ struct RoutineEditorView: View {
                 } label: {
                     Text("Add Step").font(.system(size: 14, weight: .semibold)).foregroundColor(.white)
                         .frame(maxWidth: .infinity).padding(.vertical, 12)
-                        .background(RoundedRectangle(cornerRadius: 12).fill(Color.purple))
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(LinearGradient(colors: [Color.purple.opacity(0.7), Color.purple.opacity(0.4)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.purple.opacity(0.3), lineWidth: 1))
+                        )
                 }
             }
         }
         .padding(16)
-        .background(RoundedRectangle(cornerRadius: 20).fill(Color.white.opacity(0.04)).overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.purple.opacity(0.3), lineWidth: 1)))
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(LinearGradient(colors: [Color.white.opacity(0.06), Color.white.opacity(0.02)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.purple.opacity(0.3), lineWidth: 1))
+        )
         .padding(.horizontal)
     }
 }
@@ -697,6 +864,7 @@ struct AppBlockingView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("APP BLOCKING")
                         .font(.system(size: 11, weight: .black)).foregroundColor(.white.opacity(0.35)).tracking(2)
+                        .textCase(.uppercase)
                     Text("Block Distractions")
                         .font(.system(size: 20, weight: .bold)).foregroundColor(.white)
                 }
@@ -726,20 +894,25 @@ struct AppBlockingView: View {
                 }.frame(maxWidth: .infinity)
             }
             .padding(.vertical, 14)
-            .background(RoundedRectangle(cornerRadius: 18).fill(Color.white.opacity(0.04)).overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.white.opacity(0.07), lineWidth: 1)))
+            .background(
+                RoundedRectangle(cornerRadius: 18)
+                    .fill(LinearGradient(colors: [Color.white.opacity(0.06), Color.white.opacity(0.02)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.white.opacity(0.1), lineWidth: 1))
+            )
             .padding(.horizontal)
 
             if showAddApp { addAppForm }
 
             VStack(spacing: 8) {
                 ForEach($blockedApps) { $app in
-                    AppBlockRow(app: $app) {
+                    AppBlockRowGlass(app: $app) {
                         blockedApps.removeAll { $0.id == app.id }
                         appState.saveBlockedApps(blockedApps)
                     }
                 }
             }.padding(.horizontal)
         }
+        .padding(.horizontal, 12)
         .onAppear { blockedApps = appState.savedBlockedApps }
     }
 
@@ -747,7 +920,11 @@ struct AppBlockingView: View {
         VStack(spacing: 12) {
             TextField("App name (e.g. Pinterest)", text: $newAppName)
                 .foregroundColor(.white).padding(12)
-                .background(RoundedRectangle(cornerRadius: 12).fill(Color.white.opacity(0.06)))
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(LinearGradient(colors: [Color.white.opacity(0.08), Color.white.opacity(0.03)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.white.opacity(0.1), lineWidth: 1))
+                )
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(categories, id: \.self) { cat in
@@ -755,7 +932,13 @@ struct AppBlockingView: View {
                             Text(cat).font(.system(size: 12, weight: .medium))
                                 .foregroundColor(selectedCategory == cat ? .white : .gray)
                                 .padding(.horizontal, 12).padding(.vertical, 6)
-                                .background(Capsule().fill(selectedCategory == cat ? Color.red.opacity(0.4) : Color.white.opacity(0.06)))
+                                .background(
+                                    Capsule().fill(
+                                        selectedCategory == cat
+                                            ? LinearGradient(colors: [Color.red.opacity(0.5), Color.red.opacity(0.3)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                            : LinearGradient(colors: [Color.white.opacity(0.08), Color.white.opacity(0.02)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                    )
+                                )
                         }
                     }
                 }
@@ -770,23 +953,35 @@ struct AppBlockingView: View {
                 Label("Block App", systemImage: "shield.fill")
                     .font(.system(size: 15, weight: .semibold)).foregroundColor(.white)
                     .frame(maxWidth: .infinity).padding(.vertical, 13)
-                    .background(RoundedRectangle(cornerRadius: 14).fill(Color.red.opacity(0.7)))
+                    .background(
+                        RoundedRectangle(cornerRadius: 14)
+                            .fill(LinearGradient(colors: [Color.red.opacity(0.75), Color.red.opacity(0.5)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                            .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.red.opacity(0.35), lineWidth: 1))
+                    )
             }
         }
         .padding(16)
-        .background(RoundedRectangle(cornerRadius: 20).fill(Color.white.opacity(0.04)).overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.red.opacity(0.3), lineWidth: 1)))
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(LinearGradient(colors: [Color.white.opacity(0.06), Color.white.opacity(0.02)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.red.opacity(0.3), lineWidth: 1))
+        )
         .padding(.horizontal)
     }
 }
 
-struct AppBlockRow: View {
+struct AppBlockRowGlass: View {
     @Binding var app: BlockedApp
     let onDelete: () -> Void
     var body: some View {
         HStack(spacing: 14) {
             ZStack {
                 RoundedRectangle(cornerRadius: 11)
-                    .fill(app.isBlocked ? Color.red.opacity(0.15) : Color.green.opacity(0.12))
+                    .fill(
+                        app.isBlocked
+                            ? LinearGradient(colors: [Color.red.opacity(0.2), Color.red.opacity(0.1)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                            : LinearGradient(colors: [Color.green.opacity(0.15), Color.green.opacity(0.08)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                    )
                     .frame(width: 44, height: 44)
                 Image(systemName: app.icon).font(.system(size: 18))
                     .foregroundColor(app.isBlocked ? .red : .green)
@@ -803,8 +998,14 @@ struct AppBlockRow: View {
         }
         .padding(14)
         .background(
-            RoundedRectangle(cornerRadius: 16).fill(Color.white.opacity(0.04))
-                .overlay(RoundedRectangle(cornerRadius: 16).stroke(app.isBlocked ? Color.red.opacity(0.2) : Color.white.opacity(0.06), lineWidth: 1))
+            RoundedRectangle(cornerRadius: 16)
+                .fill(LinearGradient(colors: [Color.white.opacity(0.06), Color.white.opacity(0.02)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16).stroke(
+                        app.isBlocked ? Color.red.opacity(0.25) : Color.white.opacity(0.08),
+                        lineWidth: 1
+                    )
+                )
         )
     }
 }

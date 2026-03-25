@@ -57,7 +57,7 @@ struct GameRealm: Identifiable, Codable {
     }
     
     struct RealmChallenge: Identifiable, Codable {
-        let id: UUID = UUID()
+        var id = UUID()
         let type: AllChallengeType
         let requiredScore: Int
         let isBoss: Bool
@@ -366,7 +366,6 @@ struct UserProgressPath: Codable {
         guard level <= nodes.count else { return (0, 0, false) }
         
         let nodeIndex = level - 1
-        let node = nodes[nodeIndex]
         
         // Update node
         nodes[nodeIndex].isCompleted = true

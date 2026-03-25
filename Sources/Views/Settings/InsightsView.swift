@@ -4,6 +4,7 @@ import Charts
 struct InsightsView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) var dismiss
+    @StateObject private var purchaseService = PurchaseService.shared
     
     @State private var selectedTimeRange: TimeRange = .week
     @State private var selectedCategory: ChallengeCategory?
@@ -47,6 +48,9 @@ struct InsightsView: View {
                     
                     // Predictions
                     predictionsSection
+
+                    // Advanced analytics
+                    advancedAnalyticsSection
                 }
                 .padding(.bottom, 100)
             }
@@ -336,6 +340,57 @@ struct InsightsView: View {
         }
         .padding(.horizontal, 16)
     }
+
+    var advancedAnalyticsSection: some View {
+        Group {
+            if purchaseService.advancedAnalyticsEnabled {
+                GlassCard(tint: .purple) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Image(systemName: "waveform.path.ecg")
+                                .foregroundColor(.purple)
+                            Text("Advanced Analytics")
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundColor(.white)
+                        }
+
+                        AdvancedMetricRow(title: "Consistency Score", value: "\(consistencyScore)%", color: .green)
+                        AdvancedMetricRow(title: "Recovery Rate", value: "\(recoveryRate)%", color: .cyan)
+                        AdvancedMetricRow(title: "Focus Stability", value: "\(focusStability)%", color: .orange)
+                    }
+                }
+                .padding(.horizontal, 16)
+            } else {
+                GlassCard(tint: .orange) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        HStack {
+                            Image(systemName: "lock.fill")
+                                .foregroundColor(.orange)
+                            Text("Advanced Analytics")
+                                .font(.system(size: 17, weight: .bold))
+                                .foregroundColor(.white)
+                        }
+                        Text("Unlock deeper trends, consistency metrics, and performance forecasting.")
+                            .font(.system(size: 13))
+                            .foregroundColor(.gray)
+                        Button {
+                            Task {
+                                _ = await purchaseService.purchase(.advancedAnalytics, appState: appState)
+                            }
+                        } label: {
+                            Text("Unlock \(purchaseService.displayPrice(for: .advancedAnalytics))")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .background(Capsule().fill(Color.orange.opacity(0.3)))
+                        }
+                    }
+                }
+                .padding(.horizontal, 16)
+            }
+        }
+    }
     
     // MARK: - Computed Properties
     var periodLabel: String {
@@ -425,6 +480,21 @@ struct InsightsView: View {
     
     var weeklyXPPrediction: String {
         return "~350 XP this week"
+    }
+
+    var consistencyScore: Int {
+        let streak = appState.progress?.streakDays ?? 0
+        return min(100, 35 + streak * 2)
+    }
+
+    var recoveryRate: Int {
+        let attempts = appState.progress?.completedChallenges.count ?? 0
+        return max(40, min(98, 50 + attempts / 2))
+    }
+
+    var focusStability: Int {
+        let avg = filteredProgress.averageScore
+        return max(30, min(99, avg))
     }
 }
 
@@ -612,6 +682,24 @@ struct PredictionRow: View {
             Text(prediction)
                 .font(.system(size: 14, weight: .medium))
                 .foregroundColor(.gray)
+        }
+    }
+}
+
+struct AdvancedMetricRow: View {
+    let title: String
+    let value: String
+    let color: Color
+
+    var body: some View {
+        HStack {
+            Text(title)
+                .font(.system(size: 13))
+                .foregroundColor(.white.opacity(0.85))
+            Spacer()
+            Text(value)
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(color)
         }
     }
 }

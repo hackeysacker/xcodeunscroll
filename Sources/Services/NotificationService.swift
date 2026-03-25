@@ -209,7 +209,7 @@ class NotificationService: ObservableObject {
     func cancelAllNotifications() {
         notificationCenter.removeAllPendingNotificationRequests()
         notificationCenter.removeAllDeliveredNotifications()
-        UIApplication.shared.applicationIconBadgeNumber = 0
+        resetBadgeCount()
     }
     
     func cancelNotifications(withIdentifier identifier: String) {
@@ -218,6 +218,14 @@ class NotificationService: ObservableObject {
     }
     
     func clearBadge() {
-        UIApplication.shared.applicationIconBadgeNumber = 0
+        resetBadgeCount()
+    }
+
+    private func resetBadgeCount() {
+        if #available(iOS 16.0, *) {
+            notificationCenter.setBadgeCount(0)
+        } else {
+            UIApplication.shared.applicationIconBadgeNumber = 0
+        }
     }
 }

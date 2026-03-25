@@ -3,9 +3,12 @@ import SwiftUI
 struct LeaderboardView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) var dismiss
+    @StateObject private var socialService = SocialService.shared
     @State private var selectedPeriod: LeaderboardPeriod = .weekly
     @State private var selectedCategory: LeaderboardCategory = .global
     @State private var showFriendChallenge: Bool = false
+    @State private var selectedFriend: FriendProfile?
+    @State private var challengeTitle: String = "7-Day Streak Challenge"
     
     enum LeaderboardPeriod: String, CaseIterable {
         case daily = "Today"
@@ -66,6 +69,18 @@ struct LeaderboardView: View {
                 }
             }
         }
+        .sheet(isPresented: $showFriendChallenge) {
+            if let selectedFriend {
+                FriendChallengeComposer(
+                    friend: selectedFriend,
+                    challengeTitle: $challengeTitle
+                ) {
+                    _ = socialService.challengeFriend(friendId: selectedFriend.id, challengeTitle: challengeTitle)
+                }
+            } else {
+                friendPickerSheet
+            }
+        }
     }
     
     var header: some View {
@@ -77,6 +92,11 @@ struct LeaderboardView: View {
             Text("Leaderboard").font(.system(size: 20, weight: .bold)).foregroundColor(.white)
             Spacer()
             Button {
+                if let onlineFriend = socialService.friends.first(where: { $0.isOnline }) {
+                    selectedFriend = onlineFriend
+                } else {
+                    selectedFriend = socialService.friends.first
+                }
                 showFriendChallenge.toggle()
             } label: {
                 Image(systemName: "person.badge.plus").font(.system(size: 18)).foregroundColor(.purple)
@@ -227,7 +247,7 @@ struct LeaderboardView: View {
     var leaderboardList: some View {
         VStack(spacing: 8) {
             ForEach(Array(leaderboardData.enumerated().dropFirst(3)), id: \.element.rank) { index, entry in
-                LeaderboardRow(entry: entry, isCurrentUser: entry.name == "You")
+                LeaderboardRow(entry: entry, isCurrentUser: entry.isCurrentUser)
             }
         }
         .padding(.horizontal, 16)
@@ -235,7 +255,7 @@ struct LeaderboardView: View {
     
     // MARK: - Computed Properties
     var userRank: Int {
-        Int.random(in: 50...200)
+        leaderboardData.first(where: { $0.isCurrentUser })?.rank ?? 0
     }
     
     var rankColor: Color {
@@ -246,19 +266,75 @@ struct LeaderboardView: View {
     }
     
     var leaderboardData: [LeaderboardEntry] {
-        // Generate sample data
-        [
-            LeaderboardEntry(rank: 1, name: "FocusMaster", xp: 12500, streak: 45, avatar: "🦁"),
-            LeaderboardEntry(rank: 2, name: "ZenWarrior", xp: 11200, streak: 38, avatar: "🥷"),
-            LeaderboardEntry(rank: 3, name: "ConcentrationKing", xp: 10800, streak: 32, avatar: "👑"),
-            LeaderboardEntry(rank: 4, name: "MindfulMike", xp: 9500, streak: 28, avatar: "🧘"),
-            LeaderboardEntry(rank: 5, name: "FlowFinder", xp: 8900, streak: 25, avatar: "🌊"),
-            LeaderboardEntry(rank: 6, name: "DeepWorker", xp: 8200, streak: 21, avatar: "⚡"),
-            LeaderboardEntry(rank: 7, name: "StillnessSeeker", xp: 7800, streak: 19, avatar: "🕉️"),
-            LeaderboardEntry(rank: 8, name: "PresentPaul", xp: 7200, streak: 16, avatar: "🎯"),
-            LeaderboardEntry(rank: 9, name: "CalmChris", xp: 6800, streak: 14, avatar: "🧠"),
-            LeaderboardEntry(rank: 10, name: "FocusedFred", xp: 6500, streak: 12, avatar: "🎯"),
-        ]
+        let mode: LeaderboardMode = selectedCategory == .friends ? .friends : .global
+        let currentName = appState.currentUser?.displayName ?? "You"
+        let currentAvatar = appState.currentUser?.avatarEmoji ?? "🦞"
+        let currentXP = appState.progress?.totalXP ?? 0
+        let currentStreak = appState.progress?.streakDays ?? 0
+
+        let data = socialService.leaderboardEntries(
+            currentUserName: currentName,
+            currentUserAvatar: currentAvatar,
+            currentUserXP: currentXP,
+            currentUserStreak: currentStreak,
+            mode: mode
+        )
+
+        return data.enumerated().map { index, entry in
+            LeaderboardEntry(
+                rank: index + 1,
+                name: entry.name,
+                xp: entry.xp,
+                streak: entry.streak,
+                avatar: entry.avatar,
+                isCurrentUser: entry.isCurrentUser
+            )
+        }
+    }
+
+    var friendPickerSheet: some View {
+        ZStack {
+            Color(hex: "0A0F1C").ignoresSafeArea()
+            VStack(spacing: 12) {
+                Text("Pick a Friend")
+                    .font(.system(size: 19, weight: .bold))
+                    .foregroundColor(.white)
+                    .padding(.top, 20)
+
+                ForEach(socialService.friends) { friend in
+                    Button {
+                        selectedFriend = friend
+                    } label: {
+                        HStack {
+                            Text(friend.avatar)
+                            Text(friend.name)
+                                .foregroundColor(.white)
+                            Spacer()
+                            if selectedFriend?.id == friend.id {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.green)
+                            }
+                        }
+                        .padding(12)
+                        .background(RoundedRectangle(cornerRadius: 10).fill(Color.white.opacity(0.06)))
+                    }
+                }
+
+                Button("Continue") {
+                    if selectedFriend != nil {
+                        showFriendChallenge = true
+                    }
+                }
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundColor(.white)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(Capsule().fill(Color.purple.opacity(0.4)))
+                .padding(.top, 12)
+                .disabled(selectedFriend == nil)
+            }
+            .padding(20)
+        }
     }
 }
 
@@ -405,6 +481,7 @@ struct LeaderboardEntry: Identifiable {
     let xp: Int
     let streak: Int
     let avatar: String
+    let isCurrentUser: Bool
 }
 
 #Preview {

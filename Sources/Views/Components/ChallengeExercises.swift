@@ -1038,7 +1038,7 @@ struct DisciplineChallengeView: View {
             HapticManager.shared.error()
             
             // Failed to resist - remove the distraction but increase temptation
-            if let distraction = currentDistraction {
+            if currentDistraction != nil {
                 distractionsResisted += 1
                 currentDistraction = nil
             }
@@ -1947,3 +1947,4 @@ struct BreathingExerciseView: View {
     DisciplineChallengeView(score: Binding.constant(0), isActive: true)
         .background(Color.black)
 }
+

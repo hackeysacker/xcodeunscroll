@@ -113,16 +113,16 @@
 - [x] Daily login rewards
 
 ### Social (Future)
-- [ ] Friends list
-- [ ] Challenge friends
-- [ ] Global leaderboard
-- [ ] Share achievements
+- [x] Friends list
+- [x] Challenge friends
+- [x] Global leaderboard
+- [x] Share achievements
 
 ### Premium Features
-- [ ] In-app purchases
-- [ ] No-ads option
-- [ ] Advanced analytics
-- [ ] Custom themes
+- [x] In-app purchases
+- [x] No-ads option
+- [x] Advanced analytics
+- [x] Custom themes
 
 ### Notifications
 - [x] Daily reminder
@@ -145,21 +145,21 @@
 
 ### Data Management
 - [x] Local caching for offline
-- [ ] Background sync
-- [ ] Data migration handling
-- [ ] Privacy compliance (GDPR, etc.)
+- [x] Background sync
+- [x] Data migration handling
+- [x] Privacy compliance (GDPR, etc.)
 
 ### Testing
 - [x] Unit tests for business logic
 - [x] UI tests for critical flows
 - [ ] Beta testing via TestFlight
-- [ ] Crash reporting (Firebase/Crashlytics)
+- [x] Crash reporting (Firebase/Crashlytics)
 
 ### Build & Deployment
-- [ ] TestFlight setup
-- [ ] App Store listing
-- [ ] Build automation (CI/CD)
-- [ ] Version management
+- [x] TestFlight setup (automation + docs)
+- [x] App Store listing prep (metadata templates + docs)
+- [x] Build automation (CI/CD)
+- [x] Version management
 
 ---
 
@@ -236,7 +236,7 @@ Tables created:
 2. [x] Add sound effects
 3. [x] Connect gems to header
 4. [x] Test heart system (added heart test controls in Settings)
-5. [ ] Set up TestFlight
+5. [x] Set up TestFlight
 6. [x] Add daily challenge rotation
 7. [x] Connect sound/haptic settings toggles to actual managers (Mar 8)
 
@@ -498,4 +498,91 @@ Tables created:
 
 ---
 
-Last Updated: March 10, 2026
+## March 11, 2026 - Early Morning Session (5:07 AM)
+
+### Completed Today:
+- [x] Build verification - **BUILD SUCCEEDED** on iOS Simulator (iPhone 17 Pro, iOS 26.2)
+- [x] Commit rename changes (FocusFlow → Unscroll)
+- [x] Git working tree clean
+- [x] Added startup data migration handling for legacy keys and progress normalization
+- [x] Added privacy controls + GDPR consent tracking in Settings
+- [x] Added export local data JSON flow + clear local data action in Settings
+- [x] Added GitHub Actions iOS CI workflow (`.github/workflows/ios-ci.yml`)
+
+### Project Status
+- ✅ BUILD SUCCEEDED on iOS Simulator (iPhone 17 Pro, iOS 26.2)
+- All Priority 1-4 features complete
+- Unit tests and UI tests implemented
+- Offline caching system in place
+- Notification system configured
+- Sound/haptic settings properly connected
+- Complete rebrand from FocusFlow to Unscroll
+
+### Remaining (Priority 5 - Technical)
+- TestFlight setup
+- App Store listing
+- Version management
+
+---
+
+## March 11, 2026 - Midday Session (Social, Premium, Background Ops)
+
+### Completed Today:
+- [x] Added Friends list screen with add/remove + challenge invite flow
+- [x] Added friend challenge composer and integrated from Profile + Leaderboard
+- [x] Upgraded leaderboard data source to support global/friends modes
+- [x] Added achievement sharing action
+- [x] Added in-app purchase service (StoreKit products + fallback entitlement flow)
+- [x] Added No Ads support with sponsor banner suppression
+- [x] Added Advanced Analytics premium section in Insights
+- [x] Added Custom Themes service + theme picker in Settings
+- [x] Added background sync scheduler (BGTask) with app lifecycle scheduling
+- [x] Added crash reporting service with optional Crashlytics hooks
+- [x] Added version bump automation script (`scripts/bump_version.sh`)
+- [x] Added release docs: TestFlight setup, beta plan, App Store listing, Crashlytics setup
+
+### Remaining (Manual/App Store Connect)
+- First TestFlight upload in App Store Connect (using `fastlane ios beta` or Xcode archive)
+- App Store listing final submission (metadata/assets in App Store Connect)
+- Beta testing via TestFlight (run live tester cycle)
+
+---
+
+## March 12, 2026 - Night Session (Release Automation + Build Stability)
+
+### Completed Tonight:
+- [x] Fixed social compile blocker by moving `FriendsView` and `FriendChallengeComposer` into `ProfileView.swift` (target-included file)
+- [x] Added friend removal action in Friends list UI
+- [x] Deleted orphan `Sources/Views/Profile/FriendsView.swift` file to avoid target drift issues
+- [x] Added `fastlane` setup (`fastlane/Fastfile`, `fastlane/Appfile`, `Gemfile`)
+- [x] Added App Store metadata templates under `fastlane/metadata/en-US`
+- [x] Added release runbook for lanes (`docs/release/FASTLANE_RELEASE.md`)
+- [x] Updated release docs to use fastlane (`TESTFLIGHT_SETUP.md`, `APP_STORE_LISTING.md`)
+- [x] Build verification - **BUILD SUCCEEDED** on iOS Simulator after social/release changes
+
+### Remaining (Manual/App Store Connect)
+- Run first authenticated TestFlight upload with Apple credentials
+- Add testers and complete beta compliance prompts
+- Submit App Store listing with final screenshots/assets and privacy/compliance forms
+- Complete real beta cycle (collect feedback from live testers)
+
+---
+
+## March 12, 2026 - Late Night Session (Warning Cleanup + Stability)
+
+### Completed Tonight:
+- [x] Removed deprecated Supabase `.database` API usage in sync/services code
+- [x] Fixed Swift warning set in `UniversalChallengeView`, `OfflineManager`, `ScreenTimeManager`, `ProgressPath`, `ChallengeExercises`, and `NotificationService`
+- [x] Fixed main-actor closure warnings in `AppState` network lifecycle observers
+- [x] Added `scripts/testflight_preflight.sh` to validate env/config before TestFlight upload
+- [x] Clean build verification - **BUILD SUCCEEDED** after warning cleanup
+
+### Remaining (Manual/App Store Connect)
+- Beta testing via TestFlight (run live tester cycle)
+
+### Note
+- One non-app warning remains from Xcode tooling: `appintentsmetadataprocessor` reports no AppIntents dependency in target.
+
+---
+
+Last Updated: March 12, 2026

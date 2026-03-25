@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -53,7 +53,7 @@
 		391EDD392A163136D6EE989E /* UnscrollApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnscrollApp.swift; sourceTree = "<group>"; };
 		3F31947429A4CB879F0BA04C /* LevelUpCelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelUpCelebrationView.swift; sourceTree = "<group>"; };
 		4C8405765EFD7768023303DE /* ScrollStoppingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollStoppingView.swift; sourceTree = "<group>"; };
-		53FC63DCF166E66E8D0FA8E1 /* WindingProgressPath.swift.backup */ = {isa = PBXFileReference; path = WindingProgressPath.swift.backup; sourceTree = "<group>"; };
+		53FC63DCF166E66E8D0FA8E1 /* WindingProgressPath.swift.backup */ = {isa = PBXFileReference; lastKnownFileType = text; path = WindingProgressPath.swift.backup; sourceTree = "<group>"; };
 		545230256D5F2A71262515B7 /* BiometricTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricTrackingView.swift; sourceTree = "<group>"; };
 		619652A96ED7FC53389BB8EA /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
 		64762F4DEDF251A68EC83208 /* AllChallenges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChallenges.swift; sourceTree = "<group>"; };
@@ -70,7 +70,7 @@
 		A2A993EEF0DB7111F16DA6C1 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		AB1F61973C2A75C153C055B1 /* GameProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameProgress.swift; sourceTree = "<group>"; };
 		AC42C74D5637FA9E6A946E9F /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
-		AF2CA8D18F777F2E2A08CB53 /* Unscroll.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Unscroll.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AF2CA8D18F777F2E2A08CB53 /* Unscroll.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Unscroll.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAD6F49FCDB02DBEA3A18B60 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		BE1DE0BBF78B4E9618F75302 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		C18E6DACB2F83EA4DD476994 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -281,7 +281,6 @@
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					DC4994EFAFF2408E8660C9BD = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -299,7 +298,6 @@
 			packageReferences = (
 				54FD1C8DAE01A0A40E492EFA /* XCRemoteSwiftPackageReference "supabase-swift" */,
 			);
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -369,6 +367,7 @@
 				CODE_SIGN_ENTITLEMENTS = Sources/App/Unscroll.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HSNU66G972;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Sources/App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -377,7 +376,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.unscroll.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.issacunscroll.app;
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -450,6 +449,7 @@
 				CODE_SIGN_ENTITLEMENTS = Sources/App/Unscroll.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HSNU66G972;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Sources/App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -458,7 +458,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.unscroll.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.issacunscroll.app;
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";

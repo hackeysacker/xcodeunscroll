@@ -1,9 +1,12 @@
 import SwiftUI
+import UIKit
 
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) var dismiss
     @StateObject private var notificationService = NotificationService.shared
+    @StateObject private var themeService = ThemeService.shared
+    @StateObject private var purchaseService = PurchaseService.shared
     @State private var soundEnabled: Bool = true {
         didSet { SoundManager.shared.isEnabled = soundEnabled }
     }
@@ -13,47 +16,69 @@ struct SettingsView: View {
     @State private var darkModeEnabled: Bool = true
     @State private var showDeleteAlert: Bool = false
     @State private var showTimePicker: Bool = false
-    
+    @StateObject private var privacyService = PrivacyService.shared
+    @State private var showClearLocalDataAlert: Bool = false
+    @State private var showExportErrorAlert: Bool = false
+    @State private var exportErrorMessage: String = ""
+    @State private var exportURL: URL?
+    @State private var showExportShareSheet: Bool = false
+    @State private var showPurchaseErrorAlert: Bool = false
+    @State private var purchaseErrorMessage: String = ""
+
     var body: some View {
         ZStack {
             LinearGradient(colors: [Color(hex: "0A0F1C"), Color(hex: "1E293B")], startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
-            
+
             ScrollView {
                 VStack(spacing: 24) {
-                    // Header
-                    HStack {
-                        Button { dismiss() } label: {
-                            Image(systemName: "xmark").font(.system(size: 18)).foregroundColor(.white).frame(width: 44, height: 44)
+                    // Header with glass styling
+                    VStack(spacing: 16) {
+                        HStack(spacing: 16) {
+                            GlassIconButton(icon: "xmark", action: { dismiss() })
+
+                            Spacer()
+
+                            Text("Settings")
+                                .font(.system(size: 24, weight: .bold))
+                                .foregroundColor(.white)
+
+                            Spacer()
+
+                            Color.clear.frame(width: 44, height: 44)
                         }
-                        Spacer()
-                        Text("Settings").font(.system(size: 20, weight: .bold)).foregroundColor(.white)
-                        Spacer()
-                        Color.clear.frame(width: 44, height: 44)
+                        .padding(.horizontal, 16)
                     }
                     .padding(.top, 16)
-                    
+                    .padding(.bottom, 8)
+
                     // Profile section
                     profileSection
-                    
+
                     // Preferences
                     preferencesSection
-                    
+
+                    // Themes
+                    themeSection
+
                     // Testing
                     testingSection
-                    
+
                     // Notifications
                     notificationsSection
-                    
+
                     // Data & Privacy
                     dataSection
-                    
+
+                    // Premium
+                    premiumSection
+
                     // Support
                     supportSection
-                    
+
                     // Danger zone
                     dangerZone
-                    
+
                     // App info
                     appInfoSection
                 }
@@ -69,57 +94,142 @@ struct SettingsView: View {
         } message: {
             Text("This will permanently delete all your data. This action cannot be undone.")
         }
+        .alert("Export Failed", isPresented: $showExportErrorAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(exportErrorMessage)
+        }
+        .alert("Purchase Failed", isPresented: $showPurchaseErrorAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(purchaseErrorMessage)
+        }
+        .confirmationDialog(
+            "Clear Local Data?",
+            isPresented: $showClearLocalDataAlert,
+            titleVisibility: .visible
+        ) {
+            Button("Clear Local Data", role: .destructive) {
+                appState.clearLocalData()
+                dismiss()
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("This removes local progress and cache from this device.")
+        }
+        .sheet(isPresented: $showExportShareSheet) {
+            if let exportURL {
+                ActivityShareSheet(items: [exportURL])
+            }
+        }
+        .onAppear {
+            darkModeEnabled = themeService.appearance != .light
+        }
+        .onChange(of: darkModeEnabled) { _, newValue in
+            themeService.appearance = newValue ? .dark : .light
+        }
     }
-    
+
     var profileSection: some View {
-        GlassCard(cornerRadius: 16) {
-            HStack(spacing: 16) {
-                ZStack {
-                    Circle()
-                        .fill(LinearGradient(colors: [.purple, .indigo], startPoint: .topLeading, endPoint: .bottomTrailing))
-                        .frame(width: 70, height: 70)
-                    Text(appState.currentUser?.avatarEmoji ?? "🦞")
-                        .font(.system(size: 30))
+        VStack(alignment: .leading, spacing: 16) {
+            SectionHeader(title: "Profile")
+
+            GlassCard(cornerRadius: 16) {
+                HStack(spacing: 16) {
+                    ZStack {
+                        Circle()
+                            .fill(LinearGradient(colors: [.purple, .indigo], startPoint: .topLeading, endPoint: .bottomTrailing))
+                            .frame(width: 70, height: 70)
+                        Text(appState.currentUser?.avatarEmoji ?? "🦞")
+                            .font(.system(size: 30))
+                    }
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(appState.currentUser?.displayName ?? "Focus User")
+                            .font(.system(size: 20, weight: .bold)).foregroundColor(.white)
+                        Text(appState.currentUser?.goal?.rawValue ?? "Building focus")
+                            .font(.system(size: 14)).foregroundColor(.gray)
+                    }
+
+                    Spacer()
+
+                    Image(systemName: "chevron.right").foregroundColor(.gray)
                 }
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(appState.currentUser?.displayName ?? "Focus User")
-                        .font(.system(size: 20, weight: .bold)).foregroundColor(.white)
-                    Text(appState.currentUser?.goal?.rawValue ?? "Building focus")
-                        .font(.system(size: 14)).foregroundColor(.gray)
-                }
-                
-                Spacer()
-                
-                Image(systemName: "chevron.right").foregroundColor(.gray)
             }
         }
         .padding(.horizontal, 16)
     }
-    
+
     var preferencesSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             SectionHeader(title: "Preferences")
-            
-            VStack(spacing: 8) {
+
+            VStack(spacing: 0) {
                 GlassToggle(title: "Dark Mode", icon: "moon.fill", isOn: $darkModeEnabled)
                 GlassDivider()
                 GlassToggle(title: "Sound", icon: "speaker.wave.2.fill", isOn: $soundEnabled)
                 GlassDivider()
                 GlassToggle(title: "Haptics", icon: "iphone.radiowaves.left.and.right", isOn: $hapticsEnabled)
             }
-            .padding(.vertical, 8)
+            .liquidGlass(tint: .white.opacity(0.05), cornerRadius: 16)
         }
         .padding(.horizontal, 16)
     }
-    
+
+    var themeSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            SectionHeader(title: "Theme")
+
+            VStack(spacing: 12) {
+                ForEach(AppTheme.allCases) { theme in
+                    Button {
+                        if theme == .midnight || purchaseService.customThemesEnabled {
+                            themeService.selectedTheme = theme
+                        } else {
+                            purchaseErrorMessage = "Unlock Custom Themes to use \(theme.displayName)."
+                            showPurchaseErrorAlert = true
+                        }
+                    } label: {
+                        HStack(spacing: 12) {
+                            Circle()
+                                .fill(theme.accentColor)
+                                .frame(width: 12, height: 12)
+                            Text(theme.displayName)
+                                .foregroundColor(.white)
+                            Spacer()
+                            if theme != .midnight && !purchaseService.customThemesEnabled {
+                                Text("Premium")
+                                    .font(.system(size: 10, weight: .bold))
+                                    .foregroundColor(.orange)
+                            }
+                            if themeService.selectedTheme == theme {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(theme.accentColor)
+                            } else {
+                                Image(systemName: "circle")
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                        .padding(14)
+                        .liquidGlass(tint: .white.opacity(0.05), cornerRadius: 12, showBorder: themeService.selectedTheme == theme)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(themeService.selectedTheme == theme ? theme.accentColor : Color.clear, lineWidth: 2)
+                        )
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 16)
+    }
+
     // Testing section for developers
     @State private var showChallengePicker = false
-    
+
     var testingSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            SectionHeader(title: "🧪 Testing Mode")
-            
+            SectionHeader(title: "Testing Mode")
+
             VStack(spacing: 0) {
                 Button {
                     showChallengePicker = true
@@ -127,24 +237,27 @@ struct SettingsView: View {
                     HStack {
                         Image(systemName: "play.circle.fill")
                             .foregroundColor(.green)
+                            .frame(width: 24)
                         Text("Test Any Challenge")
                             .foregroundColor(.white)
                         Spacer()
                         Image(systemName: "chevron.right")
                             .foregroundColor(.gray)
                     }
-                    .padding()
+                    .padding(16)
                 }
-                
-                Divider().background(Color.white.opacity(0.1))
-                
+
+                GlassDivider()
+
                 GlassToggle(title: "Quick Test Mode", icon: "bolt.fill", isOn: $appState.testingModeEnabled)
-                
+
                 if appState.testingModeEnabled {
-                    Divider().background(Color.white.opacity(0.1))
-                    
+                    GlassDivider()
+
                     HStack {
-                        Image(systemName: "timer").foregroundColor(.orange)
+                        Image(systemName: "timer")
+                            .foregroundColor(.orange)
+                            .frame(width: 24)
                         Text("Quick Duration")
                             .foregroundColor(.white)
                         Spacer()
@@ -155,16 +268,16 @@ struct SettingsView: View {
                         .pickerStyle(.segmented)
                         .frame(width: 100)
                     }
-                    .padding()
+                    .padding(16)
                 }
             }
-            .background(RoundedRectangle(cornerRadius: 16).fill(Color.white.opacity(0.05)))
-            
+            .liquidGlass(tint: .white.opacity(0.05), cornerRadius: 16)
+
             Text("Tap 'Test Any Challenge' to try any challenge in the app. Quick Test Mode makes all challenges complete in 5 or 10 seconds.")
                 .font(.system(size: 12))
                 .foregroundColor(.gray)
                 .padding(.horizontal, 4)
-            
+
             // Heart System Test
             if appState.testingModeEnabled {
                 heartSystemTestSection
@@ -176,15 +289,17 @@ struct SettingsView: View {
                 .environmentObject(appState)
         }
     }
-    
+
     // MARK: - Heart System Test Section
     var heartSystemTestSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             SectionHeader(title: "Heart System Test", color: .red)
-            
+
             VStack(spacing: 12) {
                 HStack {
-                    Image(systemName: "heart.fill").foregroundColor(.red)
+                    Image(systemName: "heart.fill")
+                        .foregroundColor(.red)
+                        .frame(width: 24)
                     Text("Current Hearts")
                         .foregroundColor(.white)
                     Spacer()
@@ -192,8 +307,8 @@ struct SettingsView: View {
                         .foregroundColor(.yellow)
                         .font(.system(size: 16, weight: .bold))
                 }
-                .padding()
-                
+                .padding(16)
+
                 HStack(spacing: 12) {
                     Button {
                         if var progress = appState.progress, progress.hearts < 5 {
@@ -212,7 +327,7 @@ struct SettingsView: View {
                         .background(Color.green.opacity(0.2))
                         .cornerRadius(10)
                     }
-                    
+
                     Button {
                         if var progress = appState.progress, progress.hearts > 0 {
                             progress.hearts -= 1
@@ -232,9 +347,11 @@ struct SettingsView: View {
                     }
                 }
                 .padding(.horizontal)
-                
+
                 HStack {
-                    Image(systemName: "clock.fill").foregroundColor(.orange)
+                    Image(systemName: "clock.fill")
+                        .foregroundColor(.orange)
+                        .frame(width: 24)
                     Text("Refill Slots")
                         .foregroundColor(.white)
                     Spacer()
@@ -242,8 +359,8 @@ struct SettingsView: View {
                         .foregroundColor(.cyan)
                         .font(.system(size: 16, weight: .bold))
                 }
-                .padding()
-                
+                .padding(16)
+
                 HStack(spacing: 12) {
                     Button {
                         if var progress = appState.progress, progress.heartRefillSlots < 3 {
@@ -262,7 +379,7 @@ struct SettingsView: View {
                         .background(Color.cyan.opacity(0.2))
                         .cornerRadius(10)
                     }
-                    
+
                     Button {
                         if var progress = appState.progress, progress.heartRefillSlots > 0 {
                             progress.heartRefillSlots -= 1
@@ -284,18 +401,16 @@ struct SettingsView: View {
                 .padding(.horizontal)
                 .padding(.bottom, 8)
             }
-            .background(RoundedRectangle(cornerRadius: 16).fill(Color.white.opacity(0.05)))
-            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.red.opacity(0.3), lineWidth: 1))
+            .liquidGlass(tint: .red.opacity(0.1), cornerRadius: 16, showBorder: true)
         }
         .padding(.top, 8)
     }
-    
+
     var notificationsSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             SectionHeader(title: "Notifications")
-            
-            VStack(spacing: 8) {
-                // Main notifications toggle
+
+            VStack(spacing: 0) {
                 GlassToggle(title: "Push Notifications", icon: "bell.fill", isOn: $notificationService.notificationsEnabled)
                     .onChange(of: notificationService.notificationsEnabled) { _, newValue in
                         if newValue {
@@ -304,33 +419,36 @@ struct SettingsView: View {
                             }
                         }
                     }
-                
+
                 if notificationService.notificationsEnabled {
                     GlassDivider()
-                    
-                    // Reminder time
+
                     Button {
                         showTimePicker = true
                     } label: {
                         HStack {
-                            Image(systemName: "clock.fill").foregroundColor(.purple).frame(width: 24)
-                            Text("Reminder Time").foregroundColor(.white)
+                            Image(systemName: "clock.fill")
+                                .foregroundColor(.purple)
+                                .frame(width: 24)
+                            Text("Reminder Time")
+                                .foregroundColor(.white)
                             Spacer()
                             Text(timeString(notificationService.reminderHour, notificationService.reminderMinute))
                                 .foregroundColor(.gray)
-                            Image(systemName: "chevron.right").foregroundColor(.gray).font(.system(size: 12))
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                                .font(.system(size: 12))
                         }
                         .padding(16)
                     }
-                    
+
                     GlassDivider()
-                    
-                    // Streak warning toggle
+
                     GlassToggle(title: "Streak Warning", icon: "flame.fill", isOn: $notificationService.streakWarningEnabled)
                 }
             }
-            .padding(.vertical, 8)
-            
+            .liquidGlass(tint: .white.opacity(0.05), cornerRadius: 16)
+
             // Authorization status
             if !notificationService.isAuthorized {
                 Button {
@@ -339,8 +457,10 @@ struct SettingsView: View {
                     }
                 } label: {
                     HStack {
-                        Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.orange)
-                        Text("Enable Notifications").foregroundColor(.orange)
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(.orange)
+                        Text("Enable Notifications")
+                            .foregroundColor(.orange)
                     }
                     .font(.system(size: 14, weight: .semibold))
                     .frame(maxWidth: .infinity)
@@ -355,7 +475,7 @@ struct SettingsView: View {
             TimePickerSheet(notificationService: notificationService)
         }
     }
-    
+
     private func timeString(_ hour: Int, _ minute: Int) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "h:mm a"
@@ -365,70 +485,204 @@ struct SettingsView: View {
         let date = Calendar.current.date(from: components) ?? Date()
         return formatter.string(from: date)
     }
-    
+
+    private func privacyConsentText() -> String {
+        guard let updatedAt = privacyService.consentUpdatedAt else {
+            return "Not set"
+        }
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(from: updatedAt)
+    }
+
+    private func exportData() {
+        do {
+            exportURL = try appState.exportUserData()
+            showExportShareSheet = true
+        } catch {
+            exportErrorMessage = error.localizedDescription
+            showExportErrorAlert = true
+        }
+    }
+
+    private func purchase(_ product: AppProductID) {
+        Task {
+            let success = await purchaseService.purchase(product, appState: appState)
+            if !success {
+                purchaseErrorMessage = "Unable to complete purchase right now. Try again."
+                showPurchaseErrorAlert = true
+            }
+        }
+    }
+
     var dataSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             SectionHeader(title: "Data & Privacy")
-            
-            VStack(spacing: 0) {
-                SettingsRow(icon: "arrow.clockwise", title: "Sync Progress", value: "")
-                Divider().background(Color.white.opacity(0.1))
-                SettingsRow(icon: "square.and.arrow.up", title: "Export Data", value: "")
-                Divider().background(Color.white.opacity(0.1))
-                SettingsRow(icon: "trash", title: "Clear Local Data", value: "")
-            }
-            .background(RoundedRectangle(cornerRadius: 16).fill(Color.white.opacity(0.05)))
-        }
-        .padding(.horizontal, 16)
-    }
-    
-    var supportSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            SectionHeader(title: "Support")
-            
-            VStack(spacing: 0) {
-                SettingsRow(icon: "questionmark.circle", title: "Help Center", value: "")
-                Divider().background(Color.white.opacity(0.1))
-                SettingsRow(icon: "envelope", title: "Contact Us", value: "")
-                Divider().background(Color.white.opacity(0.1))
-                SettingsRow(icon: "star.fill", title: "Rate App", value: "")
-                Divider().background(Color.white.opacity(0.1))
-                SettingsRow(icon: "doc.text", title: "Privacy Policy", value: "")
-                Divider().background(Color.white.opacity(0.1))
-                SettingsRow(icon: "doc", title: "Terms of Service", value: "")
-            }
-            .background(RoundedRectangle(cornerRadius: 16).fill(Color.white.opacity(0.05)))
-        }
-        .padding(.horizontal, 16)
-    }
-    
-    var dangerZone: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            SectionHeader(title: "Danger Zone", color: .red)
-            
+
             VStack(spacing: 0) {
                 Button {
-                    showDeleteAlert = true
+                    Task { await appState.refreshProgress() }
+                } label: {
+                    SettingsRowContent(icon: "arrow.clockwise", title: "Sync Progress", value: "")
+                }
+                GlassDivider()
+                Button {
+                    exportData()
+                } label: {
+                    SettingsRowContent(icon: "square.and.arrow.up", title: "Export Data", value: "")
+                }
+                GlassDivider()
+                Button {
+                    showClearLocalDataAlert = true
+                } label: {
+                    SettingsRowContent(icon: "trash", title: "Clear Local Data", value: "")
+                }
+            }
+            .liquidGlass(tint: .white.opacity(0.05), cornerRadius: 16)
+
+            VStack(spacing: 0) {
+                GlassToggle(title: "Analytics", icon: "chart.bar.fill", isOn: $privacyService.analyticsEnabled)
+                GlassDivider()
+                GlassToggle(title: "Crash Reports", icon: "exclamationmark.bubble.fill", isOn: $privacyService.crashReportingEnabled)
+                GlassDivider()
+                GlassToggle(title: "Personalized Tips", icon: "sparkles", isOn: $privacyService.personalizedRecommendationsEnabled)
+                GlassDivider()
+                Button {
+                    privacyService.acceptPrivacyPolicy()
                 } label: {
                     HStack {
-                        Image(systemName: "trash.fill").foregroundColor(.red).frame(width: 24)
-                        Text("Delete Account").foregroundColor(.red)
+                        Image(systemName: "checkmark.shield.fill")
+                            .foregroundColor(.green)
+                            .frame(width: 24)
+                        Text("Update Privacy Consent")
+                            .foregroundColor(.white)
                         Spacer()
+                        Text(privacyConsentText())
+                            .foregroundColor(.gray)
+                            .font(.system(size: 12))
                     }
                     .padding(16)
                 }
             }
-            .background(RoundedRectangle(cornerRadius: 16).fill(Color.red.opacity(0.1)))
-            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.red.opacity(0.3), lineWidth: 1))
+            .liquidGlass(tint: .white.opacity(0.05), cornerRadius: 16)
         }
         .padding(.horizontal, 16)
     }
-    
+
+    var supportSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            SectionHeader(title: "Support")
+
+            VStack(spacing: 0) {
+                SettingsRowContent(icon: "questionmark.circle", title: "Help Center", value: "")
+                GlassDivider()
+                SettingsRowContent(icon: "envelope", title: "Contact Us", value: "")
+                GlassDivider()
+                SettingsRowContent(icon: "star.fill", title: "Rate App", value: "")
+                GlassDivider()
+                SettingsRowContent(icon: "doc.text", title: "Privacy Policy", value: "")
+                GlassDivider()
+                SettingsRowContent(icon: "doc", title: "Terms of Service", value: "")
+            }
+            .liquidGlass(tint: .white.opacity(0.05), cornerRadius: 16)
+        }
+        .padding(.horizontal, 16)
+    }
+
+    var premiumSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            SectionHeader(title: "Premium")
+
+            VStack(spacing: 0) {
+                Button {
+                    purchase(.noAds)
+                } label: {
+                    SettingsRowContent(
+                        icon: "nosign",
+                        title: "No Ads",
+                        value: purchaseService.noAdsEnabled ? "Enabled" : purchaseService.displayPrice(for: .noAds)
+                    )
+                }
+                GlassDivider()
+                Button {
+                    purchase(.advancedAnalytics)
+                } label: {
+                    SettingsRowContent(
+                        icon: "chart.xyaxis.line",
+                        title: "Advanced Analytics",
+                        value: purchaseService.advancedAnalyticsEnabled ? "Enabled" : purchaseService.displayPrice(for: .advancedAnalytics)
+                    )
+                }
+                GlassDivider()
+                Button {
+                    purchase(.customThemes)
+                } label: {
+                    SettingsRowContent(
+                        icon: "paintpalette.fill",
+                        title: "Custom Themes",
+                        value: purchaseService.customThemesEnabled ? "Enabled" : purchaseService.displayPrice(for: .customThemes)
+                    )
+                }
+                GlassDivider()
+                Button {
+                    purchase(.gemsSmall)
+                } label: {
+                    SettingsRowContent(
+                        icon: "diamond.fill",
+                        title: "250 Gems",
+                        value: purchaseService.displayPrice(for: .gemsSmall)
+                    )
+                }
+                GlassDivider()
+                Button {
+                    purchase(.gemsMedium)
+                } label: {
+                    SettingsRowContent(
+                        icon: "diamond.circle.fill",
+                        title: "1200 Gems",
+                        value: purchaseService.displayPrice(for: .gemsMedium)
+                    )
+                }
+            }
+            .liquidGlass(tint: .white.opacity(0.05), cornerRadius: 16)
+        }
+        .padding(.horizontal, 16)
+    }
+
+    var dangerZone: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            SectionHeader(title: "Danger Zone", color: .red)
+
+            Button {
+                showDeleteAlert = true
+            } label: {
+                HStack {
+                    Image(systemName: "trash.fill")
+                        .foregroundColor(.red)
+                        .frame(width: 24)
+                    Text("Delete Account")
+                        .foregroundColor(.red)
+                    Spacer()
+                }
+                .padding(16)
+            }
+            .liquidGlass(tint: .red.opacity(0.1), cornerRadius: 16, showBorder: true)
+        }
+        .padding(.horizontal, 16)
+    }
+
     var appInfoSection: some View {
         VStack(spacing: 8) {
-            Text("Unscroll").font(.system(size: 16, weight: .bold)).foregroundColor(.white)
-            Text("Version 1.0.0 (Build 1)").font(.system(size: 12)).foregroundColor(.gray)
-            Text("Made with 🦞").font(.system(size: 12)).foregroundColor(.gray)
+            Text("Unscroll")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundColor(.white)
+            Text("Version 1.0.0 (Build 1)")
+                .font(.system(size: 12))
+                .foregroundColor(.gray)
+            Text("Made with 🦞")
+                .font(.system(size: 12))
+                .foregroundColor(.gray)
         }
         .padding(.vertical, 24)
     }
@@ -437,11 +691,40 @@ struct SettingsView: View {
 struct SectionHeader: View {
     let title: String
     var color: Color = .white
-    
+
     var body: some View {
         Text(title)
-            .font(.system(size: 14, weight: .semibold))
-            .foregroundColor(color)
+            .font(.system(size: 12, weight: .semibold))
+            .tracking(0.5)
+            .foregroundColor(color.opacity(0.4))
+            .textCase(.uppercase)
+            .padding(.horizontal, 16)
+    }
+}
+
+struct SettingsRowContent: View {
+    let icon: String
+    let title: String
+    let value: String
+
+    var body: some View {
+        HStack {
+            Image(systemName: icon)
+                .foregroundColor(.purple)
+                .frame(width: 24)
+            Text(title)
+                .foregroundColor(.white)
+            Spacer()
+            let showValue = value.count > 0
+            if showValue {
+                Text(value)
+                    .foregroundColor(.gray)
+            }
+            Image(systemName: "chevron.right")
+                .foregroundColor(.gray)
+                .font(.system(size: 12))
+        }
+        .padding(16)
     }
 }
 
@@ -449,7 +732,7 @@ struct SettingsToggle: View {
     let icon: String
     let title: String
     @Binding var isOn: Bool
-    
+
     var body: some View {
         HStack {
             Image(systemName: icon).foregroundColor(.purple).frame(width: 24)
@@ -465,7 +748,7 @@ struct SettingsRow: View {
     let icon: String
     let title: String
     let value: String
-    
+
     var body: some View {
         HStack {
             Image(systemName: icon).foregroundColor(.purple).frame(width: 24)
@@ -481,9 +764,20 @@ struct SettingsRow: View {
     }
 }
 
+struct ActivityShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) { }
+}
+
 #Preview {
     SettingsView().environmentObject(AppState())
 }
+
 import SwiftUI
 
 struct ChallengeTestPicker: View {
@@ -491,7 +785,7 @@ struct ChallengeTestPicker: View {
     @Environment(\.dismiss) var dismiss
     @State private var selectedChallenge: AllChallengeType?
     @State private var showChallenge = false
-    
+
     // Challenge data - using available challenge types
     let categories: [(String, String, [AllChallengeType])] = [
         ("Focus", "eye.fill", AllChallengeType.allCases.filter { $0.category == .focus }.prefix(5).map { $0 }),
@@ -500,29 +794,29 @@ struct ChallengeTestPicker: View {
         ("Breathing", "wind", AllChallengeType.allCases.filter { $0.category == .breathing }.prefix(5).map { $0 }),
         ("Discipline", "hand.raised.fill", AllChallengeType.allCases.filter { $0.category == .discipline }.prefix(5).map { $0 })
     ]
-    
+
     var body: some View {
         ZStack {
             Color(hex: "0A0F1C").ignoresSafeArea()
-            
+
             VStack(spacing: 0) {
                 // Header
                 HStack {
                     Button("Cancel") { dismiss() }
                         .foregroundColor(.gray)
-                    
+
                     Spacer()
-                    
+
                     Text("Test Challenges")
                         .font(.system(size: 18, weight: .bold))
                         .foregroundColor(.white)
-                    
+
                     Spacer()
-                    
+
                     Color.clear.frame(width: 50)
                 }
                 .padding()
-                
+
                 ScrollView {
                     VStack(spacing: 20) {
                         ForEach(categories, id: \.0) { category, icon, challenges in
@@ -540,7 +834,7 @@ struct ChallengeTestPicker: View {
                                         .foregroundColor(.gray)
                                 }
                                 .padding(.horizontal, 16)
-                                
+
                                 // Challenge grid
                                 LazyVGrid(columns: [
                                     GridItem(.flexible()),
@@ -580,7 +874,7 @@ struct ChallengeTestPicker: View {
 
 struct ChallengeTestCard: View {
     let challenge: AllChallengeType
-    
+
     var body: some View {
         VStack(spacing: 8) {
             ZStack {
@@ -591,12 +885,12 @@ struct ChallengeTestCard: View {
                     .font(.system(size: 18))
                     .foregroundColor(challenge.color)
             }
-            
+
             Text(challenge.rawValue)
                 .font(.system(size: 12, weight: .medium))
                 .foregroundColor(.white)
                 .lineLimit(1)
-            
+
             // Difficulty
             HStack(spacing: 2) {
                 ForEach(0..<3) { i in
@@ -624,22 +918,22 @@ struct TestingChallengeView: View {
     let duration: Int
     let onDismiss: () -> Void
     @EnvironmentObject var appState: AppState
-    
+
     @State private var timeRemaining: Int
     @State private var isRunning = false
     @State private var isCompleted = false
-    
+
     init(challenge: AllChallengeType, duration: Int, onDismiss: @escaping () -> Void) {
         self.challenge = challenge
         self.duration = duration
         self.onDismiss = onDismiss
         self._timeRemaining = State(initialValue: duration)
     }
-    
+
     var body: some View {
         ZStack {
             LinearGradient(colors: [Color(hex: "0A0F1C"), challenge.color.opacity(0.2)], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
-            
+
             VStack(spacing: 30) {
                 // Close
                 HStack {
@@ -649,32 +943,32 @@ struct TestingChallengeView: View {
                     }
                 }
                 .padding()
-                
+
                 Spacer()
-                
+
                 // Icon
                 ZStack {
                     Circle().fill(challenge.color.opacity(0.3)).frame(width: 120, height: 120)
                     Image(systemName: challenge.icon).font(.system(size: 50)).foregroundColor(challenge.color)
                 }
-                
+
                 Text(challenge.rawValue)
                     .font(.system(size: 28, weight: .bold)).foregroundColor(.white)
-                
+
                 Text(challenge.description)
                     .font(.system(size: 14)).foregroundColor(.gray)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
-                
+
                 // Timer
                 if !isCompleted {
                     Text(timeString(timeRemaining))
                         .font(.system(size: 56, weight: .bold, design: .rounded)).foregroundColor(.white)
                         .monospacedDigit()
                 }
-                
+
                 Spacer()
-                
+
                 // Controls
                 if !isCompleted {
                     Button {
@@ -689,9 +983,9 @@ struct TestingChallengeView: View {
                     }
                 } else {
                     VStack(spacing: 16) {
-                        Text("🎉 Complete!")
+                        Text("Complete!")
                             .font(.system(size: 24, weight: .bold)).foregroundColor(.yellow)
-                        
+
                         Button { onDismiss() } label: {
                             Text("Done")
                                 .font(.system(size: 16, weight: .bold)).foregroundColor(.white)
@@ -701,12 +995,12 @@ struct TestingChallengeView: View {
                         }
                     }
                 }
-                
+
                 Spacer()
             }
         }
     }
-    
+
     func startTimer() {
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
             if timeRemaining > 0 {
@@ -717,7 +1011,7 @@ struct TestingChallengeView: View {
             }
         }
     }
-    
+
     func timeString(_ seconds: Int) -> String {
         let mins = seconds / 60
         let secs = seconds % 60
@@ -728,34 +1022,34 @@ struct TestingChallengeView: View {
 struct TimePickerSheet: View {
     @ObservedObject var notificationService: NotificationService
     @Environment(\.dismiss) var dismiss
-    
+
     @State private var selectedHour: Int
     @State private var selectedMinute: Int
-    
+
     init(notificationService: NotificationService) {
         self.notificationService = notificationService
         self._selectedHour = State(initialValue: notificationService.reminderHour)
         self._selectedMinute = State(initialValue: notificationService.reminderMinute)
     }
-    
+
     var body: some View {
         ZStack {
             Color(hex: "0A0F1C").ignoresSafeArea()
-            
+
             VStack(spacing: 0) {
                 // Header
                 HStack {
                     Button("Cancel") { dismiss() }
                         .foregroundColor(.gray)
-                    
+
                     Spacer()
-                    
+
                     Text("Reminder Time")
                         .font(.system(size: 18, weight: .bold))
                         .foregroundColor(.white)
-                    
+
                     Spacer()
-                    
+
                     Button("Save") {
                         notificationService.reminderHour = selectedHour
                         notificationService.reminderMinute = selectedMinute
@@ -764,9 +1058,9 @@ struct TimePickerSheet: View {
                     .foregroundColor(.purple)
                 }
                 .padding()
-                
+
                 Spacer()
-                
+
                 // Time picker
                 DatePicker(
                     "Reminder Time",
@@ -788,7 +1082,7 @@ struct TimePickerSheet: View {
                 .datePickerStyle(.wheel)
                 .labelsHidden()
                 .colorScheme(.dark)
-                
+
                 Spacer()
             }
         }

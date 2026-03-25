@@ -71,7 +71,7 @@ class OfflineQueue: ObservableObject {
         let type: ActionType
         let data: Data
         let timestamp: Date
-        let retryCount: Int
+        var retryCount: Int
         
         enum ActionType: String, Codable {
             case progressUpdate
@@ -80,12 +80,12 @@ class OfflineQueue: ObservableObject {
             case heartUpdate
         }
         
-        init(type: ActionType, data: Data) {
+        init(type: ActionType, data: Data, retryCount: Int = 0) {
             self.id = UUID()
             self.type = type
             self.data = data
             self.timestamp = Date()
-            self.retryCount = 0
+            self.retryCount = retryCount
         }
     }
     
@@ -149,6 +149,7 @@ class OfflineQueue: ObservableObject {
                 // Keep failed action for retry (up to 3 attempts)
                 if action.retryCount < 3 {
                     var retryAction = action
+                    retryAction.retryCount += 1
                     failedActions.append(retryAction)
                 } else {
                     // Drop after 3 failed attempts

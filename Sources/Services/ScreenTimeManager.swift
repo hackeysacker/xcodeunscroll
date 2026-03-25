@@ -146,7 +146,7 @@ class ScreenTimeManager: ObservableObject {
         Task {
             do {
                 // Try to fetch real data from DeviceActivity
-                let activity = try await fetchDeviceActivity()
+                try await fetchDeviceActivity()
                 
                 await MainActor.run {
                     self.processActivityData()
@@ -230,7 +230,7 @@ class ScreenTimeManager: ObservableObject {
         // store.shield.applications = Set(blockedBundleIds)
         // store.shield.webDomains = Set(["twitter.com", "instagram.com"])
         
-        print("Work mode activated - blocking entertainment apps")
+        print("Work mode activated - blocking \(blockedBundleIds.count) entertainment apps")
     }
     
     private func configureStudyMode() {
@@ -241,7 +241,7 @@ class ScreenTimeManager: ObservableObject {
             "com.apple.Numbers"
         ]
         
-        print("Study mode activated - blocking non-educational apps")
+        print("Study mode activated - allowing \(allowedApps.count) educational apps")
     }
     
     private func configurePersonalMode() {

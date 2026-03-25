@@ -2,149 +2,132 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var appState: AppState
-    
+    @EnvironmentObject var themeService: ThemeService
+
     var body: some View {
         ZStack {
-            // Background gradient - using drawingGroup for smoother animations
             LinearGradient(
-                colors: [Color(hex: "0A0F1C"), Color(hex: "0F172A"), Color(hex: "1E293B")],
+                colors: themeService.selectedTheme.gradientColors,
                 startPoint: .top,
                 endPoint: .bottom
             )
             .ignoresSafeArea()
             .drawingGroup()
-            
+
             if appState.isLoading {
                 SplashScreen()
             } else if !appState.isOnboarded {
                 OnboardingFlowView()
             } else {
-                VStack(spacing: 0) {
-                    // Universal Header
-                    UniversalHeader()
-                        .environmentObject(appState)
-                    
-                    // Tab Content
-                    MainTabView()
-                }
+                MainTabView()
             }
         }
         .animation(.easeInOut(duration: 0.3), value: appState.isOnboarded)
     }
 }
 
-// MARK: - Universal Header
-struct UniversalHeader: View {
-    @EnvironmentObject var appState: AppState
-    
-    var body: some View {
-        HStack(spacing: 16) {
-            // Hearts
-            HStack(spacing: 6) {
-                Image(systemName: "heart.fill")
-                    .foregroundColor(.red)
-                    .font(.system(size: 14))
-                Text("\(appState.progress?.hearts ?? 5)")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundColor(.white)
-            }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background(Color.red.opacity(0.15))
-            .cornerRadius(16)
-            
-            // Gems
-            HStack(spacing: 6) {
-                Image(systemName: "gem.fill")
-                    .foregroundColor(.purple)
-                    .font(.system(size: 14))
-                Text("\(appState.progress?.gems ?? 0)")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundColor(.white)
-            }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background(Color.purple.opacity(0.15))
-            .cornerRadius(16)
-            
-            Spacer()
-            
-            // Streak
-            HStack(spacing: 6) {
-                Image(systemName: "flame.fill")
-                    .foregroundColor(.orange)
-                    .font(.system(size: 14))
-                Text("\(appState.progress?.streakDays ?? 0)")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundColor(.white)
-            }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background(Color.orange.opacity(0.15))
-            .cornerRadius(16)
-            
-            // XP
-            HStack(spacing: 6) {
-                Image(systemName: "star.fill")
-                    .foregroundColor(.yellow)
-                    .font(.system(size: 14))
-                Text("\(appState.progress?.totalXP ?? 0)")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundColor(.white)
-            }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background(Color.yellow.opacity(0.15))
-            .cornerRadius(16)
-        }
-        .padding(.horizontal, 16)
-        .padding(.top, 12)
-        .padding(.bottom, 6)
-        .background(Color(hex: "0A0F1C"))
-    }
-}
-
 // MARK: - Splash Screen
 struct SplashScreen: View {
-    @State private var scale: CGFloat = 0.3
+    @State private var scale: CGFloat = 0.4
     @State private var opacity: Double = 0
-    
+    @State private var rotation: Double = -15
+    @State private var glowPulse = false
+
     var body: some View {
-        VStack(spacing: 24) {
-            // Logo
+        ZStack {
             ZStack {
                 Circle()
-                    .stroke(
-                        LinearGradient(
-                            colors: [.purple, .orange],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: 3
-                    )
-                    .frame(width: 140, height: 140)
-                
+                    .fill(Color.purple.opacity(0.18))
+                    .frame(width: 320, height: 320)
+                    .blur(radius: 60)
+                    .offset(x: -60, y: -80)
                 Circle()
-                    .stroke(Color.purple.opacity(0.5), lineWidth: 2)
-                    .frame(width: 180, height: 180)
-                
-                Image(systemName: "xmark")
-                    .font(.system(size: 50, weight: .bold))
-                    .foregroundColor(.red)
+                    .fill(Color.indigo.opacity(0.15))
+                    .frame(width: 260, height: 260)
+                    .blur(radius: 50)
+                    .offset(x: 80, y: 60)
             }
-            .scaleEffect(scale)
-            .opacity(opacity)
-            
-            Text("Unscroll")
-                .font(.system(size: 32, weight: .bold))
-                .foregroundColor(.white)
+            .scaleEffect(glowPulse ? 1.08 : 0.95)
+            .animation(.easeInOut(duration: 2.5).repeatForever(autoreverses: true), value: glowPulse)
+
+            VStack(spacing: 28) {
+                ZStack {
+                    Circle()
+                        .stroke(Color.purple.opacity(glowPulse ? 0.25 : 0.12), lineWidth: 1.5)
+                        .frame(width: 200, height: 200)
+                        .blur(radius: 2)
+                        .animation(.easeInOut(duration: 2).repeatForever(autoreverses: true), value: glowPulse)
+
+                    Circle()
+                        .stroke(
+                            LinearGradient(
+                                colors: [Color.purple.opacity(0.7), Color.cyan.opacity(0.5)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 2
+                        )
+                        .frame(width: 160, height: 160)
+
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .frame(width: 130, height: 130)
+                        .overlay(
+                            Circle().fill(
+                                LinearGradient(
+                                    colors: [Color.purple.opacity(0.4), Color.indigo.opacity(0.3)],
+                                    startPoint: .topLeading, endPoint: .bottomTrailing
+                                )
+                            )
+                        )
+                        .overlay(
+                            Circle().fill(
+                                LinearGradient(
+                                    colors: [Color.white.opacity(0.3), Color.clear],
+                                    startPoint: .topLeading, endPoint: .center
+                                )
+                            )
+                        )
+                        .shadow(color: .purple.opacity(0.5), radius: 30)
+
+                    Image(systemName: "xmark")
+                        .font(.system(size: 48, weight: .bold))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [.white, Color.white.opacity(0.8)],
+                                startPoint: .top, endPoint: .bottom
+                            )
+                        )
+                        .shadow(color: .white.opacity(0.3), radius: 8)
+                }
+                .scaleEffect(scale)
+                .rotationEffect(.degrees(rotation))
                 .opacity(opacity)
+
+                VStack(spacing: 6) {
+                    Text("Unscroll")
+                        .font(.system(size: 36, weight: .black, design: .rounded))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [.white, Color.white.opacity(0.85)],
+                                startPoint: .top, endPoint: .bottom
+                            )
+                        )
+                    Text("Reclaim Your Focus")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.white.opacity(0.45))
+                        .tracking(1.5)
+                }
+                .opacity(opacity)
+            }
         }
         .onAppear {
-            withAnimation(.spring(response: 0.8, dampingFraction: 0.6)) {
+            withAnimation(.spring(response: 0.9, dampingFraction: 0.65)) {
                 scale = 1.0
                 opacity = 1.0
+                rotation = 0
             }
+            glowPulse = true
         }
     }
 }
@@ -152,10 +135,9 @@ struct SplashScreen: View {
 // MARK: - Main Tab View
 struct MainTabView: View {
     @EnvironmentObject var appState: AppState
-    
+
     var body: some View {
-        VStack(spacing: 0) {
-            // Content - using lazy loading for performance
+        ZStack(alignment: .bottom) {
             TabView(selection: $appState.selectedTab) {
                 HomeView()
                     .tag(AppState.Tab.home)
@@ -177,28 +159,83 @@ struct MainTabView: View {
                     .tag(AppState.Tab.profile)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
-            
-            // Bottom Navigation
+            .ignoresSafeArea(edges: .bottom)
+
+            // Floating Glass Tab Bar
+            FloatingTabBar(selectedTab: $appState.selectedTab)
+        }
+    }
+}
+
+// MARK: - Floating Glass Tab Bar
+struct FloatingTabBar: View {
+    @Binding var selectedTab: AppState.Tab
+
+    var body: some View {
+        VStack(spacing: 0) {
             HStack(spacing: 0) {
                 ForEach(AppState.Tab.allCases, id: \.self) { tab in
                     GlassTabButton(
                         tab: tab,
-                        isActive: appState.selectedTab == tab
+                        isActive: selectedTab == tab
                     ) {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            appState.selectedTab = tab
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                            selectedTab = tab
                         }
                     }
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 8)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
             .background(
-                Rectangle()
-                    .fill(.ultraThinMaterial)
-                    .ignoresSafeArea(edges: .bottom)
+                ZStack {
+                    RoundedRectangle(cornerRadius: 32)
+                        .fill(.ultraThinMaterial)
+                    RoundedRectangle(cornerRadius: 32)
+                        .fill(Color(hex: "0A0F1C").opacity(0.55))
+                    VStack {
+                        RoundedRectangle(cornerRadius: 32)
+                            .fill(
+                                LinearGradient(
+                                    colors: [Color.white.opacity(0.14), Color.clear],
+                                    startPoint: .top, endPoint: .bottom
+                                )
+                            )
+                            .frame(height: 24)
+                        Spacer(minLength: 0)
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: 32))
+                }
             )
+            .overlay(
+                RoundedRectangle(cornerRadius: 32)
+                    .stroke(
+                        LinearGradient(
+                            colors: [
+                                Color.white.opacity(0.22),
+                                Color.purple.opacity(0.18),
+                                Color.white.opacity(0.07)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 1
+                    )
+            )
+            .shadow(color: .black.opacity(0.45), radius: 28, y: 10)
+            .shadow(color: Color.purple.opacity(0.12), radius: 20)
         }
+        .padding(.horizontal, 20)
+        .padding(.bottom, 12)
+        .background(
+            LinearGradient(
+                colors: [Color.clear, Color(hex: "06060F").opacity(0.75)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea(edges: .bottom)
+            .allowsHitTesting(false)
+        )
     }
 }
 
@@ -210,14 +247,10 @@ extension Color {
         Scanner(string: hex).scanHexInt64(&int)
         let a, r, g, b: UInt64
         switch hex.count {
-        case 3:
-            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6:
-            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8:
-            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            (a, r, g, b) = (255, 0, 0, 0)
+        case 3:  (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6:  (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8:  (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default: (a, r, g, b) = (255, 0, 0, 0)
         }
         self.init(
             .sRGB,
@@ -232,4 +265,5 @@ extension Color {
 #Preview {
     ContentView()
         .environmentObject(AppState())
+        .environmentObject(ThemeService.shared)
 }

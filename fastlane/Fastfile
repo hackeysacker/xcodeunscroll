@@ -1,0 +1,40 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Build Debug iOS simulator app (CI parity check)"
+  lane :verify do
+    sh("xcodebuild -project Unscroll.xcodeproj -scheme Unscroll -configuration Debug -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO build")
+  end
+
+  desc "Build and upload a beta to TestFlight"
+  lane :beta do |options|
+    changelog = options[:changelog] || "TestFlight beta build"
+    skip_waiting = options[:skip_waiting_for_processing] || false
+
+    build_app(
+      project: "Unscroll.xcodeproj",
+      scheme: "Unscroll",
+      clean: true,
+      output_directory: "build",
+      export_method: "app-store"
+    )
+
+    upload_to_testflight(
+      changelog: changelog,
+      skip_waiting_for_build_processing: skip_waiting,
+      distribute_external: false
+    )
+  end
+
+  desc "Upload App Store metadata only (no binary)"
+  lane :metadata do
+    deliver(
+      metadata_path: "fastlane/metadata",
+      skip_binary_upload: true,
+      skip_screenshots: true,
+      skip_metadata: false,
+      submit_for_review: false,
+      force: true
+    )
+  end
+end

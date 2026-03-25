@@ -28,7 +28,7 @@ struct WindingProgressPath: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            // Deep starfield background
+            // Deep starfield background with premium gradient
             LinearGradient(
                 colors: [Color(hex: "06060F"), Color(hex: "0A0F1C"), Color(hex: "0D1526")],
                 startPoint: .top, endPoint: .bottom
@@ -41,17 +41,17 @@ struct WindingProgressPath: View {
                         let totalH = CGFloat(allChallenges.count) * nodeSpacing + 280
 
                         ZStack {
-                            // Ambient background glows at milestones
+                            // Ambient colored orbs at milestone positions
                             ForEach(Array(allChallenges.enumerated()), id: \.element) { idx, ch in
                                 if idx % 5 == 4 {
                                     Circle()
-                                        .fill(ch.color.opacity(isCompleted(ch) ? 0.08 : 0.03))
-                                        .frame(width: 200, height: 200)
+                                        .fill(ch.color.opacity(isCompleted(ch) ? 0.12 : 0.05))
+                                        .frame(width: 240, height: 240)
                                         .position(
                                             x: w / 2 + xOffset(for: idx, in: w),
                                             y: CGFloat(idx) * nodeSpacing + 150
                                         )
-                                        .blur(radius: 30)
+                                        .blur(radius: 45)
                                 }
                             }
 
@@ -106,7 +106,7 @@ struct WindingProgressPath: View {
                 }
             }
 
-            // Stats bar overlay at top
+            // Stats bar overlay at top with glass morphism
             VStack {
                 WPStatsBar(
                     completed: completedCount,
@@ -133,19 +133,38 @@ struct WPLine: View {
     let color: Color
 
     var body: some View {
-        Path { p in
-            p.move(to: from)
-            let mid = CGPoint(x: (from.x + to.x) / 2, y: (from.y + to.y) / 2)
-            let ctrl1 = CGPoint(x: (from.x + mid.x) / 2, y: from.y + 30)
-            let ctrl2 = CGPoint(x: (mid.x + to.x) / 2,   y: to.y - 30)
-            p.addCurve(to: to, control1: ctrl1, control2: ctrl2)
+        ZStack {
+            // Glow layer for completed paths
+            if done {
+                Path { p in
+                    p.move(to: from)
+                    let mid = CGPoint(x: (from.x + to.x) / 2, y: (from.y + to.y) / 2)
+                    let ctrl1 = CGPoint(x: (from.x + mid.x) / 2, y: from.y + 30)
+                    let ctrl2 = CGPoint(x: (mid.x + to.x) / 2,   y: to.y - 30)
+                    p.addCurve(to: to, control1: ctrl1, control2: ctrl2)
+                }
+                .stroke(
+                    LinearGradient(colors: [color.opacity(0.4), color.opacity(0.15)], startPoint: .top, endPoint: .bottom),
+                    style: StrokeStyle(lineWidth: 12, lineCap: .round)
+                )
+                .blur(radius: 8)
+            }
+
+            // Main line
+            Path { p in
+                p.move(to: from)
+                let mid = CGPoint(x: (from.x + to.x) / 2, y: (from.y + to.y) / 2)
+                let ctrl1 = CGPoint(x: (from.x + mid.x) / 2, y: from.y + 30)
+                let ctrl2 = CGPoint(x: (mid.x + to.x) / 2,   y: to.y - 30)
+                p.addCurve(to: to, control1: ctrl1, control2: ctrl2)
+            }
+            .stroke(
+                done
+                    ? LinearGradient(colors: [color.opacity(0.85), color.opacity(0.55)], startPoint: .top, endPoint: .bottom)
+                    : LinearGradient(colors: [Color.white.opacity(0.15), Color.white.opacity(0.08)], startPoint: .top, endPoint: .bottom),
+                style: StrokeStyle(lineWidth: done ? 5 : 3, lineCap: .round, dash: done ? [] : [8, 6])
+            )
         }
-        .stroke(
-            done
-                ? LinearGradient(colors: [color.opacity(0.75), color.opacity(0.45)], startPoint: .top, endPoint: .bottom)
-                : LinearGradient(colors: [Color.white.opacity(0.12), Color.white.opacity(0.06)], startPoint: .top, endPoint: .bottom),
-            style: StrokeStyle(lineWidth: done ? 4.5 : 3, lineCap: .round, dash: done ? [] : [8, 6])
-        )
     }
 }
 
@@ -164,22 +183,53 @@ struct WPBanner: View {
     }
 
     var body: some View {
-        HStack(spacing: 7) {
+        HStack(spacing: 8) {
             Image(systemName: category.icon)
-                .font(.system(size: 12, weight: .bold))
+                .font(.system(size: 13, weight: .bold))
                 .foregroundColor(color)
-            Text(category.rawValue.uppercased())
-                .font(.system(size: 10, weight: .black, design: .rounded))
-                .foregroundColor(color)
-                .tracking(1.5)
+
+            VStack(alignment: .leading, spacing: 1) {
+                Text(category.rawValue.uppercased())
+                    .font(.system(size: 11, weight: .black, design: .rounded))
+                    .foregroundColor(color)
+                    .tracking(1.2)
+
+                Text("\(category.letterCount) letters")
+                    .font(.system(size: 8, weight: .medium))
+                    .foregroundColor(color.opacity(0.6))
+            }
         }
-        .padding(.horizontal, 14).padding(.vertical, 6)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
         .background(
             Capsule()
-                .fill(color.opacity(0.12))
-                .overlay(Capsule().stroke(color.opacity(0.35), lineWidth: 1.5))
+                .fill(color.opacity(0.1))
         )
-        .shadow(color: color.opacity(0.2), radius: 8)
+        .overlay(
+            Capsule()
+                .stroke(
+                    LinearGradient(
+                        colors: [color.opacity(0.5), color.opacity(0.2)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1.5
+                )
+        )
+        .shadow(color: color.opacity(0.3), radius: 12, x: 0, y: 4)
+    }
+}
+
+// Helper extension to get letter count for category (mock implementation)
+extension ChallengeCategory {
+    var letterCount: Int {
+        switch self {
+        case .focus: return 24
+        case .memory: return 28
+        case .reaction: return 32
+        case .breathing: return 20
+        case .discipline: return 26
+        }
     }
 }
 
@@ -193,110 +243,195 @@ struct WPNode: View {
     let onTap: () -> Void
 
     @State private var pulsing = false
-    @State private var shimmer = false
+    @State private var pulseScale: CGFloat = 1.0
 
     var nodeSize: CGFloat { isMilestone ? 76 : 68 }
-
-    var fillColor: Color {
-        if completed { return .yellow }
-        if unlocked  { return challenge.color }
-        return Color.white.opacity(0.06)
-    }
 
     var body: some View {
         Button(action: onTap) {
             ZStack {
-                // Outer pulse ring for current node
-                if current {
+                // Completed Node: Gold liquid glass with glow
+                if completed {
+                    // Outer glow layers
                     Circle()
-                        .stroke(challenge.color.opacity(0.25), lineWidth: 6)
-                        .frame(width: nodeSize + 24, height: nodeSize + 24)
-                        .scaleEffect(pulsing ? 1.35 : 1.0)
-                        .opacity(pulsing ? 0 : 0.8)
-                        .animation(.easeOut(duration: 1.3).repeatForever(autoreverses: false), value: pulsing)
-                        .onAppear { pulsing = true }
-
-                    Circle()
-                        .stroke(challenge.color.opacity(0.15), lineWidth: 3)
-                        .frame(width: nodeSize + 8, height: nodeSize + 8)
-                }
-
-                // Milestone glow
-                if isMilestone && (completed || unlocked) {
-                    Circle()
-                        .fill(fillColor.opacity(0.25))
-                        .frame(width: nodeSize + 20, height: nodeSize + 20)
-                        .blur(radius: 8)
-                }
-
-                // Main circle
-                Circle()
-                    .fill(
-                        completed
-                            ? LinearGradient(colors: [.yellow, .orange], startPoint: .topLeading, endPoint: .bottomTrailing)
-                            : unlocked
-                                ? LinearGradient(colors: [challenge.color, challenge.color.opacity(0.7)], startPoint: .topLeading, endPoint: .bottomTrailing)
-                                : LinearGradient(colors: [Color.white.opacity(0.06), Color.white.opacity(0.04)], startPoint: .top, endPoint: .bottom)
-                    )
-                    .frame(width: nodeSize, height: nodeSize)
-                    .shadow(color: fillColor.opacity(completed || unlocked ? 0.5 : 0), radius: 14)
-                    .overlay(
-                        Circle()
-                            .stroke(
-                                completed ? Color.yellow.opacity(0.4) :
-                                unlocked ? challenge.color.opacity(0.5) :
-                                Color.white.opacity(0.08),
-                                lineWidth: isMilestone ? 2.5 : 1.5
+                        .fill(
+                            RadialGradient(
+                                gradient: Gradient(colors: [
+                                    Color.yellow.opacity(0.3),
+                                    Color.orange.opacity(0.1),
+                                    Color.clear
+                                ]),
+                                center: .center,
+                                startRadius: nodeSize / 2,
+                                endRadius: nodeSize / 2 + 30
                             )
-                    )
+                        )
+                        .frame(width: nodeSize + 60, height: nodeSize + 60)
 
-                // Icon
-                Group {
-                    if completed {
-                        Image(systemName: "checkmark")
-                            .font(.system(size: isMilestone ? 28 : 24, weight: .black))
-                            .foregroundColor(.black.opacity(0.8))
-                    } else if unlocked {
-                        Image(systemName: challenge.icon)
-                            .font(.system(size: isMilestone ? 30 : 26))
-                            .foregroundColor(.white)
-                    } else {
-                        Image(systemName: "lock.fill")
-                            .font(.system(size: 18))
-                            .foregroundColor(.white.opacity(0.2))
+                    // Main gold gradient
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color(hex: "FFD700"),
+                                    Color(hex: "FFA500")
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: nodeSize, height: nodeSize)
+                        .overlay(
+                            Circle()
+                                .fill(Color.white.opacity(0.3))
+                                .frame(width: nodeSize / 2.5, height: nodeSize / 2.5)
+                                .offset(x: -nodeSize / 5, y: -nodeSize / 5)
+                        )
+                        .shadow(color: Color.yellow.opacity(0.6), radius: 16, x: 0, y: 8)
+                        .overlay(
+                            Circle()
+                                .stroke(Color.white.opacity(0.5), lineWidth: 2)
+                        )
+
+                    // Checkmark with glow
+                    Image(systemName: "checkmark")
+                        .font(.system(size: isMilestone ? 32 : 28, weight: .black))
+                        .foregroundColor(.black.opacity(0.9))
+                        .shadow(color: Color.black.opacity(0.3), radius: 4)
+                }
+
+                // Current/Active Node: Vibrant with pulsing ring
+                else if current && unlocked {
+                    // Pulsing outer rings
+                    Circle()
+                        .stroke(challenge.color.opacity(0.3), lineWidth: 8)
+                        .frame(width: nodeSize + 32, height: nodeSize + 32)
+                        .scaleEffect(pulseScale)
+                        .opacity(2.0 - pulseScale)
+                        .animation(
+                            Animation.easeOut(duration: 1.2).repeatForever(autoreverses: false),
+                            value: pulsing
+                        )
+
+                    Circle()
+                        .stroke(challenge.color.opacity(0.2), lineWidth: 5)
+                        .frame(width: nodeSize + 16, height: nodeSize + 16)
+
+                    // Main colored gradient with depth
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    challenge.color,
+                                    challenge.color.opacity(0.6)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: nodeSize, height: nodeSize)
+                        .overlay(
+                            Circle()
+                                .fill(Color.white.opacity(0.25))
+                                .frame(width: nodeSize / 2.8, height: nodeSize / 2.8)
+                                .offset(x: -nodeSize / 5, y: -nodeSize / 5)
+                        )
+                        .shadow(color: challenge.color.opacity(0.7), radius: 18, x: 0, y: 10)
+                        .overlay(
+                            Circle()
+                                .stroke(Color.white.opacity(0.6), lineWidth: 2.5)
+                        )
+
+                    // Challenge icon
+                    Image(systemName: challenge.icon)
+                        .font(.system(size: isMilestone ? 32 : 28, weight: .semibold))
+                        .foregroundColor(.white)
+                        .shadow(color: challenge.color.opacity(0.5), radius: 6)
+                }
+
+                // Locked Node: Dark glass with subtle details
+                else if !unlocked {
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color.white.opacity(0.08),
+                                    Color.white.opacity(0.04)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: nodeSize, height: nodeSize)
+                        .overlay(
+                            Circle()
+                                .stroke(Color.white.opacity(0.12), lineWidth: 1.5)
+                        )
+                        .shadow(color: Color.black.opacity(0.3), radius: 8)
+
+                    Image(systemName: "lock.fill")
+                        .font(.system(size: isMilestone ? 24 : 20, weight: .semibold))
+                        .foregroundColor(.white.opacity(0.3))
+                }
+
+                // Milestone-specific enhancements
+                if isMilestone {
+                    Circle()
+                        .stroke(
+                            LinearGradient(
+                                colors: [
+                                    Color.yellow.opacity(0.3),
+                                    Color.cyan.opacity(0.1)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 2.5
+                        )
+                        .frame(width: nodeSize + 8, height: nodeSize + 8)
+
+                    // Crown accent for locked milestones
+                    if !completed && !unlocked {
+                        Image(systemName: "star.fill")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.yellow.opacity(0.4))
+                            .offset(y: -nodeSize / 2 - 10)
                     }
                 }
-
-                // Milestone crown
-                if isMilestone && !completed && !unlocked {
-                    Image(systemName: "crown.fill")
-                        .font(.system(size: 10))
-                        .foregroundColor(.yellow.opacity(0.3))
-                        .offset(y: -nodeSize / 2 - 6)
+            }
+            .onAppear {
+                if current {
+                    pulsing = true
                 }
             }
         }
         .disabled(!unlocked)
         .overlay(alignment: .bottom) {
-            VStack(spacing: 2) {
+            VStack(spacing: 3) {
                 Text(challenge.rawValue)
                     .font(.system(size: 10, weight: unlocked ? .semibold : .regular))
-                    .foregroundColor(unlocked ? .white.opacity(0.85) : .white.opacity(0.2))
+                    .foregroundColor(unlocked ? .white.opacity(0.9) : .white.opacity(0.25))
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
-                    .frame(width: 90)
+                    .frame(width: 95)
+
                 if unlocked && !completed {
-                    HStack(spacing: 2) {
+                    HStack(spacing: 3) {
                         Image(systemName: "diamond.fill")
-                            .font(.system(size: 7))
-                            .foregroundColor(.cyan.opacity(0.7))
+                            .font(.system(size: 8, weight: .bold))
+                            .foregroundColor(.cyan)
+
                         Text("+\(challenge.gemReward)")
-                            .font(.system(size: 9, weight: .medium))
-                            .foregroundColor(.cyan.opacity(0.7))
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundColor(.cyan.opacity(0.8))
                     }
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Color.cyan.opacity(0.1))
+                    .cornerRadius(4)
                 }
             }
-            .offset(y: nodeSize / 2 + 16)
+            .offset(y: nodeSize / 2 + 18)
         }
     }
 }
@@ -309,30 +444,87 @@ struct WPStatsBar: View {
     let streak: Int
 
     var body: some View {
-        HStack(spacing: 0) {
-            statItem(value: "\(completed)/\(total)", label: "unlocked", icon: "checkmark.circle.fill", color: .green)
-            divider
-            statItem(value: "\(gems)", label: "gems", icon: "diamond.fill", color: .cyan)
-            divider
-            statItem(value: "\(streak)d", label: "streak", icon: "flame.fill", color: .orange)
-        }
-        .padding(.vertical, 10)
-        .background(.ultraThinMaterial)
-    }
+        VStack(spacing: 0) {
+            // Spacer for status bar
+            Spacer()
+                .frame(height: 58)
 
-    var divider: some View {
-        Rectangle().fill(Color.white.opacity(0.1)).frame(width: 1, height: 26)
-    }
+            HStack(spacing: 12) {
+                // Progress stat pill
+                StatPillCompact(
+                    icon: "checkmark.circle.fill",
+                    value: "\(completed)/\(total)",
+                    label: "Progress",
+                    color: .green
+                )
 
-    func statItem(value: String, label: String, icon: String, color: Color) -> some View {
-        HStack(spacing: 5) {
-            Image(systemName: icon).foregroundColor(color).font(.system(size: 13))
-            VStack(alignment: .leading, spacing: 0) {
-                Text(value).font(.system(size: 13, weight: .bold)).foregroundColor(.white)
-                Text(label).font(.system(size: 9)).foregroundColor(.gray)
+                // Gems stat pill
+                StatPillCompact(
+                    icon: "diamond.fill",
+                    value: "\(gems)",
+                    label: "Gems",
+                    color: .cyan
+                )
+
+                // Streak stat pill
+                StatPillCompact(
+                    icon: "flame.fill",
+                    value: "\(streak)d",
+                    label: "Streak",
+                    color: .orange
+                )
+
+                Spacer()
             }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .liquidGlass(tint: .white, cornerRadius: 20, showBorder: true)
+            .padding(.horizontal, 16)
+            .padding(.top, 12)
+            .padding(.bottom, 8)
+        }
+        .background(
+            LinearGradient(
+                colors: [Color.black.opacity(0.2), Color.black.opacity(0.05)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        )
+    }
+}
+
+// MARK: - Compact Stat Pill
+struct StatPillCompact: View {
+    let icon: String
+    let value: String
+    let label: String
+    let color: Color
+
+    var body: some View {
+        VStack(spacing: 3) {
+            HStack(spacing: 4) {
+                Image(systemName: icon)
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundColor(color)
+
+                Text(value)
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(.white)
+            }
+
+            Text(label)
+                .font(.system(size: 9, weight: .medium))
+                .foregroundColor(.white.opacity(0.6))
         }
         .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
+        .padding(.horizontal, 10)
+        .background(color.opacity(0.08))
+        .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(color.opacity(0.25), lineWidth: 1)
+        )
     }
 }
 
