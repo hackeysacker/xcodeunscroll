@@ -4,14 +4,14 @@ import SwiftUI
 struct UnscrollApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var appState = AppState()
-    @StateObject private var themeService = ThemeService.shared
+    @StateObject private var themeManager = ThemeManager.shared
     
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(appState)
-                .environmentObject(themeService)
-                .preferredColorScheme(themeService.appearance.preferredColorScheme)
+                .environmentObject(themeManager)
+                .preferredColorScheme(themeManager.appearance.preferredColorScheme)
                 .onAppear {
                     BackgroundSyncService.shared.register()
                     BackgroundSyncService.shared.syncHandler = {
