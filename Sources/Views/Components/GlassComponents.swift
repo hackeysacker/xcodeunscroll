@@ -556,7 +556,7 @@ struct GlassProgressRing: View {
 #Preview {
     ZStack {
         LinearGradient(
-            colors: [Color(hex: "0A0F1C"), Color(hex: "1E293B")],
+            colors: [Color("0A0F1C"), Color("1E293B")],
             startPoint: .top,
             endPoint: .bottom
         )
