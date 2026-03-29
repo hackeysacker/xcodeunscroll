@@ -968,7 +968,9 @@ struct UniversalChallengeView: View {
                 // Memory: level up
                 if self.challenge.category == .memory && self.score > self.level * 30 {
                     self.level += 1
-                    AppAudioManager.shared.mediumImpact()
+                    Task { @MainActor in
+                        AppAudioManager.shared.mediumImpact()
+                    }
                 }
             } else {
                 timer.invalidate()
@@ -980,7 +982,9 @@ struct UniversalChallengeView: View {
                 }
 
                 if self.score > 50 {
-                    AppAudioManager.shared.success()
+                    Task { @MainActor in
+                        AppAudioManager.shared.success()
+                    }
                 }
             }
         }
