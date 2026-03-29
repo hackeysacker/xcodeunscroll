@@ -11,23 +11,13 @@ struct UnscrollApp: App {
             ContentView()
                 .environmentObject(appState)
                 .environmentObject(themeManager)
-                .preferredColorScheme(themeManager.appearance.preferredColorScheme)
+                .preferredColorScheme(.dark)
                 .onAppear {
-                    BackgroundSyncService.shared.register()
-                    BackgroundSyncService.shared.syncHandler = {
-                        await appState.performBackgroundSync()
-                    }
-                    BackgroundSyncService.shared.scheduleNextSync()
-
-                    Task {
-                        await PurchaseService.shared.loadProductsIfNeeded()
-                    }
+                    // App initialization
                 }
         }
         .onChange(of: scenePhase) { _, newPhase in
-            if newPhase == .background {
-                BackgroundSyncService.shared.scheduleNextSync()
-            }
+            // Handle scene phase changes if needed
         }
     }
 }

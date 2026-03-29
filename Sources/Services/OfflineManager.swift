@@ -3,10 +3,10 @@ import Network
 import Combine
 import Supabase
 
-// MARK: - Network Monitor
+// MARK: - Offline Network Monitor
 /// Monitors network connectivity for offline mode handling
-class NetworkMonitor: ObservableObject {
-    static let shared = NetworkMonitor()
+class OfflineNetworkMonitor: ObservableObject {
+    static let shared = OfflineNetworkMonitor()
     
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "NetworkMonitor")
@@ -135,7 +135,7 @@ class OfflineQueue: ObservableObject {
     func syncPendingActions(supabase: SupabaseClient?, userId: String) async {
         guard !isSyncing else { return }
         guard !pendingActions.isEmpty else { return }
-        guard NetworkMonitor.shared.isConnected else { return }
+        guard OfflineNetworkMonitor.shared.isConnected else { return }
         
         await MainActor.run { isSyncing = true }
         

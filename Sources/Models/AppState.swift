@@ -68,7 +68,7 @@ class AppState: ObservableObject {
     let notificationManager = NotificationManager.shared
     
     // Supabase client - use global supabase client from SupabaseService
-    private let networkMonitor = NetworkMonitor.shared
+    private let networkMonitor: NetworkMonitor
     private let syncQueue = SyncQueue.shared
     private var cancellables = Set<AnyCancellable>()
     
@@ -95,6 +95,7 @@ class AppState: ObservableObject {
     }
     
     init() {
+        self.networkMonitor = NetworkMonitor.shared
         setupNetworkMonitoring()
         loadUserData()
     }

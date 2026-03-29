@@ -132,31 +132,6 @@ class CacheService {
     }
 }
 
-// MARK: - Sync Operation Model
-struct SyncOperation: Codable, Identifiable {
-    let id: UUID
-    let type: SyncOperationType
-    let data: Data
-    let timestamp: Date
-    var retryCount: Int
-    
-    init(type: SyncOperationType, data: Data) {
-        self.id = UUID()
-        self.type = type
-        self.data = data
-        self.timestamp = Date()
-        self.retryCount = 0
-    }
-}
-
-enum SyncOperationType: String, Codable {
-    case updateGems
-    case updateProgress
-    case updateHearts
-    case updateSkillProgress
-    case saveChallengeResult
-}
-
 // MARK: - Network Monitor
 class UnscrollNetworkMonitor: ObservableObject {
     static let shared = UnscrollNetworkMonitor()
