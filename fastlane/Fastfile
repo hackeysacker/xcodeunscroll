@@ -3,7 +3,7 @@ default_platform(:ios)
 platform :ios do
   desc "Build Debug iOS simulator app (CI parity check)"
   lane :verify do
-    sh("xcodebuild -project Unscroll.xcodeproj -scheme Unscroll -configuration Debug -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO build")
+    sh("xcodebuild -project FocusFlow.xcodeproj -scheme FocusFlow -configuration Debug -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO build")
   end
 
   desc "Build and upload a beta to TestFlight"
@@ -12,8 +12,8 @@ platform :ios do
     skip_waiting = options[:skip_waiting_for_processing] || false
 
     build_app(
-      project: "Unscroll.xcodeproj",
-      scheme: "Unscroll",
+      project: "FocusFlow.xcodeproj",
+      scheme: "FocusFlow",
       clean: true,
       output_directory: "build",
       export_method: "app-store"
