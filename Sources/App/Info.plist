@@ -51,6 +51,8 @@
     <string>Dark</string>
     <key>ITSAppUsesNonExemptEncryption</key>
     <false/>
+    <key>NSFamilyControlsUsageDescription</key>
+    <string>FocusFlow uses Screen Time to help you track and manage distractions while you focus.</string>
     <key>UIBackgroundModes</key>
     <array>
         <string>fetch</string>
