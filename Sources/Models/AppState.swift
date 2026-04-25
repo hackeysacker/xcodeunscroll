@@ -1,10 +1,14 @@
 import SwiftUI
+import os.log
 import Combine
 import Supabase
 import Network
 
+
+
 @MainActor
 class AppState: ObservableObject {
+    private static let logger = Logger(subsystem: "com.unscroll.focusflow", category: "AppState")
     @Published var isOnboarded: Bool = true
     @Published var isLoading: Bool = true
     @Published var currentUser: User?
@@ -194,7 +198,7 @@ class AppState: ObservableObject {
         do {
             try await supabase.from("game_progress").insert(progress).execute()
         } catch {
-            print("Error initializing game progress: \(error)")
+            Self.logger.error("Error initializing game progress: \(error.localizedDescription)")
         }
         
         // Initialize heart state
@@ -213,7 +217,7 @@ class AppState: ObservableObject {
         do {
             try await supabase.from("heart_state").insert(heartState).execute()
         } catch {
-            print("Error initializing heart state: \(error)")
+            Self.logger.error("Error initializing heart state: \(error.localizedDescription)")
         }
     }
     
@@ -585,7 +589,7 @@ class AppState: ObservableObject {
         // Award streak bonus gems if we hit a milestone
         if let milestoneName = prog.streakMilestoneName {
             prog.gems += prog.streakBonusGems
-            print("🎉 \(milestoneName) Bonus: +\(prog.streakBonusGems) gems!")
+            Self.logger.info("\(milestoneName) Bonus: +\(prog.streakBonusGems) gems!")
             
             // Trigger streak milestone notification
             notificationManager.scheduleStreakMilestoneNotification(streakDays: prog.streakDays)

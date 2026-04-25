@@ -1,4 +1,5 @@
 import SwiftUI
+import os.log
 
 // MARK: - Color Extensions
 extension Color {
@@ -8,6 +9,9 @@ extension Color {
 }
 
 // MARK: - Glass Card Component (Enhanced)
+
+private let logger = Logger(subsystem: "com.unscroll.focusflow", category: "GlassComponents")
+
 struct GlassCard<Content: View>: View {
     let content: Content
     let intensity: CGFloat
@@ -590,7 +594,7 @@ struct GlassProgressRing: View {
                 
                 // Buttons
                 GlassButton(title: "Start Training", icon: "brain.head.profile") {
-                    print("Tapped")
+                    // Tapped
                 }
                 
                 GlassButton(title: "Loading...", isLoading: true) { }

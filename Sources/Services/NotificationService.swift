@@ -1,9 +1,12 @@
 import Foundation
+import os.log
 import UserNotifications
 import UIKit
 
 class NotificationService: ObservableObject {
+    private static let logger = Logger(subsystem: "com.unscroll.focusflow", category: "NotificationService")
     static let shared = NotificationService()
+
     
     @Published var isAuthorized: Bool = false
     @Published var notificationsEnabled: Bool = true {
@@ -72,7 +75,7 @@ class NotificationService: ObservableObject {
             }
             return granted
         } catch {
-            print("Notification authorization error: \(error)")
+            Self.logger.error("Notification authorization error: \(error.localizedDescription)")
             return false
         }
     }
@@ -105,7 +108,7 @@ class NotificationService: ObservableObject {
         
         notificationCenter.add(request) { error in
             if let error = error {
-                print("Error scheduling daily reminder: \(error)")
+                Self.logger.error("Error scheduling daily reminder: \(error.localizedDescription)")
             }
         }
     }
@@ -132,7 +135,7 @@ class NotificationService: ObservableObject {
         
         notificationCenter.add(request) { error in
             if let error = error {
-                print("Error scheduling streak warning: \(error)")
+                Self.logger.error("Error scheduling streak warning: \(error.localizedDescription)")
             }
         }
     }
@@ -157,7 +160,7 @@ class NotificationService: ObservableObject {
         
         notificationCenter.add(request) { error in
             if let error = error {
-                print("Error scheduling new challenges: \(error)")
+                Self.logger.error("Error scheduling new challenges: \(error.localizedDescription)")
             }
         }
     }

@@ -1,8 +1,11 @@
 import Foundation
+import os.log
 import BackgroundTasks
 import UIKit
 
 /// Manages background tasks for app refresh and data sync
+
+
 class BackgroundTaskManager {
     static let shared = BackgroundTaskManager()
     
@@ -15,6 +18,7 @@ class BackgroundTaskManager {
     private var progressGetter: (() -> GameProgress?)?
     
     private init() {}
+    private static let logger = Logger(subsystem: "com.unscroll.focusflow", category: "BackgroundTaskManager")
     
     /// Set a closure to get current progress for background sync
     func setProgressGetter(_ getter: @escaping () -> GameProgress?) {
@@ -53,9 +57,9 @@ class BackgroundTaskManager {
         
         do {
             try BGTaskScheduler.shared.submit(request)
-            print("✅ Background app refresh scheduled")
+            Self.logger.info("Background app refresh scheduled")
         } catch {
-            print("❌ Could not schedule app refresh: \(error)")
+            Self.logger.error("Could not schedule app refresh: \(error.localizedDescription)")
         }
     }
     
@@ -68,9 +72,9 @@ class BackgroundTaskManager {
         
         do {
             try BGTaskScheduler.shared.submit(request)
-            print("✅ Background sync scheduled")
+            Self.logger.info("Background sync scheduled")
         } catch {
-            print("❌ Could not schedule background sync: \(error)")
+            Self.logger.error("Could not schedule background sync: \(error.localizedDescription)")
         }
     }
     
@@ -83,7 +87,7 @@ class BackgroundTaskManager {
         let refreshTask = Task {
             do {
                 // Check for any pending sync operations and fetch latest cloud data
-                print("🔄 Running app refresh...")
+                Self.logger.debug("Running app refresh")
                 
                 guard let supabase = supabaseService, let userId = currentUserId else {
                     task.setTaskCompleted(success: false)
@@ -96,17 +100,17 @@ class BackgroundTaskManager {
                 // Fetch latest progress from cloud
                 do {
                     _ = try await supabase.fetchGameProgress(userId: userId)
-                    print("☁️ Cloud data refreshed")
+                    Self.logger.info("Cloud data refreshed")
                 } catch {
-                    print("⚠️ Could not fetch cloud data: \(error)")
+                    Self.logger.error("Could not fetch cloud data: \(error.localizedDescription)")
                 }
                 
                 // Fetch latest heart state
                 do {
                     _ = try await supabase.fetchHeartState(userId: userId)
-                    print("❤️ Heart state refreshed")
+                    Self.logger.info("Heart state refreshed")
                 } catch {
-                    print("⚠️ Could not fetch heart state: \(error)")
+                    Self.logger.error("Could not fetch heart state: \(error.localizedDescription)")
                 }
                 
                 task.setTaskCompleted(success: true)
@@ -130,7 +134,7 @@ class BackgroundTaskManager {
         let syncTask = Task {
             do {
                 // Perform data sync
-                print("🔄 Running background sync...")
+                Self.logger.debug("Running background sync")
                 
                 guard let supabase = supabaseService, let userId = currentUserId else {
                     task.setTaskCompleted(success: false)
@@ -158,9 +162,9 @@ class BackgroundTaskManager {
                     
                     do {
                         try await supabase.upsertGameProgress(progressRecord)
-                        print("☁️ Progress synced to cloud")
+                        Self.logger.info("Progress synced to cloud")
                     } catch {
-                        print("⚠️ Could not sync progress: \(error)")
+                        Self.logger.error("Could not sync progress: \(error.localizedDescription)")
                     }
                 }
                 
@@ -173,13 +177,13 @@ class BackgroundTaskManager {
                             impulseControlScore: progress.impulseControlScore,
                             distractionResistanceScore: progress.distractionResistanceScore
                         )
-                        print("🧠 Skills synced to cloud")
+                        Self.logger.info("Skills synced to cloud")
                     } catch {
-                        print("⚠️ Could not sync skills: \(error)")
+                        Self.logger.error("Could not sync skills: \(error.localizedDescription)")
                     }
                 }
                 
-                print("✅ Background sync completed")
+                Self.logger.info("Background sync completed")
                 task.setTaskCompleted(success: true)
             } catch {
                 task.setTaskCompleted(success: false)

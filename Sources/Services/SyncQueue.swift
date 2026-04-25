@@ -1,8 +1,11 @@
 import Foundation
+import os.log
+
 
 /// Queues operations to sync when back online
 @MainActor
 class SyncQueue: ObservableObject {
+    private static let logger = Logger(subsystem: "com.unscroll.focusflow", category: "SyncQueue")
     static let shared = SyncQueue()
     
     @Published var pendingOperations: [SyncOperation] = []
@@ -34,7 +37,7 @@ class SyncQueue: ObservableObject {
                 try await processOperation(operation, supabaseService: supabaseService, userId: userId)
                 completedOperations.append(operation.id)
             } catch {
-                print("Failed to sync operation \(operation.id): \(error)")
+                Self.logger.error("Failed to sync operation \(operation.id): \(error.localizedDescription)")
                 // Keep failed operations for retry
             }
         }

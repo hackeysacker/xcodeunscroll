@@ -1,6 +1,10 @@
 import SwiftUI
+import os.log
+
+
 
 struct DailyLoginRewardView: View {
+    private static let logger = Logger(subsystem: "com.unscroll.focusflow", category: "DailyLoginRewardView")
     @EnvironmentObject var appState: AppState
     let streak: Int
     let gems: Int
@@ -161,7 +165,7 @@ struct DailyLoginRewardView: View {
 
 #Preview {
     DailyLoginRewardView(streak: 3, gems: 20) {
-        print("Dismissed")
+        // Dismissed
     }
     .environmentObject(AppState())
 }

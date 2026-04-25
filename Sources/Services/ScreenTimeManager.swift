@@ -2,6 +2,8 @@ import SwiftUI
 import FamilyControls
 import ManagedSettings
 import DeviceActivity
+import os.log
+
 
 // MARK: - Screen Time Category
 struct ScreenTimeCategory: Identifiable {
@@ -76,6 +78,7 @@ import SwiftUI
 
 @MainActor
 class ScreenTimeManager: ObservableObject {
+    private static let logger = Logger(subsystem: "com.unscroll.focusflow", category: "ScreenTimeManager")
     static let shared = ScreenTimeManager()
     
     @Published var isAuthorized: Bool = false
@@ -230,7 +233,7 @@ class ScreenTimeManager: ObservableObject {
         // store.shield.applications = Set(blockedBundleIds)
         // store.shield.webDomains = Set(["twitter.com", "instagram.com"])
         
-        print("Work mode activated - blocking entertainment apps")
+        Self.logger.info("Work mode activated - blocking entertainment apps")
     }
     
     private func configureStudyMode() {
@@ -241,28 +244,28 @@ class ScreenTimeManager: ObservableObject {
             "com.apple.Numbers"
         ]
         
-        print("Study mode activated - blocking non-educational apps")
+        Self.logger.info("Study mode activated - blocking non-educational apps")
     }
     
     private func configurePersonalMode() {
         // Block only social media
-        print("Personal mode activated - blocking social media")
+        Self.logger.info("Personal mode activated - blocking social media")
     }
     
     private func configureEveningMode() {
         // Block social media and news
-        print("Evening mode activated - wind down")
+        Self.logger.info("Evening mode activated - wind down")
     }
     
     private func configureSleepMode() {
         // Block most apps
-        print("Sleep mode activated - blocking all apps except essentials")
+        Self.logger.info("Sleep mode activated - blocking all apps except essentials")
     }
     
     private func configureCustomMode() {
         // Use user's custom configuration
         for app in blockedApps {
-            print("Blocking custom app: \(app)")
+            Self.logger.info("Blocking custom app: \(app)")
         }
     }
     
@@ -272,7 +275,7 @@ class ScreenTimeManager: ObservableObject {
         // store.shield.applications = nil
         // store.shield.webDomains = nil
         activeFocusMode = .off
-        print("All shields deactivated")
+        Self.logger.info("All shields deactivated")
     }
     
     // MARK: - App Blocking
@@ -317,7 +320,7 @@ class ScreenTimeManager: ObservableObject {
     
     func setAppLimit(_ bundleId: String, minutes: Int) {
         // store.shield.timeLimits = ...
-        print("Setting \(minutes) min limit for \(bundleId)")
+        Self.logger.info("Setting \(minutes) min limit for \(bundleId)")
     }
     
     // MARK: - Helpers

@@ -1,14 +1,17 @@
 import Foundation
+import os.log
 import UserNotifications
 
 /// Manages local notifications for FocusFlow
 /// Handles daily reminders, streak warnings, and challenge notifications
+
 class NotificationManager: ObservableObject {
     static let shared = NotificationManager()
     
     @Published var isAuthorized: Bool = false
     
     private init() {}
+    private static let logger = Logger(subsystem: "com.unscroll.focusflow", category: "NotificationManager")
     
     // MARK: - Authorization
     
@@ -21,7 +24,7 @@ class NotificationManager: ObservableObject {
             }
             return granted
         } catch {
-            print("Notification authorization error: \(error)")
+            Self.logger.error("Notification authorization error: \(error.localizedDescription)")
             return false
         }
     }
@@ -59,7 +62,7 @@ class NotificationManager: ObservableObject {
         
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("Failed to schedule daily reminder: \(error)")
+                Self.logger.error("Failed to schedule daily reminder: \(error.localizedDescription)")
             }
         }
     }
@@ -90,7 +93,7 @@ class NotificationManager: ObservableObject {
         
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("Failed to schedule streak warning: \(error)")
+                Self.logger.error("Failed to schedule streak warning: \(error.localizedDescription)")
             }
         }
     }
@@ -114,7 +117,7 @@ class NotificationManager: ObservableObject {
         
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("Failed to schedule streak milestone: \(error)")
+                Self.logger.error("Failed to schedule streak milestone: \(error.localizedDescription)")
             }
         }
     }
@@ -137,7 +140,7 @@ class NotificationManager: ObservableObject {
         
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("Failed to schedule level up notification: \(error)")
+                Self.logger.error("Failed to schedule level up notification: \(error.localizedDescription)")
             }
         }
     }
@@ -164,7 +167,7 @@ class NotificationManager: ObservableObject {
         
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("Failed to schedule heart refill notification: \(error)")
+                Self.logger.error("Failed to schedule heart refill notification: \(error.localizedDescription)")
             }
         }
     }
@@ -187,7 +190,7 @@ class NotificationManager: ObservableObject {
         
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("Failed to schedule new challenge notification: \(error)")
+                Self.logger.error("Failed to schedule new challenge notification: \(error.localizedDescription)")
             }
         }
     }
@@ -210,7 +213,7 @@ class NotificationManager: ObservableObject {
         
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("Failed to schedule badge notification: \(error)")
+                Self.logger.error("Failed to schedule badge notification: \(error.localizedDescription)")
             }
         }
     }

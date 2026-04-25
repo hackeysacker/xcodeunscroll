@@ -1,5 +1,8 @@
 import Foundation
 import Combine
+import os.log
+
+private let logger = Logger(subsystem: "com.unscroll.focusflow", category: "CacheManager")
 
 /// CacheManager - Local caching system for offline support
 /// Provides fast data access and offline resilience
@@ -53,7 +56,7 @@ final class CacheManager: ObservableObject {
             userDefaults.set(data, forKey: CacheKey.userProfile)
             updateCacheTimestamp()
         } catch {
-            print("CacheManager: Failed to cache user profile - \(error)")
+            logger.error("Failed to cache user profile: \(error.localizedDescription)")
         }
     }
     
@@ -65,7 +68,7 @@ final class CacheManager: ObservableObject {
         do {
             return try JSONDecoder().decode(User.self, from: data)
         } catch {
-            print("CacheManager: Failed to decode cached user profile - \(error)")
+            logger.error("Failed to decode cached user profile: \(error.localizedDescription)")
             return nil
         }
     }
@@ -78,7 +81,7 @@ final class CacheManager: ObservableObject {
             userDefaults.set(data, forKey: CacheKey.gameProgress)
             updateCacheTimestamp()
         } catch {
-            print("CacheManager: Failed to cache game progress - \(error)")
+            logger.error("Failed to cache game progress: \(error.localizedDescription)")
         }
     }
     
@@ -90,7 +93,7 @@ final class CacheManager: ObservableObject {
         do {
             return try JSONDecoder().decode(GameProgress.self, from: data)
         } catch {
-            print("CacheManager: Failed to decode cached game progress - \(error)")
+            logger.error("Failed to decode cached game progress: \(error.localizedDescription)")
             return nil
         }
     }
@@ -117,7 +120,7 @@ final class CacheManager: ObservableObject {
             userDefaults.set(data, forKey: CacheKey.achievements)
             updateCacheTimestamp()
         } catch {
-            print("CacheManager: Failed to cache achievements - \(error)")
+            logger.error("Failed to cache achievements: \(error.localizedDescription)")
         }
     }
     
@@ -129,7 +132,7 @@ final class CacheManager: ObservableObject {
         do {
             return try JSONDecoder().decode([Achievement].self, from: data)
         } catch {
-            print("CacheManager: Failed to decode cached achievements - \(error)")
+            logger.error("Failed to decode cached achievements: \(error.localizedDescription)")
             return nil
         }
     }
@@ -141,7 +144,7 @@ final class CacheManager: ObservableObject {
             let data = try JSONEncoder().encode(operations)
             userDefaults.set(data, forKey: CacheKey.offlineQueue)
         } catch {
-            print("CacheManager: Failed to cache offline operations - \(error)")
+            logger.error("Failed to cache offline operations: \(error.localizedDescription)")
         }
     }
     
@@ -153,7 +156,7 @@ final class CacheManager: ObservableObject {
         do {
             return try JSONDecoder().decode([SyncOperation].self, from: data)
         } catch {
-            print("CacheManager: Failed to decode cached offline operations - \(error)")
+            logger.error("Failed to decode cached offline operations: \(error.localizedDescription)")
             return nil
         }
     }

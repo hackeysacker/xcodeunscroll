@@ -1,6 +1,10 @@
 import SwiftUI
+import os.log
+
+
 
 struct LevelUpCelebrationView: View {
+    private static let logger = Logger(subsystem: "com.unscroll.focusflow", category: "LevelUpCelebrationView")
     @EnvironmentObject var appState: AppState
     @State private var scale: CGFloat = 0.5
     @State private var opacity: Double = 0
@@ -154,7 +158,7 @@ struct RewardBadge: View {
 
 #Preview {
     LevelUpCelebrationView(newLevel: 5, gemsEarned: 10) {
-        print("Dismissed")
+        // Dismissed
     }
     .environmentObject(AppState())
 }
