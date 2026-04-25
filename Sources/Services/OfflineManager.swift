@@ -1,10 +1,13 @@
 import Foundation
+import os.log
 import Network
 import Combine
 import Supabase
 
 // MARK: - Offline Network Monitor
 /// Monitors network connectivity for offline mode handling
+
+private let logger = Logger(subsystem: "com.unscroll.focusflow", category: "OfflineManager")
 class OfflineNetworkMonitor: ObservableObject {
     static let shared = OfflineNetworkMonitor()
     
@@ -153,7 +156,7 @@ class OfflineQueue: ObservableObject {
                     failedActions.append(retryAction)
                 } else {
                     // Drop after 3 failed attempts
-                    print("Dropping action after 3 failed attempts: \(action.type)")
+                    logger.warning("Dropping action after 3 failed attempts: \(action.type.rawValue)")
                 }
             }
         }
