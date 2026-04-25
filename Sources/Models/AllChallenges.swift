@@ -290,7 +290,8 @@ enum AllChallengeType: String, CaseIterable, Identifiable, Codable {
     }
 }
 
-enum ChallengeCategory: String, CaseIterable {
+enum ChallengeCategory: String, CaseIterable, Identifiable {
+    var id: String { rawValue }
     case focus = "Focus"
     case memory = "Memory"
     case reaction = "Reaction"
