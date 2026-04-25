@@ -174,6 +174,7 @@ struct ProfileView: View {
                 
                 // Notifications
                 Button {
+                    AppAudioManager.shared.selection()
                     // Could navigate to notification settings
                 } label: {
                     ProfileRowToggle(icon: "bell.fill", title: "Notifications", color: .orange, isOn: $notificationsEnabled)
@@ -183,6 +184,7 @@ struct ProfileView: View {
                 
                 // Privacy
                 Button {
+                    AppAudioManager.shared.selection()
                     // Could show privacy settings
                 } label: {
                     ProfileRowButton(icon: "lock.fill", title: "Privacy & Security", color: .purple)
@@ -205,10 +207,20 @@ struct ProfileView: View {
                 Divider().background(Color.white.opacity(0.1))
                 
                 ProfileRowToggle(icon: "speaker.wave.2.fill", title: "Sound", color: .green, isOn: $soundEnabled)
+                    .onChange(of: soundEnabled) { _, newValue in
+                        AppAudioManager.shared.soundEnabled = newValue
+                        if AppAudioManager.shared.hapticEnabled {
+                            newValue ? AppAudioManager.shared.success() : AppAudioManager.shared.lightImpact()
+                        }
+                    }
                 
                 Divider().background(Color.white.opacity(0.1))
                 
                 ProfileRowToggle(icon: "iphone.radiowaves.left.and.right", title: "Haptics", color: .red, isOn: $hapticsEnabled)
+                    .onChange(of: hapticsEnabled) { _, newValue in
+                        AppAudioManager.shared.hapticEnabled = newValue
+                        AppAudioManager.shared.success()
+                    }
             }
             .background(Color.white.opacity(0.05))
             .cornerRadius(16)
@@ -224,6 +236,7 @@ struct ProfileView: View {
             VStack(spacing: 0) {
                 // Restart onboarding
                 Button {
+                    AppAudioManager.shared.warning()
                     appState.isOnboarded = false
                 } label: {
                     ProfileRowButton(icon: "arrow.counterclockwise", title: "Restart Onboarding", color: .blue)
@@ -233,6 +246,7 @@ struct ProfileView: View {
                 
                 // Reset progress
                 Button {
+                    AppAudioManager.shared.error()
                     appState.resetProgress()
                 } label: {
                     ProfileRowButton(icon: "trash.fill", title: "Reset Progress", color: .red)
@@ -352,6 +366,7 @@ struct EditProfileSheet: View {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 50))], spacing: 12) {
                         ForEach(emojis, id: \.self) { emo in
                             Button {
+                                AppAudioManager.shared.selection()
                                 emoji = emo
                             } label: {
                                 Text(emo)
@@ -388,12 +403,14 @@ struct EditProfileSheet: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
+                        AppAudioManager.shared.lightImpact()
                         isPresented = false
                     }
                     .foregroundColor(.gray)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
+                        AppAudioManager.shared.success()
                         onSave()
                         isPresented = false
                     }

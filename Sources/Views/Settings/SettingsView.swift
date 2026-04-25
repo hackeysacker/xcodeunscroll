@@ -96,6 +96,11 @@ struct SettingsView: View {
                 )
                 .onChange(of: notificationsEnabled) { _, newValue in
                     UserDefaults.standard.set(newValue, forKey: "notificationsEnabled")
+                    if newValue {
+                        AppAudioManager.shared.success()
+                    } else {
+                        AppAudioManager.shared.lightImpact()
+                    }
                 }
                 
                 Divider().background(Color.white.opacity(0.1))
@@ -110,6 +115,13 @@ struct SettingsView: View {
                 .onChange(of: soundEnabled) { _, newValue in
                     UserDefaults.standard.set(newValue, forKey: "soundEnabled")
                     AppAudioManager.shared.soundEnabled = newValue
+                    if AppAudioManager.shared.hapticEnabled {
+                        if newValue {
+                            AppAudioManager.shared.success()
+                        } else {
+                            AppAudioManager.shared.lightImpact()
+                        }
+                    }
                 }
                 
                 Divider().background(Color.white.opacity(0.1))
@@ -124,6 +136,11 @@ struct SettingsView: View {
                 .onChange(of: hapticEnabled) { _, newValue in
                     UserDefaults.standard.set(newValue, forKey: "hapticEnabled")
                     AppAudioManager.shared.hapticEnabled = newValue
+                    if AppAudioManager.shared.hapticEnabled {
+                        AppAudioManager.shared.success()
+                    } else {
+                        AppAudioManager.shared.lightImpact()
+                    }
                 }
                 
                 Divider().background(Color.white.opacity(0.1))
@@ -326,7 +343,10 @@ struct SettingsButtonRow: View {
     let action: () -> Void
     
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            AppAudioManager.shared.selection()
+            action()
+        }) {
             HStack(spacing: 12) {
                 Image(systemName: icon)
                     .font(.system(size: 18))

@@ -63,6 +63,7 @@ struct InsightsView: View {
             Text("Insights").font(.system(size: 20, weight: .bold)).foregroundColor(.white)
             Spacer()
             Button {
+                AppAudioManager.shared.selection()
                 // Export data
             } label: {
                 Image(systemName: "square.and.arrow.up").font(.system(size: 18)).foregroundColor(.white)
@@ -77,6 +78,7 @@ struct InsightsView: View {
         HStack(spacing: 8) {
             ForEach(TimeRange.allCases, id: \.self) { range in
                 Button {
+                    AppAudioManager.shared.selection()
                     withAnimation(.easeInOut(duration: 0.2)) {
                         selectedTimeRange = range
                     }

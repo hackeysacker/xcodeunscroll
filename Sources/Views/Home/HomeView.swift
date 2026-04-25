@@ -114,6 +114,8 @@ struct HomeView: View {
             
             // Profile avatar
             Button {
+                AppAudioManager.shared.playUISelect()
+                AppAudioManager.shared.selection()
                 appState.selectedTab = .profile
             } label: {
                 ZStack {
@@ -434,6 +436,7 @@ struct HomeView: View {
                     .foregroundColor(.white)
                 Spacer()
                 Button("See All") {
+                    AppAudioManager.shared.selection()
                     showInsights = true
                 }
                 .font(.system(size: 14))
@@ -472,7 +475,10 @@ struct QuickActionCard: View {
     let action: () -> Void
     
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            AppAudioManager.shared.playButtonTap()
+            action()
+        }) {
             VStack(spacing: 8) {
                 ZStack {
                     Circle()
@@ -499,8 +505,18 @@ struct QuickActionCard: View {
                 RoundedRectangle(cornerRadius: 16)
                     .stroke(color.opacity(0.3), lineWidth: 1)
             )
+            .scaleEffect(isPressed ? 0.95 : 1)
         }
+        .buttonStyle(PlainButtonStyle())
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in isPressed = true }
+                .onEnded { _ in isPressed = false }
+        )
+        .animation(.spring(response: 0.2), value: isPressed)
     }
+    
+    @State private var isPressed = false
 }
 
 // MARK: - Recent Activity Row
@@ -565,7 +581,11 @@ struct DailyChallengeRow: View {
     let onTap: () -> Void
     
     var body: some View {
-        Button(action: onTap) {
+        Button(action: {
+            AppAudioManager.shared.playButtonTap()
+            AppAudioManager.shared.lightImpact()
+            onTap()
+        }) {
             HStack(spacing: 12) {
                 // Icon
                 ZStack {

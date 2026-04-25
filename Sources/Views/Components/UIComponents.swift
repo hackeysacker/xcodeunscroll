@@ -145,8 +145,9 @@ struct SelectionCard<Content: View>: View {
                     RoundedRectangle(cornerRadius: 16)
                         .stroke(isSelected ? Color.purple : Color.white.opacity(0.1), lineWidth: 1.5)
                 )
+                .scaleEffect(isPressed ? 0.98 : 1)
         }
-        .scaleEffect(isPressed ? 0.98 : 1)
+        .buttonStyle(PlainButtonStyle())
         .animation(.spring(response: 0.3), value: isSelected)
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)

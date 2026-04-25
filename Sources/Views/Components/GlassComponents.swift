@@ -319,7 +319,10 @@ struct GlassTabButton: View {
     let action: () -> Void
     
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            AppAudioManager.shared.selection()
+            action()
+        }) {
             VStack(spacing: 4) {
                 Image(systemName: tab.icon)
                     .font(.system(size: 22, weight: .medium))
