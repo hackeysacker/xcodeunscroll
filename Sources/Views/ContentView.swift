@@ -89,6 +89,8 @@ struct UniversalHeader: View {
             .background(Color.red.opacity(0.15))
             .cornerRadius(16)
             .scaleEffect(heartsScale)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(cachedHearts) hearts")
             
             Spacer()
             
@@ -106,6 +108,8 @@ struct UniversalHeader: View {
             .background(Color.orange.opacity(0.15))
             .cornerRadius(16)
             .scaleEffect(streakScale)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(cachedStreak) day streak")
             
             // XP
             HStack(spacing: 6) {
@@ -121,6 +125,8 @@ struct UniversalHeader: View {
             .background(Color.yellow.opacity(0.15))
             .cornerRadius(16)
             .scaleEffect(xpScale)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(cachedXP) experience points")
             
             // Gems
             HStack(spacing: 6) {
@@ -136,6 +142,8 @@ struct UniversalHeader: View {
             .background(Color.cyan.opacity(0.15))
             .cornerRadius(16)
             .scaleEffect(gemsScale)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(cachedGems) gems")
         }
         .padding(.horizontal, 16)
         .padding(.top, 12)

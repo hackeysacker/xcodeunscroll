@@ -50,6 +50,17 @@ struct HapticButton: View {
                 .onChanged { _ in isPressed = true }
                 .onEnded { _ in isPressed = false }
         )
+        .accessibilityLabel(title)
+        .accessibilityHint(accessibilityHintForStyle)
+    }
+    
+    var accessibilityHintForStyle: String {
+        switch style {
+        case .primary: return "Double tap to activate."
+        case .secondary: return "Double tap to activate."
+        case .ghost: return "Double tap to activate."
+        case .destructive: return "Double tap to confirm this action."
+        }
     }
     
     var foregroundColor: Color {
@@ -111,6 +122,8 @@ struct IconButton: View {
                 .onChanged { _ in isPressed = true }
                 .onEnded { _ in isPressed = false }
         )
+        .accessibilityLabel(icon)
+        .accessibilityAddTraits(.isButton)
     }
 }
 
@@ -154,6 +167,8 @@ struct SelectionCard<Content: View>: View {
                 .onChanged { _ in isPressed = true }
                 .onEnded { _ in isPressed = false }
         )
+        .accessibilityLabel(isSelected ? "Selected" : "Not selected")
+        .accessibilityAddTraits(.isButton)
     }
 }
 
@@ -194,6 +209,10 @@ struct HapticToggle: View {
             .background(Color.white.opacity(0.05))
             .cornerRadius(12)
         }
+        .accessibilityLabel(label)
+        .accessibilityValue(isOn ? "On" : "Off")
+        .accessibilityHint("Double tap to toggle.")
+        .accessibilityAddTraits(.isButton)
     }
 }
 
@@ -249,6 +268,8 @@ struct BadgeView: View {
         .padding(.vertical, 8)
         .background(color.opacity(0.15))
         .cornerRadius(20)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(value) \(icon)")
     }
 }
 
@@ -371,6 +392,9 @@ struct HeartDisplay: View {
                     .foregroundColor(index < current ? .red : .gray)
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Hearts: \(current) of \(max)")
+        .accessibilityValue("\(current) hearts remaining")
     }
 }
 
@@ -388,6 +412,8 @@ struct GemDisplay: View {
                 .font(.system(size: 16, weight: .bold))
                 .foregroundColor(.white)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(count) gems")
     }
 }
 
@@ -422,6 +448,9 @@ struct XPBar: View {
             }
             .frame(height: 8)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Level \(level), \(current) of \(max) experience points")
+        .accessibilityValue("Progress: \(Int(current > 0 && max > 0 ? Double(current) / Double(max) * 100 : 0)) percent")
     }
 }
 
@@ -446,6 +475,8 @@ struct StreakDisplay: View {
             Capsule()
                 .fill((days > 0 ? Color.orange : Color.gray).opacity(0.15))
         )
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(days) day streak")
     }
 }
 

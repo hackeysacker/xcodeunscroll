@@ -10,7 +10,7 @@ enum BreathPhase: String, CaseIterable {
 }
 
 // MARK: - Breathing Guide (Guided Audio)
-class BreathingGuide: NSObject, AVSpeechSynthesizerDelegate {
+final class BreathingGuide: NSObject, AVSpeechSynthesizerDelegate, @unchecked Sendable {
     static let shared = BreathingGuide()
     private let synthesizer = AVSpeechSynthesizer()
     var isEnabled: Bool = true

@@ -111,6 +111,8 @@ struct HomeView: View {
             .padding(.vertical, 6)
             .background(Color.cyan.opacity(0.15))
             .cornerRadius(16)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(appState.progress?.gems ?? 0) gems")
             
             // Profile avatar
             Button {
@@ -126,6 +128,8 @@ struct HomeView: View {
                         .font(.system(size: 24))
                 }
             }
+            .accessibilityLabel("Profile")
+            .accessibilityHint("Double tap to open your profile.")
         }
         .padding(.top, 12)
     }
@@ -194,17 +198,8 @@ struct HomeView: View {
                         }
                     }
                     .frame(height: 10)
-                    
-                    // XP text
-                    HStack {
-                        Text("\(appState.progress?.currentLevelXP ?? 0) XP")
-                            .font(.system(size: 10))
-                            .foregroundColor(.gray)
-                        Spacer()
-                        Text("\(max(0, (appState.progress?.xpForNextLevel ?? 1000) - (appState.progress?.currentLevelXP ?? 0))) to next")
-                            .font(.system(size: 10))
-                            .foregroundColor(.gray)
-                    }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("Level progress, \(Int(levelProgress * 100)) percent to next level")
                 }
             }
         }
@@ -265,6 +260,8 @@ struct HomeView: View {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(Color.yellow.opacity(0.3), lineWidth: 1)
         )
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Weekend bonus active. Earn 1.25 times experience points on all challenges today.")
     }
     
     // MARK: - Stats Row
@@ -285,6 +282,8 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity)
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(appState.progress?.streakDays ?? 0) day streak")
             
             // Hearts
             GlassCard(cornerRadius: 16) {
@@ -301,6 +300,8 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity)
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(appState.progress?.hearts ?? 5) hearts")
             
             // Gems
             GlassCard(cornerRadius: 16) {
@@ -317,6 +318,8 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity)
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(appState.progress?.gems ?? 0) gems")
         }
     }
     
