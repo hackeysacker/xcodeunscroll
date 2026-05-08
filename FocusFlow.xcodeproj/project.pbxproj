@@ -47,6 +47,7 @@
 		8A3C9B44783F971748A2BD1F /* ScreenTimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857A322FA2B7012519E495CA /* ScreenTimeManager.swift */; };
 		8AA86381B7F2CC33EE129582 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CAD608545BC76F272E9D482 /* AppState.swift */; };
 		8B56E05EDE9D04E4C1E7AA82 /* BiometricTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545230256D5F2A71262515B7 /* BiometricTrackingView.swift */; };
+		8E3DC4E4D7A142F38BF1D76F /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 31ADB81C0A62EF28F2216170 /* PrivacyInfo.xcprivacy */; };
 		917045577D74639F48B12E1E /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985D6A6C573E36F0F259A02B /* CacheManager.swift */; };
 		92E5F5F021A9BF5A2D7AEF32 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3EBA258C9AD9784DA8E21B /* HomeView.swift */; };
 		94CEA6AEA84AF1224308D6F9 /* ColorPatternMemoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F8881AB2FCA09C4A49E7F8 /* ColorPatternMemoryView.swift */; };
@@ -105,6 +106,7 @@
 		26E5EF2EE2C3B05E44331051 /* AchievementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementTests.swift; sourceTree = "<group>"; };
 		2A1D2BC76B876CE74C2C5692 /* ProgressPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPath.swift; sourceTree = "<group>"; };
 		2D3EBA258C9AD9784DA8E21B /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		31ADB81C0A62EF28F2216170 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		32FFCC417859C79EC5C7D41C /* WindingProgressPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindingProgressPath.swift; sourceTree = "<group>"; };
 		3F31947429A4CB879F0BA04C /* LevelUpCelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelUpCelebrationView.swift; sourceTree = "<group>"; };
 		4548CFE88CAE78080A2A0F42 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
@@ -307,6 +309,7 @@
 				8B7534EBF1F29EF3901E3D5F /* FocusFlow.entitlements */,
 				CDE0AB0ADC3DF2716AE2A02E /* FocusFlowApp.swift.disabled */,
 				E2F6BD8E296AF1A9E065D31E /* Info.plist */,
+				31ADB81C0A62EF28F2216170 /* PrivacyInfo.xcprivacy */,
 				A0F80EE269C7BAF23EE1B90C /* Unscroll.entitlements */,
 				4A4843BFE70A7C71722C359D /* UnscrollApp.swift */,
 			);
@@ -482,6 +485,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5DA1F616CCF465A85380D743 /* FocusFlowApp.swift.disabled in Resources */,
+				8E3DC4E4D7A142F38BF1D76F /* PrivacyInfo.xcprivacy in Resources */,
 				0B081C6C4FCE7EAA7D55BD59 /* WindingProgressPath.swift.backup in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
