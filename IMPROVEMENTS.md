@@ -1,4 +1,4 @@
-## Today's Review (May 14th, 2026) — 8:03 AM Check (FocusFlow Morning Dev)
+## Today's Review (May 14th, 2026) — 8:03 AM Check (FocusFlow Morning Dev - IMPROVEMENTS.md Review)
 
 ### TOP PRIORITY ITEM (from May 5th review):
 
