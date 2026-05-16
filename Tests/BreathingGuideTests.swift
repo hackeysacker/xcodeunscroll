@@ -49,7 +49,7 @@ final class BreathingGuideTests: XCTestCase {
     
     func test_breathPhase_allCases() {
         let allPhases = BreathPhase.allCases
-        XCTAssertEqual(allPhases.count, 3, "There should be 3 breath phases")
+        XCTAssertEqual(allPhases.count, 5, "There should be 5 breath phases")
         XCTAssertTrue(allPhases.contains(.inhale))
         XCTAssertTrue(allPhases.contains(.hold))
         XCTAssertTrue(allPhases.contains(.exhale))

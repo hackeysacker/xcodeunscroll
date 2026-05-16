@@ -309,10 +309,6 @@ struct GlassToggle: View {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(Color.white.opacity(0.2), lineWidth: 1)
         )
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(title)
-        .accessibilityValue(isOn ? "On" : "Off")
-        .accessibilityHint("Double tap to toggle.")
     }
 }
 
@@ -323,10 +319,7 @@ struct GlassTabButton: View {
     let action: () -> Void
     
     var body: some View {
-        Button(action: {
-            AppAudioManager.shared.selection()
-            action()
-        }) {
+        Button(action: action) {
             VStack(spacing: 4) {
                 Image(systemName: tab.icon)
                     .font(.system(size: 22, weight: .medium))
@@ -346,9 +339,6 @@ struct GlassTabButton: View {
             )
         }
         .animation(.easeInOut(duration: 0.2), value: isActive)
-        .accessibilityLabel(tab.rawValue)
-        .accessibilityValue(isActive ? "Active tab" : "Inactive tab")
-        .accessibilityAddTraits(isActive ? [.isButton, .isSelected] : .isButton)
     }
 }
 
@@ -400,8 +390,6 @@ struct GlassProgressBar: View {
                     .foregroundColor(.gray)
             }
         }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Progress: \(Int(progress * 100)) percent")
     }
 }
 
@@ -443,8 +431,6 @@ struct GlassIconButton: View {
                 .onChanged { _ in withAnimation(.easeInOut(duration: 0.1)) { isPressed = true } }
                 .onEnded { _ in withAnimation(.easeInOut(duration: 0.1)) { isPressed = false } }
         )
-        .accessibilityLabel(icon)
-        .accessibilityAddTraits(.isButton)
     }
 }
 
@@ -514,8 +500,6 @@ struct GlassBadge: View {
                 Capsule()
                     .stroke(color.opacity(0.5), lineWidth: 1)
             )
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(text)
     }
 }
 
@@ -569,8 +553,6 @@ struct GlassProgressRing: View {
                 .animation(.easeInOut(duration: 0.5), value: progress)
         }
         .frame(width: size, height: size)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Progress ring: \(Int(progress * 100)) percent complete")
     }
 }
 

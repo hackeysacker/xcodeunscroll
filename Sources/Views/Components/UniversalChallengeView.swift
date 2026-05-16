@@ -755,6 +755,8 @@ struct UniversalChallengeView: View {
         switch breathPhase {
         case .inhale: return .purple
         case .hold: return .blue
+        case .holdAfterInhale: return .indigo
+        case .holdAfterExhale: return .teal
         case .exhale: return .green
         }
     }
@@ -765,6 +767,10 @@ struct UniversalChallengeView: View {
             return LinearGradient(colors: [.purple, .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
         case .hold:
             return LinearGradient(colors: [.blue, .cyan], startPoint: .topLeading, endPoint: .bottomTrailing)
+        case .holdAfterInhale:
+            return LinearGradient(colors: [.indigo, .purple], startPoint: .topLeading, endPoint: .bottomTrailing)
+        case .holdAfterExhale:
+            return LinearGradient(colors: [.teal, .cyan], startPoint: .topLeading, endPoint: .bottomTrailing)
         case .exhale:
             return LinearGradient(colors: [.cyan, .green], startPoint: .topLeading, endPoint: .bottomTrailing)
         }
@@ -774,6 +780,8 @@ struct UniversalChallengeView: View {
         switch breathPhase {
         case .inhale: return "arrow.up"
         case .hold: return "pause.circle"
+        case .holdAfterInhale: return "pause.circle.fill"
+        case .holdAfterExhale: return "pause.circle"
         case .exhale: return "arrow.down"
         }
     }
@@ -782,6 +790,8 @@ struct UniversalChallengeView: View {
         switch breathPhase {
         case .inhale: return "Breathe in slowly"
         case .hold: return "Hold gently"
+        case .holdAfterInhale: return "Hold"
+        case .holdAfterExhale: return "Hold gently"
         case .exhale: return "Release slowly"
         }
     }

@@ -12,7 +12,10 @@
 		ABCD12340001000000000011 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000002 /* NetworkMonitor.swift */; };
 		ABCD12340001000000000012 /* SyncQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000003 /* SyncQueue.swift */; };
 		ABCD12340001000000000013 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000004 /* ThemeManager.swift */; };
+		ABCD12340001000000000025 /* BreathingGuide.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000024 /* BreathingGuide.swift */; };
+		ABCD12340001000000000016 /* AudioHapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000007 /* AudioHapticManager.swift */; };
 		ABCD12340001000000000014 /* BreathPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000005 /* BreathPhase.swift */; };
+		ABCD12340001000000000015 /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000006 /* BackgroundTaskManager.swift */; };
 		0A841C6E7A673590635B1215 /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619652A96ED7FC53389BB8EA /* SupabaseService.swift */; };
 		0B081C6C4FCE7EAA7D55BD59 /* WindingProgressPath.swift.backup in Resources */ = {isa = PBXBuildFile; fileRef = 53FC63DCF166E66E8D0FA8E1 /* WindingProgressPath.swift.backup */; };
 		0DF7BFA9DA55BBB0BB86BE5E /* ChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2505ECE7128F7B00B5D3EC /* ChallengeView.swift */; };
@@ -35,11 +38,14 @@
 		8B56E05EDE9D04E4C1E7AA82 /* BiometricTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545230256D5F2A71262515B7 /* BiometricTrackingView.swift */; };
 		92E5F5F021A9BF5A2D7AEF32 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3EBA258C9AD9784DA8E21B /* HomeView.swift */; };
 		95F3126B773BF04B587B9D7B /* UnscrollApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391EDD392A163136D6EE989E /* UnscrollApp.swift */; };
+		ABCD12340001000000000017 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000008 /* AppConfig.swift */; };
 		972388A1B7060903E5624EFA /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7D8D62786DF6C72DA3AA8B /* User.swift */; };
 		9DC5D40EFD2626DFAF890B25 /* GameProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1F61973C2A75C153C055B1 /* GameProgress.swift */; };
 		9EE136EB0CF46882CE5756E0 /* AchievementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99852AD5608C8EED645C6ACE /* AchievementsView.swift */; };
 		A57123486EA5104C10DA6230 /* GlassComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C8E39B9E5E9E8379D8F1B2F /* GlassComponents.swift */; };
 		A6C8D49A3DD0127FE64E4710 /* LevelUpCelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F31947429A4CB879F0BA04C /* LevelUpCelebrationView.swift */; };
+		ABCD12340001000000000021 /* DailyLoginRewardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000020 /* DailyLoginRewardView.swift */; };
+		ABCD12340001000000000023 /* ThemeSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000022 /* ThemeSelectionView.swift */; };
 		A753F4680E153CFC046B31C2 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = C4EEDE06C567725C5C680400 /* Supabase */; };
 		C6F946608262C105B8FBF959 /* OfflineManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E118943F2AF8A22428B249D0 /* OfflineManager.swift */; };
 		CCD1EA47C33F4552AAFFDAB9 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 712E75634EDDF39FE0EC2015 /* LeaderboardView.swift */; };
@@ -56,6 +62,7 @@
 		2D3EBA258C9AD9784DA8E21B /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		32FFCC417859C79EC5C7D41C /* WindingProgressPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindingProgressPath.swift; sourceTree = "<group>"; };
 		391EDD392A163136D6EE989E /* UnscrollApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnscrollApp.swift; sourceTree = "<group>"; };
+		ABCD12340001000000000008 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		3F31947429A4CB879F0BA04C /* LevelUpCelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelUpCelebrationView.swift; sourceTree = "<group>"; };
 		4C8405765EFD7768023303DE /* ScrollStoppingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollStoppingView.swift; sourceTree = "<group>"; };
 		53FC63DCF166E66E8D0FA8E1 /* WindingProgressPath.swift.backup */ = {isa = PBXFileReference; lastKnownFileType = text; path = WindingProgressPath.swift.backup; sourceTree = "<group>"; };
@@ -70,6 +77,8 @@
 		857A322FA2B7012519E495CA /* ScreenTimeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeManager.swift; sourceTree = "<group>"; };
 		8B7534EBF1F29EF3901E3D5F /* Unscroll.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Unscroll.entitlements; sourceTree = "<group>"; };
 		8C8E39B9E5E9E8379D8F1B2F /* GlassComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassComponents.swift; sourceTree = "<group>"; };
+		ABCD12340001000000000020 /* DailyLoginRewardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyLoginRewardView.swift; sourceTree = "<group>"; };
+		ABCD12340001000000000022 /* ThemeSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSelectionView.swift; sourceTree = "<group>"; };
 		8CAD608545BC76F272E9D482 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		99852AD5608C8EED645C6ACE /* AchievementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsView.swift; sourceTree = "<group>"; };
 		A2A993EEF0DB7111F16DA6C1 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
@@ -88,8 +97,12 @@
 		ABCD12340001000000000001 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		ABCD12340001000000000002 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		ABCD12340001000000000003 /* SyncQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncQueue.swift; sourceTree = "<group>"; };
+		ABCD12340001000000000024 /* BreathingGuide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathingGuide.swift; sourceTree = "<group>"; };
 		ABCD12340001000000000004 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		ABCD12340001000000000005 /* BreathPhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathPhase.swift; sourceTree = "<group>"; };
+		ABCD12340001000000000006 /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
+		ABCD12340001000000000007 /* AudioHapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioHapticManager.swift; sourceTree = "<group>"; };
+		ABCD12340001000000000008 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +183,9 @@
 				ABCD12340001000000000002 /* NetworkMonitor.swift */,
 				ABCD12340001000000000003 /* SyncQueue.swift */,
 				ABCD12340001000000000004 /* ThemeManager.swift */,
+				ABCD12340001000000000006 /* BackgroundTaskManager.swift */,
+				ABCD12340001000000000024 /* BreathingGuide.swift */,
+				ABCD12340001000000000007 /* AudioHapticManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -190,6 +206,7 @@
 				AC42C74D5637FA9E6A946E9F /* InsightsView.swift */,
 				712E75634EDDF39FE0EC2015 /* LeaderboardView.swift */,
 				C18E6DACB2F83EA4DD476994 /* SettingsView.swift */,
+				ABCD12340001000000000022 /* ThemeSelectionView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -215,6 +232,7 @@
 			children = (
 				8B7534EBF1F29EF3901E3D5F /* Unscroll.entitlements */,
 				391EDD392A163136D6EE989E /* UnscrollApp.swift */,
+				ABCD12340001000000000008 /* AppConfig.swift */,
 				E2F6BD8E296AF1A9E065D31E /* Info.plist */,
 			);
 			path = App;
@@ -239,6 +257,7 @@
 				14B35B0250244FC90DF26929 /* ChallengeExercises.swift */,
 				DB2505ECE7128F7B00B5D3EC /* ChallengeView.swift */,
 				8C8E39B9E5E9E8379D8F1B2F /* GlassComponents.swift */,
+				ABCD12340001000000000020 /* DailyLoginRewardView.swift */,
 				3F31947429A4CB879F0BA04C /* LevelUpCelebrationView.swift */,
 				4C8405765EFD7768023303DE /* ScrollStoppingView.swift */,
 				D3DCE37315B42E2CAA191DC1 /* UniversalChallengeView.swift */,
@@ -351,8 +370,12 @@
 				ABCD12340001000000000010 /* NotificationManager.swift in Sources */,
 				ABCD12340001000000000011 /* NetworkMonitor.swift in Sources */,
 				ABCD12340001000000000012 /* SyncQueue.swift in Sources */,
+				ABCD12340001000000000025 /* BreathingGuide.swift in Sources */,
 				ABCD12340001000000000013 /* ThemeManager.swift in Sources */,
 				ABCD12340001000000000014 /* BreathPhase.swift in Sources */,
+				ABCD12340001000000000016 /* AudioHapticManager.swift in Sources */,
+				ABCD12340001000000000017 /* AppConfig.swift in Sources */,
+				ABCD12340001000000000015 /* BackgroundTaskManager.swift in Sources */,
 				A57123486EA5104C10DA6230 /* GlassComponents.swift in Sources */,
 				92E5F5F021A9BF5A2D7AEF32 /* HomeView.swift in Sources */,
 				1F0F048B762982C7D862B598 /* InsightsView.swift in Sources */,
