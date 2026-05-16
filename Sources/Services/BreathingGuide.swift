@@ -2,17 +2,8 @@ import Foundation
 import AVFoundation
 import UIKit
 
-// MARK: - Breathing Phase (local definition to match view)
-enum BreathPhase: String, CaseIterable {
-    case inhale = "Breathe In"
-    case hold = "Hold"
-    case holdAfterInhale = "Hold after inhale"
-    case holdAfterExhale = "Hold after exhale"
-    case exhale = "Breathe Out"
-}
-
 // MARK: - Breathing Guide (Guided Audio)
-// Note: Uses BreathPhase from Models module, defined in Models.swift
+// Note: BreathPhase is defined in Sources/Models/BreathPhase.swift
 final class BreathingGuide: NSObject, AVSpeechSynthesizerDelegate, @unchecked Sendable {
     static let shared = BreathingGuide()
     private let synthesizer = AVSpeechSynthesizer()

@@ -377,6 +377,8 @@
 				ABCD12340001000000000017 /* AppConfig.swift in Sources */,
 				ABCD12340001000000000015 /* BackgroundTaskManager.swift in Sources */,
 				A57123486EA5104C10DA6230 /* GlassComponents.swift in Sources */,
+				ABCD12340001000000000021 /* DailyLoginRewardView.swift in Sources */,
+				ABCD12340001000000000023 /* ThemeSelectionView.swift in Sources */,
 				92E5F5F021A9BF5A2D7AEF32 /* HomeView.swift in Sources */,
 				1F0F048B762982C7D862B598 /* InsightsView.swift in Sources */,
 				CCD1EA47C33F4552AAFFDAB9 /* LeaderboardView.swift in Sources */,
