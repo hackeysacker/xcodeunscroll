@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		0943712EFA0E1DC3A4DF1427 /* ScrollStoppingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8405765EFD7768023303DE /* ScrollStoppingView.swift */; };
+		ABCD12340001000000000010 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000001 /* NotificationManager.swift */; };
+		ABCD12340001000000000011 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000002 /* NetworkMonitor.swift */; };
+		ABCD12340001000000000012 /* SyncQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000003 /* SyncQueue.swift */; };
+		ABCD12340001000000000013 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000004 /* ThemeManager.swift */; };
+		ABCD12340001000000000014 /* BreathPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000005 /* BreathPhase.swift */; };
 		0A841C6E7A673590635B1215 /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619652A96ED7FC53389BB8EA /* SupabaseService.swift */; };
 		0B081C6C4FCE7EAA7D55BD59 /* WindingProgressPath.swift.backup in Resources */ = {isa = PBXBuildFile; fileRef = 53FC63DCF166E66E8D0FA8E1 /* WindingProgressPath.swift.backup */; };
 		0DF7BFA9DA55BBB0BB86BE5E /* ChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2505ECE7128F7B00B5D3EC /* ChallengeView.swift */; };
@@ -80,6 +85,11 @@
 		E118943F2AF8A22428B249D0 /* OfflineManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineManager.swift; sourceTree = "<group>"; };
 		E2F6BD8E296AF1A9E065D31E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E7CE7EE6E98670688195C325 /* PracticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeView.swift; sourceTree = "<group>"; };
+		ABCD12340001000000000001 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		ABCD12340001000000000002 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		ABCD12340001000000000003 /* SyncQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncQueue.swift; sourceTree = "<group>"; };
+		ABCD12340001000000000004 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
+		ABCD12340001000000000005 /* BreathPhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathPhase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +118,7 @@
 				6BCB2E1C4A2FC0A1FEB843DD /* Achievement.swift */,
 				64762F4DEDF251A68EC83208 /* AllChallenges.swift */,
 				8CAD608545BC76F272E9D482 /* AppState.swift */,
+				ABCD12340001000000000005 /* BreathPhase.swift */,
 				AB1F61973C2A75C153C055B1 /* GameProgress.swift */,
 				A2A993EEF0DB7111F16DA6C1 /* Models.swift */,
 				2A1D2BC76B876CE74C2C5692 /* ProgressPath.swift */,
@@ -155,6 +166,10 @@
 				E118943F2AF8A22428B249D0 /* OfflineManager.swift */,
 				857A322FA2B7012519E495CA /* ScreenTimeManager.swift */,
 				619652A96ED7FC53389BB8EA /* SupabaseService.swift */,
+				ABCD12340001000000000001 /* NotificationManager.swift */,
+				ABCD12340001000000000002 /* NetworkMonitor.swift */,
+				ABCD12340001000000000003 /* SyncQueue.swift */,
+				ABCD12340001000000000004 /* ThemeManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -333,6 +348,11 @@
 				F5E51C06E2FD7C5327823851 /* ContentView.swift in Sources */,
 				95F3126B773BF04B587B9D7B /* UnscrollApp.swift in Sources */,
 				9DC5D40EFD2626DFAF890B25 /* GameProgress.swift in Sources */,
+				ABCD12340001000000000010 /* NotificationManager.swift in Sources */,
+				ABCD12340001000000000011 /* NetworkMonitor.swift in Sources */,
+				ABCD12340001000000000012 /* SyncQueue.swift in Sources */,
+				ABCD12340001000000000013 /* ThemeManager.swift in Sources */,
+				ABCD12340001000000000014 /* BreathPhase.swift in Sources */,
 				A57123486EA5104C10DA6230 /* GlassComponents.swift in Sources */,
 				92E5F5F021A9BF5A2D7AEF32 /* HomeView.swift in Sources */,
 				1F0F048B762982C7D862B598 /* InsightsView.swift in Sources */,
