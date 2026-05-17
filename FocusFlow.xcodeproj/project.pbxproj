@@ -69,6 +69,7 @@
 		CC1675CD65722B4C03D7E4BF /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B135324C952FCE29E5967D85 /* BackgroundTaskManager.swift */; };
 		CCD1EA47C33F4552AAFFDAB9 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 712E75634EDDF39FE0EC2015 /* LeaderboardView.swift */; };
 		D2CE236CD4C89487E0723264 /* DuolingoPathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E6EF3D646C8DB229A91D0C /* DuolingoPathView.swift */; };
+		D881401A66E9D89694FE7803 /* BreathPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C01D65546047F335548667C /* BreathPhase.swift */; };
 		DB3C3FE3128DC6710E4FA8C5 /* CacheManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C3A68E3B8BD5E4077AFE43B /* CacheManagerTests.swift */; };
 		E0860B914F957E4DC132E583 /* AppAudioManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A7B09006EFB1A0762100FF /* AppAudioManagerTests.swift */; };
 		ECFF637CB4F207B978314A91 /* ProgressPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CA50375993CE9F0ECEC71 /* ProgressPathTests.swift */; };
@@ -134,6 +135,7 @@
 		857A322FA2B7012519E495CA /* ScreenTimeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeManager.swift; sourceTree = "<group>"; };
 		89E6EF3D646C8DB229A91D0C /* DuolingoPathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuolingoPathView.swift; sourceTree = "<group>"; };
 		8B7534EBF1F29EF3901E3D5F /* FocusFlow.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FocusFlow.entitlements; sourceTree = "<group>"; };
+		8C01D65546047F335548667C /* BreathPhase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BreathPhase.swift; sourceTree = "<group>"; };
 		8C8E39B9E5E9E8379D8F1B2F /* GlassComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassComponents.swift; sourceTree = "<group>"; };
 		8CAD608545BC76F272E9D482 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		94A38B26903E4527D53A0945 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 				A2A993EEF0DB7111F16DA6C1 /* Models.swift */,
 				2A1D2BC76B876CE74C2C5692 /* ProgressPath.swift */,
 				6A7D8D62786DF6C72DA3AA8B /* User.swift */,
+				8C01D65546047F335548667C /* BreathPhase.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -409,8 +412,6 @@
 				75071BA89B1A4A4032C298CA /* PBXTargetDependency */,
 			);
 			name = FocusFlowTests;
-			packageProductDependencies = (
-			);
 			productName = FocusFlowTests;
 			productReference = 111757159C8B6485F1BFF2EC /* FocusFlowTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -470,6 +471,7 @@
 				54FD1C8DAE01A0A40E492EFA /* XCRemoteSwiftPackageReference "supabase-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
+			productRefGroup = 3FEAAE055FC1FDD581F0881F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -572,6 +574,7 @@
 				826338F14DDF084C82DFD592 /* UnscrollApp.swift in Sources */,
 				972388A1B7060903E5624EFA /* User.swift in Sources */,
 				7E050C5B7318A5039543066C /* WindingProgressPath.swift in Sources */,
+				D881401A66E9D89694FE7803 /* BreathPhase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
