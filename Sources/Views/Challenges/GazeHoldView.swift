@@ -6,13 +6,14 @@ import SwiftUI
 struct GazeHoldView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var gameState = GazeHoldGameState()
-    
+    @State private var audioManager = AppAudioManager.shared
+
     let onComplete: ((Int) -> Void)?
-    
+
     init(onComplete: ((Int) -> Void)? = nil) {
         self.onComplete = onComplete
     }
-    
+
     var body: some View {
         ZStack {
             // Background
@@ -22,18 +23,18 @@ struct GazeHoldView: View {
                 endPoint: .bottom
             )
             .ignoresSafeArea()
-            
+
             VStack(spacing: 0) {
                 // Header
                 header
-                
+
                 Spacer()
-                
+
                 // Game area
                 gameArea
-                
+
                 Spacer()
-                
+
                 // Instructions
                 instructions
             }
@@ -60,7 +61,7 @@ struct GazeHoldView: View {
             .presentationDetents([.medium])
         }
     }
-    
+
     var header: some View {
         HStack {
             Button(action: { dismiss() }) {
@@ -68,21 +69,21 @@ struct GazeHoldView: View {
                     .font(.system(size: 20, weight: .medium))
                     .foregroundColor(.white.opacity(0.7))
             }
-            
+
             Spacer()
-            
+
             VStack(spacing: 2) {
                 Text("GAZE HOLD")
                     .font(.system(size: 18, weight: .bold))
                     .foregroundColor(.white)
-                
+
                 Text("Hold your focus")
                     .font(.system(size: 12))
                     .foregroundColor(.white.opacity(0.6))
             }
-            
+
             Spacer()
-            
+
             // Score display
             Text("\(gameState.score)")
                 .font(.system(size: 24, weight: .bold, design: .rounded))
@@ -92,29 +93,29 @@ struct GazeHoldView: View {
         .padding(.horizontal)
         .padding(.top, 10)
     }
-    
+
     var gameArea: some View {
         ZStack {
             // Outer ring (stability zone)
             Circle()
                 .stroke(gameState.isInZone ? Color.green.opacity(0.3) : Color.white.opacity(0.1), lineWidth: 4)
                 .frame(width: 200, height: 200)
-            
+
             // Middle ring
             Circle()
                 .stroke(gameState.isInZone ? Color.green.opacity(0.5) : Color.white.opacity(0.15), lineWidth: 3)
                 .frame(width: 140, height: 140)
-            
+
             // Inner target circle
             Circle()
                 .fill(gameState.isInZone ? Color.green.opacity(0.4) : Color.white.opacity(0.1))
                 .frame(width: 80, height: 80)
-            
+
             // Center dot
             Circle()
                 .fill(gameState.isInZone ? Color.green : Color.white.opacity(0.5))
                 .frame(width: 20, height: 20)
-            
+
             // Progress ring
             Circle()
                 .trim(from: 0, to: CGFloat(gameState.stabilityTime) / CGFloat(gameState.requiredStability))
@@ -125,7 +126,7 @@ struct GazeHoldView: View {
                 .frame(width: 220, height: 220)
                 .rotationEffect(.degrees(-90))
                 .animation(.linear(duration: 0.1), value: gameState.stabilityTime)
-            
+
             // Hold indicator
             if gameState.gamePhase == .playing && gameState.isHolding {
                 VStack {
@@ -150,7 +151,7 @@ struct GazeHoldView: View {
         .scaleEffect(gameState.isHolding ? 0.95 : 1.0)
         .animation(.easeInOut(duration: 0.2), value: gameState.isHolding)
     }
-    
+
     var instructions: some View {
         VStack(spacing: 8) {
             switch gameState.gamePhase {
@@ -161,7 +162,7 @@ struct GazeHoldView: View {
                 Text("Keep your finger steady to build stability")
                     .font(.system(size: 14))
                     .foregroundColor(.white.opacity(0.5))
-                
+
                 Button(action: { gameState.startGame() }) {
                     Text("START")
                         .font(.system(size: 18, weight: .bold))
@@ -171,7 +172,7 @@ struct GazeHoldView: View {
                         .cornerRadius(25)
                 }
                 .padding(.top, 20)
-                
+
             case .playing:
                 if gameState.isInZone {
                     Text("Perfect! Hold steady...")
@@ -182,7 +183,7 @@ struct GazeHoldView: View {
                         .font(.system(size: 16, weight: .medium))
                         .foregroundColor(.orange)
                 }
-                
+
             case .completed:
                 EmptyView()
             }
@@ -204,24 +205,26 @@ class GazeHoldGameState: ObservableObject {
     @Published var isInZone: Bool = false
     @Published var showResults: Bool = false
     @Published var resultMessage: String = ""
-    
-    private var gameTimer: Timer?
+
     private var stabilityCheckTimer: Timer?
-    
+    private var lastHapticFrame: Int = 0
+
     var scoreColor: Color {
         let percentage = Double(score) / Double(maxScore)
         if percentage >= 0.8 { return .green }
         if percentage >= 0.5 { return .yellow }
         return .orange
     }
-    
+
     func startGame() {
         gamePhase = .playing
         score = 0
         stabilityTime = 0
         isHolding = false
         isInZone = false
-        
+        lastHapticFrame = 0
+        AppAudioManager.shared.playChallengeStart()
+
         // Start stability check timer
         stabilityCheckTimer = Timer.scheduledTimer(withTimeInterval: 1.0/60.0, repeats: true) { [weak self] _ in
             Task { @MainActor in
@@ -229,12 +232,15 @@ class GazeHoldGameState: ObservableObject {
             }
         }
     }
-    
+
     func handleTouch(_ touching: Bool) {
         guard gamePhase == .playing else { return }
         isHolding = touching
+        if touching {
+            AppAudioManager.shared.lightImpact()
+        }
     }
-    
+
     private func checkStability() {
         guard isHolding else {
             // Lost stability - reset
@@ -244,44 +250,56 @@ class GazeHoldGameState: ObservableObject {
             isInZone = false
             return
         }
-        
+
         // Simulate micro-movements (simulates real finger unsteadiness)
         let drift = Int.random(in: -3...3)
-        
+
         if abs(drift) <= 2 {
             // Stable - increase progress
             stabilityTime += 1
             isInZone = true
             score = min(maxScore, (stabilityTime * 100) / requiredStability)
-            
+
+            // Progress haptic every 10 frames
+            if stabilityTime - lastHapticFrame >= 10 {
+                AppAudioManager.shared.lightImpact()
+                lastHapticFrame = stabilityTime
+            }
+
             if stabilityTime >= requiredStability {
+                AppAudioManager.shared.playChallengeComplete()
                 completeGame()
             }
         } else {
             // Unstable - lose progress
             stabilityTime = max(0, stabilityTime - 1)
             isInZone = false
+            lastHapticFrame = stabilityTime
         }
     }
-    
+
     private func completeGame() {
         stabilityCheckTimer?.invalidate()
         stabilityCheckTimer = nil
-        
+
         gamePhase = .completed
-        
+
         // Calculate final score and XP
         let percentage = Double(score) / Double(maxScore)
         xpEarned = Int(30 * percentage)
-        
+
         if percentage >= 0.9 {
             resultMessage = "Outstanding focus! 🌟"
+            AppAudioManager.shared.playPerfect()
         } else if percentage >= 0.7 {
             resultMessage = "Great stability! 💪"
+            AppAudioManager.shared.playSuccess()
         } else if percentage >= 0.5 {
             resultMessage = "Good effort! 👍"
+            AppAudioManager.shared.success()
         } else {
             resultMessage = "Keep practicing! 🎯"
+            AppAudioManager.shared.warning()
         }
     }
 }
@@ -299,23 +317,23 @@ struct ResultsView: View {
     let xpEarned: Int
     let message: String
     let onDismiss: () -> Void
-    
+
     var body: some View {
         VStack(spacing: 24) {
             Spacer()
-            
+
             // Score circle
             ZStack {
                 Circle()
                     .stroke(Color.white.opacity(0.2), lineWidth: 8)
                     .frame(width: 120, height: 120)
-                
+
                 Circle()
                     .trim(from: 0, to: CGFloat(score) / CGFloat(maxScore))
                     .stroke(scoreColor, style: StrokeStyle(lineWidth: 8, lineCap: .round))
                     .frame(width: 120, height: 120)
                     .rotationEffect(.degrees(-90))
-                
+
                 VStack {
                     Text("\(score)")
                         .font(.system(size: 36, weight: .bold, design: .rounded))
@@ -325,12 +343,12 @@ struct ResultsView: View {
                         .foregroundColor(.white.opacity(0.6))
                 }
             }
-            
+
             // Message
             Text(message)
                 .font(.system(size: 20, weight: .semibold))
                 .foregroundColor(.white)
-            
+
             // XP earned
             HStack(spacing: 8) {
                 Image(systemName: "star.fill")
@@ -343,9 +361,9 @@ struct ResultsView: View {
             .padding(.vertical, 12)
             .background(Color.yellow.opacity(0.2))
             .cornerRadius(20)
-            
+
             Spacer()
-            
+
             // Done button
             Button(action: onDismiss) {
                 Text("DONE")
@@ -362,7 +380,7 @@ struct ResultsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(hex: "1a1a2e"))
     }
-    
+
     var scoreColor: Color {
         let percentage = Double(score) / Double(maxScore)
         if percentage >= 0.8 { return .green }
