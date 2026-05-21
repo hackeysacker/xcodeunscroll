@@ -3,3 +3,4 @@ build/
 *.xccheckout
 xcuserdata/
 .DS_Store
+DerivedData/
