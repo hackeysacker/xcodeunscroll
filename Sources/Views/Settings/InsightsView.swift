@@ -363,17 +363,88 @@ struct InsightsView: View {
     }
     
     var filteredActivityData: [ActivityData] {
+        let completed = appState.progress?.completedChallenges ?? []
+        
         switch selectedTimeRange {
         case .week:
-            return [ActivityData(day: "M", xp: 45), ActivityData(day: "T", xp: 30), ActivityData(day: "W", xp: 60), ActivityData(day: "T", xp: 20), ActivityData(day: "F", xp: 55), ActivityData(day: "S", xp: 40), ActivityData(day: "S", xp: 35)]
+            return calculateWeekData(from: completed)
         case .month:
-            return (0..<4).flatMap { week in
-                ["M", "T", "W", "T", "F", "S", "S"].enumerated().map { day, name in
-                    ActivityData(day: "\(name)", xp: Int.random(in: 20...80))
-                }
-            }
+            return calculateMonthData(from: completed)
         case .allTime:
-            return [ActivityData(day: "Jan", xp: 300), ActivityData(day: "Feb", xp: 450), ActivityData(day: "Mar", xp: 380), ActivityData(day: "Apr", xp: 520)]
+            return calculateAllTimeData(from: completed)
+        }
+    }
+    
+    private func calculateWeekData(from challenges: [ChallengeAttempt]) -> [ActivityData] {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let dayNames = ["S", "M", "T", "W", "T", "F", "S"]
+        
+        // Get last 7 days
+        return (0..<7).map { dayOffset -> ActivityData in
+            guard let date = calendar.date(byAdding: .day, value: -(6 - dayOffset), to: today) else {
+                return ActivityData(day: "-", xp: 0)
+            }
+            let dayIndex = calendar.component(.weekday, from: date) - 1
+            let dayName = dayNames[dayIndex]
+            
+            let dayStart = calendar.startOfDay(for: date)
+            guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
+                return ActivityData(day: dayName, xp: 0)
+            }
+            
+            let xp = challenges
+                .filter { $0.attemptedAt >= dayStart && $0.attemptedAt < dayEnd }
+                .reduce(0) { $0 + $1.xpEarned }
+            
+            return ActivityData(day: dayName, xp: xp)
+        }
+    }
+    
+    private func calculateMonthData(from challenges: [ChallengeAttempt]) -> [ActivityData] {
+        let calendar = Calendar.current
+        let today = Date()
+        
+        // Group by week for last 4 weeks
+        return (0..<4).map { weekOffset -> ActivityData in
+            guard let weekStart = calendar.date(byAdding: .weekOfYear, value: -(3 - weekOffset), to: today) else {
+                return ActivityData(day: "W\(weekOffset + 1)", xp: 0)
+            }
+            let weekNum = calendar.component(.weekOfYear, from: weekStart)
+            
+            let weekXP = challenges
+                .filter { challenge in
+                    let challengeWeek = calendar.component(.weekOfYear, from: challenge.attemptedAt)
+                    return challengeWeek == weekNum
+                }
+                .reduce(0) { $0 + $1.xpEarned }
+            
+            return ActivityData(day: "W\(weekOffset + 1)", xp: weekXP)
+        }
+    }
+    
+    private func calculateAllTimeData(from challenges: [ChallengeAttempt]) -> [ActivityData] {
+        let calendar = Calendar.current
+        let today = Date()
+        let monthFormatter = DateFormatter()
+        monthFormatter.dateFormat = "MMM"
+        
+        // Group by month for last 4 months
+        return (0..<4).map { monthOffset -> ActivityData in
+            guard let monthStart = calendar.date(byAdding: .month, value: -(3 - monthOffset), to: today) else {
+                return ActivityData(day: "M", xp: 0)
+            }
+            let components = calendar.dateComponents([.year, .month], from: monthStart)
+            let monthName = monthFormatter.string(from: monthStart)
+            
+            let monthXP = challenges
+                .filter { challenge in
+                    let challengeComponents = calendar.dateComponents([.year, .month], from: challenge.attemptedAt)
+                    return challengeComponents.year == components.year && challengeComponents.month == components.month
+                }
+                .reduce(0) { $0 + $1.xpEarned }
+            
+            return ActivityData(day: monthName, xp: monthXP)
         }
     }
     
@@ -410,23 +481,92 @@ struct InsightsView: View {
         return Double(current - previous) / Double(previous) * 100
     }
     
+    // MARK: - Real Data Predictions
     var nextLevelPrediction: String {
         let currentXP = appState.progress?.totalXP ?? 0
         let xpToNextLevel = 1000 - (currentXP % 1000)
         if xpToNextLevel <= 0 {
             return "Level up imminent!"
         }
-        let avgXPPerDay = 50
+        
+        // Calculate real average XP per day from user's history
+        let avgXPPerDay = calculateAvgXPPerDay()
+        guard avgXPPerDay > 0 else {
+            return "\(xpToNextLevel) XP needed"
+        }
+        
         let days = xpToNextLevel / avgXPPerDay
-        return "\(days) days (\(xpToNextLevel) XP)"
+        return days == 0 ? "< 1 day" : "\(days) days (\(xpToNextLevel) XP)"
     }
     
     var dailyGoalPrediction: String {
-        return "On track - 60% complete"
+        // Check real daily progress (target: 100 XP per day as default)
+        let todayXP = calculateTodayXP()
+        let dailyGoal = 100
+        let percentage = min(100, (todayXP * 100) / dailyGoal)
+        
+        if percentage >= 100 {
+            return "Goal met! +\(todayXP) XP today"
+        } else if percentage >= 50 {
+            return "On track - \(percentage)% complete"
+        } else {
+            return "\(percentage)% of daily goal"
+        }
     }
     
     var weeklyXPPrediction: String {
-        return "~350 XP this week"
+        let weeklyXP = calculateWeeklyXP()
+        if weeklyXP > 0 {
+            return "\(weeklyXP) XP this week"
+        } else {
+            return "No data yet"
+        }
+    }
+    
+    // MARK: - Real Data Calculation Helpers
+    private func calculateAvgXPPerDay() -> Int {
+        let completed = appState.progress?.completedChallenges ?? []
+        guard !completed.isEmpty else { return 50 } // Default fallback
+        
+        // Group by date and sum XP per day
+        var xpByDate: [String: Int] = [:]
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        
+        for challenge in completed {
+            let dateKey = formatter.string(from: challenge.attemptedAt)
+            xpByDate[dateKey, default: 0] += challenge.xpEarned
+        }
+        
+        // Calculate average
+        let totalXP = xpByDate.values.reduce(0, +)
+        let daysWithActivity = xpByDate.count
+        
+        return daysWithActivity > 0 ? totalXP / daysWithActivity : 50
+    }
+    
+    private func calculateTodayXP() -> Int {
+        let completed = appState.progress?.completedChallenges ?? []
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let today = formatter.string(from: Date())
+        
+        return completed
+            .filter { formatter.string(from: $0.attemptedAt) == today }
+            .reduce(0) { $0 + $1.xpEarned }
+    }
+    
+    private func calculateWeeklyXP() -> Int {
+        let completed = appState.progress?.completedChallenges ?? []
+        let calendar = Calendar.current
+        let now = Date()
+        
+        // Get start of current week
+        let weekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)) ?? now
+        
+        return completed
+            .filter { $0.attemptedAt >= weekStart }
+            .reduce(0) { $0 + $1.xpEarned }
     }
 }
 
