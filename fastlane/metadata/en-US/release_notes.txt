@@ -1,1 +1,1 @@
-Initial TestFlight beta for Unscroll.
+FocusFlow 1.0.0 - Initial TestFlight beta release. Focus, track, and level up your productivity with gamified focus sessions, challenges, and achievements.
