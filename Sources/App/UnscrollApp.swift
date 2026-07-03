@@ -6,6 +6,19 @@ struct UnscrollApp: App {
     @StateObject private var appState = AppState()
     @StateObject private var themeManager = ThemeManager.shared
     
+    init() {
+        // Initialize AppAudioManager with saved preferences
+        let soundEnabled = UserDefaults.standard.object(forKey: "soundEnabled") as? Bool ?? true
+        let hapticEnabled = UserDefaults.standard.object(forKey: "hapticEnabled") as? Bool ?? true
+        
+        // Note: AppAudioManager is a singleton, set defaults
+        Task { @MainActor in
+            AppAudioManager.shared.soundEnabled = soundEnabled
+            AppAudioManager.shared.hapticEnabled = hapticEnabled
+            AppAudioManager.shared.prepareHaptics()
+        }
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -13,7 +26,10 @@ struct UnscrollApp: App {
                 .environmentObject(themeManager)
                 .preferredColorScheme(.dark)
                 .onAppear {
-                    // App initialization
+                    // Prepare haptics on first appear
+                    Task { @MainActor in
+                        AppAudioManager.shared.prepareHaptics()
+                    }
                 }
         }
         .onChange(of: scenePhase) { _, newPhase in
