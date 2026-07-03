@@ -1,4 +1,4 @@
-app_identifier("com.unscroll.app")
+app_identifier("com.focusflow.app")
 
 # Set these in your shell or CI secrets before running lanes.
 apple_id(ENV["APP_STORE_CONNECT_APPLE_ID"])
