@@ -6,6 +6,11 @@
 - Build: ✅ BUILD SUCCEEDED (iPhone 17 Pro simulator, iOS 26.2)
 - Git: Working tree clean, synced with origin/main
 
+**App Ideas Research (July 9th):**
+- Product Hunt trending: Productivity tools, AI chatbots, Raycast-style keyboard-first workflows
+- Trend Hunter: Heritage-tech mobility (nostalgic vehicles + digital dashboards)
+- AI agents as reasoning engines, autonomous agents, multimodal creators
+
 **Crypto Research (July 9th):**
 - Solana holding $73 support, on-chain activity near yearly highs
 - PumpSwap fees +58.5% daily, +165% monthly
