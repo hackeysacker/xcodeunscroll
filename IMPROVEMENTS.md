@@ -6,13 +6,13 @@
 - Build: ✅ BUILD SUCCEEDED
 
 **Lead Generation:**
-- SaaS directories: Product Hunt, G2, Capterra, Crunchbase, Stackshare, Indie Hackers
-- Hot niches 2026: AI workflow automation, healthcare practice tools, vertical CRMs
-- Top 3 failure areas: custom reporting, cross-system integration, vertical automation
+- Hot niches: Vertical SaaS (delivery analytics $200B market), healthcare tools, localization QA, SOP automation, vertical compliance
+- Micro-SaaS: Invoice reminders, testimonial collection, niche scheduling ($149-399/mo)
+- Competitor gaps: Custom reporting, cross-system integration, vertical workflow automation
 
 **Learning Research:**
-- OpenClaw updated: 2026.3.2 → 2026.6.11
-- New features: exec boundaries, Google Meet chrome-node, Signal approvals, plugin sync
+- OpenClaw July 2026: GPT-5.6 support, new attach workflow, Telegram Codex pairing, iOS app refresh, iMessage polls, cron scheduling
+- OpenAI: GPT-5.6 staged release, agent mode, persistent memory v2
 - MCP interoperability converging across agent market
 
 ---
