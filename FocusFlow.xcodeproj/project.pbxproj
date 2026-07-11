@@ -44,12 +44,10 @@
 		817FC6B4F2A56E22A87EB36A /* MultiObjectTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65952119518689B462E25E6E /* MultiObjectTrackingView.swift */; };
 		826338F14DDF084C82DFD592 /* UnscrollApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A4843BFE70A7C71722C359D /* UnscrollApp.swift */; };
 		873A3CC52A4C1D2E5F1CC2F5 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4548CFE88CAE78080A2A0F42 /* NetworkMonitor.swift */; };
-		88FFFAD9AD05568877E0FCC5 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DE0BBF78B4E9618F75302 /* NotificationService.swift */; };
 		8A3C9B44783F971748A2BD1F /* ScreenTimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857A322FA2B7012519E495CA /* ScreenTimeManager.swift */; };
 		8AA86381B7F2CC33EE129582 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CAD608545BC76F272E9D482 /* AppState.swift */; };
 		8B56E05EDE9D04E4C1E7AA82 /* BiometricTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545230256D5F2A71262515B7 /* BiometricTrackingView.swift */; };
 		8E3DC4E4D7A142F38BF1D76F /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 31ADB81C0A62EF28F2216170 /* PrivacyInfo.xcprivacy */; };
-		917045577D74639F48B12E1E /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985D6A6C573E36F0F259A02B /* CacheManager.swift */; };
 		92E5F5F021A9BF5A2D7AEF32 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3EBA258C9AD9784DA8E21B /* HomeView.swift */; };
 		94CEA6AEA84AF1224308D6F9 /* ColorPatternMemoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F8881AB2FCA09C4A49E7F8 /* ColorPatternMemoryView.swift */; };
 		972388A1B7060903E5624EFA /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7D8D62786DF6C72DA3AA8B /* User.swift */; };
@@ -68,7 +66,6 @@
 		C23212FB68B36568678423E9 /* FocusFlowWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EC25D1ECC0C84AB57CFBB52 /* FocusFlowWidget.swift */; };
 		C37B7AF8A1BF7813DABF1470 /* MemoryGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0750F6F44C6618E12EB007DF /* MemoryGridView.swift */; };
 		C6ED778AAB986AC145424898 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78BC8B9AB0840EC35907819 /* ProgressView.swift */; };
-		C6F946608262C105B8FBF959 /* OfflineManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E118943F2AF8A22428B249D0 /* OfflineManager.swift */; };
 		CC1675CD65722B4C03D7E4BF /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B135324C952FCE29E5967D85 /* BackgroundTaskManager.swift */; };
 		CCD1EA47C33F4552AAFFDAB9 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 712E75634EDDF39FE0EC2015 /* LeaderboardView.swift */; };
 		D2CE236CD4C89487E0723264 /* DuolingoPathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E6EF3D646C8DB229A91D0C /* DuolingoPathView.swift */; };
@@ -79,7 +76,6 @@
 		EF321A8CE43CF65B58890B1A /* FakeNotificationsChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06A539CE472AC6239A1695 /* FakeNotificationsChallengeView.swift */; };
 		F3C599B801008C41B6ABED77 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40CB4BE7CF1F995E25536E /* AppConfig.swift */; };
 		F5E51C06E2FD7C5327823851 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831747B052CD9BF1B19B0123 /* ContentView.swift */; };
-		F81B893AD3EC95C863B6CDEC /* CacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA3F44DD1A8E30CC0ACD06C /* CacheService.swift */; };
 		F97A8711DCB17F4DDB84A3A6 /* AchievementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E5EF2EE2C3B05E44331051 /* AchievementTests.swift */; };
 		FB9C334255F7340177706025 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A993EEF0DB7111F16DA6C1 /* Models.swift */; };
 		FE5F8FF7294FB3EB189F4EF5 /* OnboardingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 715FD3D1A0334C57536C3103 /* OnboardingFlowView.swift */; };
@@ -165,10 +161,8 @@
 		8C8E39B9E5E9E8379D8F1B2F /* GlassComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassComponents.swift; sourceTree = "<group>"; };
 		8CAD608545BC76F272E9D482 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		94A38B26903E4527D53A0945 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
-		985D6A6C573E36F0F259A02B /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		995CA50375993CE9F0ECEC71 /* ProgressPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPathTests.swift; sourceTree = "<group>"; };
 		99852AD5608C8EED645C6ACE /* AchievementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsView.swift; sourceTree = "<group>"; };
-		9AA3F44DD1A8E30CC0ACD06C /* CacheService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheService.swift; sourceTree = "<group>"; };
 		9F125462CF747335F6144E41 /* GazeHoldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GazeHoldView.swift; sourceTree = "<group>"; };
 		A0F80EE269C7BAF23EE1B90C /* Unscroll.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Unscroll.entitlements; sourceTree = "<group>"; };
 		A244A9E11BC14987440F19CC /* HeartRefillManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRefillManager.swift; sourceTree = "<group>"; };
@@ -183,7 +177,6 @@
 		B3F767AF28058D78DB27C828 /* BreathingGuideTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathingGuideTests.swift; sourceTree = "<group>"; };
 		B9FF345F88B9807E1FEF9785 /* CoreChallenges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreChallenges.swift; sourceTree = "<group>"; };
 		BAD6F49FCDB02DBEA3A18B60 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
-		BE1DE0BBF78B4E9618F75302 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		C18E6DACB2F83EA4DD476994 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C78BC8B9AB0840EC35907819 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		CDE0AB0ADC3DF2716AE2A02E /* FocusFlowApp.swift.disabled */ = {isa = PBXFileReference; path = FocusFlowApp.swift.disabled; sourceTree = "<group>"; };
@@ -195,7 +188,6 @@
 		D7CDCB6FA66F659CA26F3990 /* BreathingGuide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathingGuide.swift; sourceTree = "<group>"; };
 		DB2505ECE7128F7B00B5D3EC /* ChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeView.swift; sourceTree = "<group>"; };
 		DC17A369A14FA9A14073F982 /* FocusFlowWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FocusFlowWidgetExtension.entitlements; sourceTree = "<group>"; };
-		E118943F2AF8A22428B249D0 /* OfflineManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineManager.swift; sourceTree = "<group>"; };
 		E2F6BD8E296AF1A9E065D31E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E7CE7EE6E98670688195C325 /* PracticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeView.swift; sourceTree = "<group>"; };
 		F6A7B09006EFB1A0762100FF /* AppAudioManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAudioManagerTests.swift; sourceTree = "<group>"; };
@@ -289,13 +281,9 @@
 				7E5DE8F8C483D11D5CD1165C /* AudioHapticManager.swift */,
 				B135324C952FCE29E5967D85 /* BackgroundTaskManager.swift */,
 				D7CDCB6FA66F659CA26F3990 /* BreathingGuide.swift */,
-				985D6A6C573E36F0F259A02B /* CacheManager.swift */,
-				9AA3F44DD1A8E30CC0ACD06C /* CacheService.swift */,
 				A244A9E11BC14987440F19CC /* HeartRefillManager.swift */,
 				4548CFE88CAE78080A2A0F42 /* NetworkMonitor.swift */,
 				94A38B26903E4527D53A0945 /* NotificationManager.swift */,
-				BE1DE0BBF78B4E9618F75302 /* NotificationService.swift */,
-				E118943F2AF8A22428B249D0 /* OfflineManager.swift */,
 				857A322FA2B7012519E495CA /* ScreenTimeManager.swift */,
 				619652A96ED7FC53389BB8EA /* SupabaseService.swift */,
 				A45ED9A3D1FBDB0285F1E077 /* SyncQueue.swift */,
@@ -523,7 +511,6 @@
 				};
 			};
 			buildConfigurationList = 0BB18131807E661ABE3537F8 /* Build configuration list for PBXProject "FocusFlow" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -537,6 +524,7 @@
 				54FD1C8DAE01A0A40E492EFA /* XCRemoteSwiftPackageReference "supabase-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
+			productRefGroup = 3FEAAE055FC1FDD581F0881F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -603,8 +591,6 @@
 				FF4840FFE40CEB65366ED39C /* BreathPhase.swift in Sources */,
 				0AF234D08956B16DE5E483A4 /* BreathingExerciseView.swift in Sources */,
 				6171F9AAF71B5AA23103A17E /* BreathingGuide.swift in Sources */,
-				917045577D74639F48B12E1E /* CacheManager.swift in Sources */,
-				F81B893AD3EC95C863B6CDEC /* CacheService.swift in Sources */,
 				72EC4BF242F912EC1C6F6655 /* ChallengeExercises.swift in Sources */,
 				0DF7BFA9DA55BBB0BB86BE5E /* ChallengeView.swift in Sources */,
 				94CEA6AEA84AF1224308D6F9 /* ColorPatternMemoryView.swift in Sources */,
@@ -627,8 +613,6 @@
 				817FC6B4F2A56E22A87EB36A /* MultiObjectTrackingView.swift in Sources */,
 				873A3CC52A4C1D2E5F1CC2F5 /* NetworkMonitor.swift in Sources */,
 				EECD71FCF0299B312137F639 /* NotificationManager.swift in Sources */,
-				88FFFAD9AD05568877E0FCC5 /* NotificationService.swift in Sources */,
-				C6F946608262C105B8FBF959 /* OfflineManager.swift in Sources */,
 				FE5F8FF7294FB3EB189F4EF5 /* OnboardingFlowView.swift in Sources */,
 				2E8D047A6A18C937ACE3512C /* PracticeView.swift in Sources */,
 				4132BC6DC3055820176E99FE /* ProfileView.swift in Sources */,
