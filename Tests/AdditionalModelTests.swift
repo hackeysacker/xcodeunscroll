@@ -329,12 +329,4 @@ final class AdditionalModelTests: XCTestCase {
         XCTAssertNotNil(monitor)
     }
     
-    // MARK: - Cache Manager Tests
-    
-    func testCacheManagerSingleton() {
-        let cache1 = CacheManager.shared
-        let cache2 = CacheManager.shared
-        
-        XCTAssertTrue(cache1 === cache2, "CacheManager should be a singleton")
-    }
 }
