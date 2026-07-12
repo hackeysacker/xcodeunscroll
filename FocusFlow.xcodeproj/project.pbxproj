@@ -11,7 +11,6 @@
 		0943712EFA0E1DC3A4DF1427 /* ScrollStoppingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8405765EFD7768023303DE /* ScrollStoppingView.swift */; };
 		0A841C6E7A673590635B1215 /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619652A96ED7FC53389BB8EA /* SupabaseService.swift */; };
 		0AF234D08956B16DE5E483A4 /* BreathingExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52666F0B05379E2670AC6932 /* BreathingExerciseView.swift */; };
-		0B081C6C4FCE7EAA7D55BD59 /* WindingProgressPath.swift.backup in Resources */ = {isa = PBXBuildFile; fileRef = 53FC63DCF166E66E8D0FA8E1 /* WindingProgressPath.swift.backup */; };
 		0DF7BFA9DA55BBB0BB86BE5E /* ChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2505ECE7128F7B00B5D3EC /* ChallengeView.swift */; };
 		198C8A013D88BECB65C3E24A /* UniversalChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3DCE37315B42E2CAA191DC1 /* UniversalChallengeView.swift */; };
 		1F0F048B762982C7D862B598 /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC42C74D5637FA9E6A946E9F /* InsightsView.swift */; };
@@ -133,7 +132,6 @@
 		4A4843BFE70A7C71722C359D /* UnscrollApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnscrollApp.swift; sourceTree = "<group>"; };
 		4C8405765EFD7768023303DE /* ScrollStoppingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollStoppingView.swift; sourceTree = "<group>"; };
 		52666F0B05379E2670AC6932 /* BreathingExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathingExerciseView.swift; sourceTree = "<group>"; };
-		53FC63DCF166E66E8D0FA8E1 /* WindingProgressPath.swift.backup */ = {isa = PBXFileReference; path = WindingProgressPath.swift.backup; sourceTree = "<group>"; };
 		540BBB8BF12D28FA1EF16668 /* FocusFlowWidgetExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = FocusFlowWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		545230256D5F2A71262515B7 /* BiometricTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricTrackingView.swift; sourceTree = "<group>"; };
 		5A6A6E5992A0C54A5E41ABEE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -297,7 +295,6 @@
 				244DE710D7D58E21A83D9BA7 /* ProgressPathView.swift */,
 				C78BC8B9AB0840EC35907819 /* ProgressView.swift */,
 				32FFCC417859C79EC5C7D41C /* WindingProgressPath.swift */,
-				53FC63DCF166E66E8D0FA8E1 /* WindingProgressPath.swift.backup */,
 			);
 			path = Progress;
 			sourceTree = "<group>";
@@ -547,7 +544,6 @@
 			files = (
 				5DA1F616CCF465A85380D743 /* FocusFlowApp.swift.disabled in Resources */,
 				8E3DC4E4D7A142F38BF1D76F /* PrivacyInfo.xcprivacy in Resources */,
-				0B081C6C4FCE7EAA7D55BD59 /* WindingProgressPath.swift.backup in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
