@@ -19,8 +19,8 @@ struct ThemeSelectionView: View {
                 // Background
                 LinearGradient(
                     colors: [
-                        Color(themeHex: themeManager.currentTheme.backgroundColor),
-                        Color(themeHex: themeManager.currentTheme.backgroundGradientEnd)
+                        Color(hex: themeManager.currentTheme.backgroundColor),
+                        Color(hex: themeManager.currentTheme.backgroundGradientEnd)
                     ],
                     startPoint: .top,
                     endPoint: .bottom
@@ -61,7 +61,7 @@ struct ThemeSelectionView: View {
                     Button("Done") {
                         dismiss()
                     }
-                    .foregroundColor(Color(themeHex: themeManager.currentTheme.primaryColor))
+                    .foregroundColor(Color(hex: themeManager.currentTheme.primaryColor))
                     .fontWeight(.bold)
                 }
             }
@@ -76,8 +76,8 @@ struct ThemeSelectionView: View {
                 Circle()
                     .fill(LinearGradient(
                         colors: [
-                            Color(themeHex: themeManager.currentTheme.primaryColor),
-                            Color(themeHex: themeManager.currentTheme.secondaryColor)
+                            Color(hex: themeManager.currentTheme.primaryColor),
+                            Color(hex: themeManager.currentTheme.secondaryColor)
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
@@ -117,12 +117,12 @@ struct ThemeSelectionView: View {
                 
                 // Gems
                 HStack(spacing: 4) {
-                    Image(systemName: "diamond.fill").foregroundColor(Color(themeHex: themeManager.currentTheme.accentColor))
+                    Image(systemName: "diamond.fill").foregroundColor(Color(hex: themeManager.currentTheme.accentColor))
                     Text("100").foregroundColor(.white)
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
-                .background(Color(themeHex: themeManager.currentTheme.accentColor).opacity(0.2))
+                .background(Color(hex: themeManager.currentTheme.accentColor).opacity(0.2))
                 .cornerRadius(10)
             }
         }
@@ -147,7 +147,7 @@ struct ThemeSelectionView: View {
             Spacer()
             
             Toggle("", isOn: $useCustomTheme)
-                .tint(Color(themeHex: themeManager.currentTheme.primaryColor))
+                .tint(Color(hex: themeManager.currentTheme.primaryColor))
                 .onChange(of: useCustomTheme) { _, newValue in
                     themeManager.useCustomTheme = newValue
                 }

@@ -145,29 +145,6 @@ extension Color {
         )
     }
     
-    init(themeHex: String) {
-        let hex = themeHex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: hex).scanHexInt64(&int)
-        let a, r, g, b: UInt64
-        switch hex.count {
-        case 3:
-            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6:
-            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8:
-            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            (a, r, g, b) = (255, 0, 0, 0)
-        }
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255,
-            opacity: Double(a) / 255
-        )
-    }
 }
 
 // MARK: - Theme-aware Background
@@ -177,8 +154,8 @@ struct ThemeBackground: View {
     var body: some View {
         LinearGradient(
             colors: [
-                Color(themeHex: themeManager.currentTheme.backgroundColor),
-                Color(themeHex: themeManager.currentTheme.backgroundGradientEnd)
+                Color(hex: themeManager.currentTheme.backgroundColor),
+                Color(hex: themeManager.currentTheme.backgroundGradientEnd)
             ],
             startPoint: .top,
             endPoint: .bottom
@@ -200,7 +177,7 @@ struct ThemeButton: View {
                 ZStack {
                     Circle()
                         .fill(LinearGradient(
-                            colors: [Color(themeHex: theme.primaryColor), Color(themeHex: theme.secondaryColor)],
+                            colors: [Color(hex: theme.primaryColor), Color(hex: theme.secondaryColor)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ))
@@ -232,7 +209,7 @@ struct ThemeButton: View {
         ForEach(AppTheme.defaultThemes) { theme in
             HStack {
                 Circle()
-                    .fill(Color(themeHex: theme.primaryColor))
+                    .fill(Color(hex: theme.primaryColor))
                     .frame(width: 30, height: 30)
                 Text(theme.name)
                     .foregroundColor(.white)
@@ -241,5 +218,5 @@ struct ThemeButton: View {
             .padding()
         }
     }
-    .background(Color(themeHex: "0A0F1C"))
+    .background(Color(hex: "0A0F1C"))
 }
