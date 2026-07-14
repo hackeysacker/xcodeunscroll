@@ -117,7 +117,7 @@ final class ThemeManagerTests: XCTestCase {
     }
     
     func testColorThemeHexInit() {
-        let color = Color(themeHex: "8B5CF6")
+        let color = Color(hex: "8B5CF6")
         
         XCTAssertNotNil(color)
     }
