@@ -80,6 +80,35 @@ struct GameProgress: Codable {
         guard needed > 0 else { return 1.0 }
         return min(Double(currentLevelXP) / Double(needed), 1.0)
     }
+    
+    /// Get recommended challenge difficulty based on player level
+    var recommendedDifficulty: Difficulty {
+        switch level {
+        case 1...3:
+            return .easy
+        case 4...7:
+            return .medium
+        case 8...14:
+            return .hard
+        default:
+            return .extreme
+        }
+    }
+    
+    /// Get recommended difficulty for a specific challenge type based on skill level
+    func recommendedDifficulty(for skill: String) -> Difficulty {
+        let skillLevel = skills[skill] ?? 1
+        switch skillLevel {
+        case 1...5:
+            return .easy
+        case 6...15:
+            return .medium
+        case 16...30:
+            return .hard
+        default:
+            return .extreme
+        }
+    }
 }
 
 struct ChallengeAttempt: Codable, Identifiable {
