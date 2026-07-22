@@ -22,6 +22,12 @@ struct GameProgress: Codable {
     // Streak protection
     var streakFreezeUsed: Bool  // True if streak freeze was used today
     
+    // Focus Timer / Sessions
+    var totalFocusMinutes: Int  // Total accumulated focus time in minutes
+    var focusSessions: [FocusSession]  // History of focus sessions
+    var dailyFocusGoalMinutes: Int  // Daily focus time goal (default 30 min)
+    var todayFocusMinutes: Int  // Focus time accumulated today
+    
     // Default skill values
     static let defaultFocusScore = 10
     static let defaultImpulseControlScore = 10
@@ -43,10 +49,14 @@ struct GameProgress: Codable {
         self.dailyChallenges = nil
         self.lastDailyRefreshDate = nil
         self.streakFreezeUsed = false
+        self.totalFocusMinutes = 0
+        self.focusSessions = []
+        self.dailyFocusGoalMinutes = 30
+        self.todayFocusMinutes = 0
     }
     
     // Memberwise initializer
-    init(level: Int, totalXP: Int, streakDays: Int, lastActivityDate: Date? = nil, hearts: Int, gems: Int, completedChallenges: [ChallengeAttempt], skills: [String: Int], focusScore: Int, impulseControlScore: Int, distractionResistanceScore: Int, dailyChallenges: [DailyChallenge]? = nil, lastDailyRefreshDate: Date? = nil, streakFreezeUsed: Bool) {
+    init(level: Int, totalXP: Int, streakDays: Int, lastActivityDate: Date? = nil, hearts: Int, gems: Int, completedChallenges: [ChallengeAttempt], skills: [String: Int], focusScore: Int, impulseControlScore: Int, distractionResistanceScore: Int, dailyChallenges: [DailyChallenge]? = nil, lastDailyRefreshDate: Date? = nil, streakFreezeUsed: Bool, totalFocusMinutes: Int = 0, focusSessions: [FocusSession] = [], dailyFocusGoalMinutes: Int = 30, todayFocusMinutes: Int = 0) {
         self.level = level
         self.totalXP = totalXP
         self.streakDays = streakDays
@@ -61,6 +71,34 @@ struct GameProgress: Codable {
         self.dailyChallenges = dailyChallenges
         self.lastDailyRefreshDate = lastDailyRefreshDate
         self.streakFreezeUsed = streakFreezeUsed
+        self.totalFocusMinutes = totalFocusMinutes
+        self.focusSessions = focusSessions
+        self.dailyFocusGoalMinutes = dailyFocusGoalMinutes
+        self.todayFocusMinutes = todayFocusMinutes
+    }
+    
+    // Computed properties for focus timer
+    var todayFocusProgress: Double {
+        guard dailyFocusGoalMinutes > 0 else { return 0 }
+        return min(Double(todayFocusMinutes) / Double(dailyFocusGoalMinutes), 1.0)
+    }
+    
+    var formattedTotalFocusTime: String {
+        let hours = totalFocusMinutes / 60
+        let minutes = totalFocusMinutes % 60
+        if hours > 0 {
+            return "\(hours)h \(minutes)m"
+        }
+        return "\(minutes)m"
+    }
+    
+    var formattedTodayFocusTime: String {
+        let hours = todayFocusMinutes / 60
+        let minutes = todayFocusMinutes % 60
+        if hours > 0 {
+            return "\(hours)h \(minutes)m"
+        }
+        return "\(minutes)m"
     }
     
     var xpForNextLevel: Int {
@@ -484,5 +522,59 @@ extension GameProgress {
     /// Initialize daily XP from stored value
     static func initializeDailyXP(_ value: Int) {
         xpEarnedToday = value
+    }
+}
+
+// MARK: - Focus Session
+
+struct FocusSession: Codable, Identifiable {
+    var id: String
+    var startTime: Date
+    var endTime: Date?
+    var durationMinutes: Int
+    var targetMinutes: Int
+    var wasCompleted: Bool
+    var challengeType: String?
+    var xpEarned: Int
+    var gemsEarned: Int
+    
+    var isActive: Bool {
+        endTime == nil
+    }
+    
+    var actualDurationMinutes: Int {
+        if let end = endTime {
+            return Int(end.timeIntervalSince(startTime) / 60)
+        }
+        return durationMinutes
+    }
+    
+    init(targetMinutes: Int = 25) {
+        self.id = UUID().uuidString
+        self.startTime = Date()
+        self.endTime = nil
+        self.durationMinutes = targetMinutes
+        self.targetMinutes = targetMinutes
+        self.wasCompleted = false
+        self.challengeType = nil
+        self.xpEarned = 0
+        self.gemsEarned = 0
+    }
+    
+    init(id: String, startTime: Date, endTime: Date?, durationMinutes: Int, targetMinutes: Int, wasCompleted: Bool, challengeType: String?, xpEarned: Int, gemsEarned: Int) {
+        self.id = id
+        self.startTime = startTime
+        self.endTime = endTime
+        self.durationMinutes = durationMinutes
+        self.targetMinutes = targetMinutes
+        self.wasCompleted = wasCompleted
+        self.challengeType = challengeType
+        self.xpEarned = xpEarned
+        self.gemsEarned = gemsEarned
+    }
+    
+    mutating func complete() {
+        endTime = Date()
+        wasCompleted = actualDurationMinutes >= targetMinutes
     }
 }

@@ -21,6 +21,8 @@
 		2D5D08E8CBB2619C000B110E /* ThemeSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0E7607542C76D03EE63312C /* ThemeSelectionView.swift */; };
 		2DEA0BABF01703D2EEFAB17B /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = AA5852FE9FDF05BA51A2C9FB /* FirebaseCore */; };
 		2E8D047A6A18C937ACE3512C /* PracticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CE7EE6E98670688195C325 /* PracticeView.swift */; };
+		364BF0C5989547DB6EA0AB8B /* FocusTimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F74312BB5A38BF9015F90D /* FocusTimerManager.swift */; };
+		39891FD0930F77D0F3D51734 /* FocusTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE5BE55FC3EC6268A047408 /* FocusTimerView.swift */; };
 		39B63691E8B5EA760550E8DD /* UserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24149BAB02C874F10BA73B0D /* UserTests.swift */; };
 		3C0690F5D14302D8277669FE /* RapidTargetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 811988AD8805B57941182496 /* RapidTargetView.swift */; };
 		4132BC6DC3055820176E99FE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAD6F49FCDB02DBEA3A18B60 /* ProfileView.swift */; };
@@ -117,6 +119,8 @@
 		097A72EAF5EAEA8FE05F1FDD /* ThemeManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManagerTests.swift; sourceTree = "<group>"; };
 		111757159C8B6485F1BFF2EC /* FocusFlowTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = FocusFlowTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		14B35B0250244FC90DF26929 /* ChallengeExercises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeExercises.swift; sourceTree = "<group>"; };
+		18F74312BB5A38BF9015F90D /* FocusTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusTimerManager.swift; sourceTree = "<group>"; };
+		1DE5BE55FC3EC6268A047408 /* FocusTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusTimerView.swift; sourceTree = "<group>"; };
 		1DEE8CD59B8FC4A434236DAB /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		21F3FFD705639E39B2A2FCF2 /* FocusFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusFlowUITests.swift; sourceTree = "<group>"; };
 		22B17CFB71EB878207A67E7B /* AllChallengesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChallengesView.swift; sourceTree = "<group>"; };
@@ -226,6 +230,14 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		1C29263D2FAFA50443855762 /* Focus */ = {
+			isa = PBXGroup;
+			children = (
+				1DE5BE55FC3EC6268A047408 /* FocusTimerView.swift */,
+			);
+			path = Focus;
+			sourceTree = "<group>";
+		};
 		3FEAAE055FC1FDD581F0881F /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -252,6 +264,7 @@
 				831747B052CD9BF1B19B0123 /* ContentView.swift */,
 				EC4C7D7DF4CC28F3E881696B /* Challenges */,
 				AFC169B9BE8B74823C3EE486 /* Components */,
+				1C29263D2FAFA50443855762 /* Focus */,
 				06C8EA3033263EDF24139498 /* Home */,
 				53EAE083B28F8875B5CCD1FD /* Onboarding */,
 				6D023D236E35FFA54FD042DC /* Practice */,
@@ -277,6 +290,7 @@
 				7E5DE8F8C483D11D5CD1165C /* AudioHapticManager.swift */,
 				B135324C952FCE29E5967D85 /* BackgroundTaskManager.swift */,
 				D7CDCB6FA66F659CA26F3990 /* BreathingGuide.swift */,
+				18F74312BB5A38BF9015F90D /* FocusTimerManager.swift */,
 				A244A9E11BC14987440F19CC /* HeartRefillManager.swift */,
 				4548CFE88CAE78080A2A0F42 /* NetworkMonitor.swift */,
 				94A38B26903E4527D53A0945 /* NotificationManager.swift */,
@@ -591,6 +605,8 @@
 				BB9378CC51F44777365F070B /* DailyLoginRewardView.swift in Sources */,
 				D2CE236CD4C89487E0723264 /* DuolingoPathView.swift in Sources */,
 				EF321A8CE43CF65B58890B1A /* FakeNotificationsChallengeView.swift in Sources */,
+				364BF0C5989547DB6EA0AB8B /* FocusTimerManager.swift in Sources */,
+				39891FD0930F77D0F3D51734 /* FocusTimerView.swift in Sources */,
 				9DC5D40EFD2626DFAF890B25 /* GameProgress.swift in Sources */,
 				9ADCD3AC269A5376C52850D6 /* GazeHoldView.swift in Sources */,
 				A57123486EA5104C10DA6230 /* GlassComponents.swift in Sources */,

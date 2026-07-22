@@ -6,6 +6,7 @@ struct HomeView: View {
     @State private var showInsights: Bool = false
     @State private var showLeaderboard: Bool = false
     @State private var isRefreshing: Bool = false
+    @State private var showFocusTimer: Bool = false
     
     var body: some View {
         ZStack {
@@ -33,6 +34,9 @@ struct HomeView: View {
                     
                     // Daily goal
                     dailyGoalCard
+                    
+                    // Focus Timer Progress Card
+                    focusTimerCard
                     
                     // Recent activity
                     recentActivitySection
@@ -68,6 +72,10 @@ struct HomeView: View {
         }
         .sheet(isPresented: $showLeaderboard) {
             LeaderboardView()
+        }
+        .sheet(isPresented: $showFocusTimer) {
+            FocusTimerView()
+                .environmentObject(appState)
         }
     }
     
@@ -331,6 +339,16 @@ struct HomeView: View {
                 .foregroundColor(.white)
             
             HStack(spacing: 12) {
+                // Focus Timer
+                QuickActionCard(
+                    icon: "timer",
+                    title: "Timer",
+                    subtitle: "Focus",
+                    color: .blue
+                ) {
+                    showFocusTimer = true
+                }
+                
                 // Start Training
                 QuickActionCard(
                     icon: "play.fill",
@@ -351,21 +369,11 @@ struct HomeView: View {
                     showInsights = true
                 }
                 
-                // Leaderboard
-                QuickActionCard(
-                    icon: "trophy.fill",
-                    title: "Rank",
-                    subtitle: "Leaderboard",
-                    color: .yellow
-                ) {
-                    showLeaderboard = true
-                }
-                
                 // Focus Mode
                 QuickActionCard(
                     icon: "shield.fill",
-                    title: "Focus",
-                    subtitle: "Shield",
+                    title: "Shield",
+                    subtitle: "Screen Time",
                     color: .purple
                 ) {
                     appState.selectedTab = .screenTime
@@ -428,6 +436,95 @@ struct HomeView: View {
     var dailyGoalProgress: Double {
         let completed = appState.dailyChallengeProgress.completed
         return min(Double(completed) / 3.0, 1.0)
+    }
+    
+    // MARK: - Focus Timer Card
+    var focusTimerCard: some View {
+        let progress = appState.progress
+        let todayMinutes = progress?.todayFocusMinutes ?? 0
+        let goalMinutes = progress?.dailyFocusGoalMinutes ?? 30
+        let progressPct = min(Double(todayMinutes) / Double(goalMinutes), 1.0)
+        
+        return VStack(spacing: 12) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Today's Focus")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(.white)
+                    Text("\(todayMinutes)/\(goalMinutes) minutes")
+                        .font(.system(size: 12))
+                        .foregroundColor(.gray)
+                }
+                
+                Spacer()
+                
+                Button {
+                    showFocusTimer = true
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "play.fill")
+                            .font(.system(size: 12))
+                        Text("Start")
+                            .font(.system(size: 14, weight: .semibold))
+                    }
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(
+                        LinearGradient(
+                            colors: [.blue, .purple],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .cornerRadius(20)
+                }
+            }
+            
+            // Progress bar
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color.white.opacity(0.1))
+                        .frame(height: 8)
+                    
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(
+                            LinearGradient(
+                                colors: [.blue, .purple],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .frame(width: geometry.size.width * progressPct, height: 8)
+                }
+            }
+            .frame(height: 8)
+            
+            HStack {
+                Label("\(progress?.totalFocusMinutes ?? 0)m total", systemImage: "clock.fill")
+                    .font(.system(size: 11))
+                    .foregroundColor(.gray)
+                
+                Spacer()
+                
+                Label("\(progress?.streakDays ?? 0) day streak", systemImage: "flame.fill")
+                    .font(.system(size: 11))
+                    .foregroundColor(.orange)
+            }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(hex: "1E293B").opacity(0.6))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.blue.opacity(0.3), lineWidth: 1)
+        )
+        .onTapGesture {
+            showFocusTimer = true
+        }
     }
     
     // MARK: - Recent Activity
