@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import SwiftUI
+import UserNotifications
 
 /// Manages focus timer sessions with countdown, breaks, and tracking
 @MainActor
@@ -168,6 +169,7 @@ class FocusTimerManager: ObservableObject {
         // Play completion sound
         if completed {
             AppAudioManager.shared.playChallengeComplete()
+            sendSessionCompleteNotification(minutes: minutesFocused, xp: xpEarned, gems: gemsEarned)
         }
         
         // Start break if enabled
@@ -199,6 +201,51 @@ class FocusTimerManager: ObservableObject {
         timer = nil
         isBreakTime = false
         isRunning = false
+        
+        // Send break end notification
+        sendBreakEndNotification()
+    }
+    
+    // MARK: - Notifications
+    
+    private func sendSessionCompleteNotification(minutes: Int, xp: Int, gems: Int) {
+        let content = UNMutableNotificationContent()
+        content.title = "🎯 Focus Session Complete!"
+        content.body = "Great work! You focused for \(minutes) minutes, earning \(xp) XP and \(gems) gems!"
+        content.sound = .default
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(
+            identifier: "focus_session_complete_\(Date().timeIntervalSince1970)",
+            content: content,
+            trigger: trigger
+        )
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Failed to send session complete notification: \(error)")
+            }
+        }
+    }
+    
+    private func sendBreakEndNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = "☕ Break Time's Over!"
+        content.body = "Ready for another focus session? Your break is complete."
+        content.sound = .default
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(
+            identifier: "break_end_\(Date().timeIntervalSince1970)",
+            content: content,
+            trigger: trigger
+        )
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Failed to send break end notification: \(error)")
+            }
+        }
     }
     
     // MARK: - Level Up
