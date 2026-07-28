@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		ABCD12340001000000000030 /* FocusTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000031 /* FocusTimerView.swift */; };
+		ABCD12340001000000000032 /* FocusTimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000033 /* FocusTimerManager.swift */; };
 		0943712EFA0E1DC3A4DF1427 /* ScrollStoppingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8405765EFD7768023303DE /* ScrollStoppingView.swift */; };
 		ABCD12340001000000000010 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000001 /* NotificationManager.swift */; };
 		ABCD12340001000000000011 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000002 /* NetworkMonitor.swift */; };
@@ -17,7 +19,6 @@
 		ABCD12340001000000000014 /* BreathPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000005 /* BreathPhase.swift */; };
 		ABCD12340001000000000015 /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD12340001000000000006 /* BackgroundTaskManager.swift */; };
 		0A841C6E7A673590635B1215 /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619652A96ED7FC53389BB8EA /* SupabaseService.swift */; };
-		0B081C6C4FCE7EAA7D55BD59 /* WindingProgressPath.swift.backup in Resources */ = {isa = PBXBuildFile; fileRef = 53FC63DCF166E66E8D0FA8E1 /* WindingProgressPath.swift.backup */; };
 		0DF7BFA9DA55BBB0BB86BE5E /* ChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2505ECE7128F7B00B5D3EC /* ChallengeView.swift */; };
 		198C8A013D88BECB65C3E24A /* UniversalChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3DCE37315B42E2CAA191DC1 /* UniversalChallengeView.swift */; };
 		1F0F048B762982C7D862B598 /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC42C74D5637FA9E6A946E9F /* InsightsView.swift */; };
@@ -63,7 +64,6 @@
 		ABCD12340001000000000008 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		3F31947429A4CB879F0BA04C /* LevelUpCelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelUpCelebrationView.swift; sourceTree = "<group>"; };
 		4C8405765EFD7768023303DE /* ScrollStoppingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollStoppingView.swift; sourceTree = "<group>"; };
-		53FC63DCF166E66E8D0FA8E1 /* WindingProgressPath.swift.backup */ = {isa = PBXFileReference; lastKnownFileType = text; path = WindingProgressPath.swift.backup; sourceTree = "<group>"; };
 		545230256D5F2A71262515B7 /* BiometricTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricTrackingView.swift; sourceTree = "<group>"; };
 		619652A96ED7FC53389BB8EA /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
 		64762F4DEDF251A68EC83208 /* AllChallenges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChallenges.swift; sourceTree = "<group>"; };
@@ -99,6 +99,8 @@
 		ABCD12340001000000000006 /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		ABCD12340001000000000007 /* AudioHapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioHapticManager.swift; sourceTree = "<group>"; };
 		ABCD12340001000000000008 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		ABCD12340001000000000031 /* FocusTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusTimerView.swift; sourceTree = "<group>"; };
+		ABCD12340001000000000033 /* FocusTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusTimerManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +157,7 @@
 				F7538898937F3A2A983E420D /* Profile */,
 				5E33980992818CCB80BA3F05 /* Progress */,
 				C418B91721FD42BF658F878B /* ScreenTime */,
+				ABCD12340001000000000034 /* Focus */,
 				648248828E19EB4CCD89907A /* Settings */,
 			);
 			path = Views;
@@ -179,6 +182,7 @@
 				ABCD12340001000000000004 /* ThemeManager.swift */,
 				ABCD12340001000000000006 /* BackgroundTaskManager.swift */,
 				ABCD12340001000000000024 /* BreathingGuide.swift */,
+				ABCD12340001000000000033 /* FocusTimerManager.swift */,
 				ABCD12340001000000000007 /* AudioHapticManager.swift */,
 			);
 			path = Services;
@@ -189,7 +193,6 @@
 			children = (
 				244DE710D7D58E21A83D9BA7 /* ProgressPathView.swift */,
 				32FFCC417859C79EC5C7D41C /* WindingProgressPath.swift */,
-				53FC63DCF166E66E8D0FA8E1 /* WindingProgressPath.swift.backup */,
 			);
 			path = Progress;
 			sourceTree = "<group>";
@@ -267,6 +270,14 @@
 			path = ScreenTime;
 			sourceTree = "<group>";
 		};
+		ABCD12340001000000000034 /* Focus */ = {
+			isa = PBXGroup;
+			children = (
+				ABCD12340001000000000031 /* FocusTimerView.swift */,
+			);
+			path = Focus;
+			sourceTree = "<group>";
+		};
 		F7538898937F3A2A983E420D /* Profile */ = {
 			isa = PBXGroup;
 			children = (
@@ -339,7 +350,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B081C6C4FCE7EAA7D55BD59 /* WindingProgressPath.swift.backup in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,6 +380,8 @@
 				ABCD12340001000000000016 /* AudioHapticManager.swift in Sources */,
 				ABCD12340001000000000017 /* AppConfig.swift in Sources */,
 				ABCD12340001000000000015 /* BackgroundTaskManager.swift in Sources */,
+				ABCD12340001000000000030 /* FocusTimerView.swift in Sources */,
+				ABCD12340001000000000032 /* FocusTimerManager.swift in Sources */,
 				A57123486EA5104C10DA6230 /* GlassComponents.swift in Sources */,
 				ABCD12340001000000000021 /* DailyLoginRewardView.swift in Sources */,
 				ABCD12340001000000000023 /* ThemeSelectionView.swift in Sources */,
