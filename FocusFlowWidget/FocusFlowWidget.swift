@@ -303,6 +303,17 @@ struct FocusFlowWidget: Widget {
     }
 }
 
+// MARK: - Widget Bundle
+// An app extension needs an entry point. Without this the .appex has no principal
+// entry and the host app fails to install with "extensionDictionary must be set in
+// placeholder attributes for an app extension placeholder".
+@main
+struct FocusFlowWidgetBundle: WidgetBundle {
+    var body: some Widget {
+        FocusFlowWidget()
+    }
+}
+
 #Preview(as: .systemSmall) {
     FocusFlowWidget()
 } timeline: {
