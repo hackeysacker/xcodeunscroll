@@ -6,6 +6,13 @@ import SwiftUI
 
 struct FakeNotificationsChallengeView: View {
     @Environment(\.dismiss) var dismiss
+
+    /// Reports the final score so the caller can record progress.
+    let onComplete: ((Int) -> Void)?
+
+    init(onComplete: ((Int) -> Void)? = nil) {
+        self.onComplete = onComplete
+    }
     
     // Game State
     @State private var score: Int = 0
@@ -100,7 +107,7 @@ struct FakeNotificationsChallengeView: View {
     var body: some View {
         ZStack {
             // Background - phone-like frame
-            LinearGradient(colors: [Color("1E293B"), Color("0A0F1C")], startPoint: .top, endPoint: .bottom)
+            LinearGradient(colors: [Color(hex: "1E293B"), Color(hex: "0A0F1C")], startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
@@ -361,6 +368,7 @@ struct FakeNotificationsChallengeView: View {
                     }
                     
                     Button {
+                        onComplete?(score)
                         dismiss()
                     } label: {
                         Text("Done")

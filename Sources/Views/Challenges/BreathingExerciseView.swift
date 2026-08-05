@@ -44,6 +44,13 @@ enum Mood: String, CaseIterable {
 
 struct BreathingExerciseView: View {
     @Environment(\.dismiss) var dismiss
+
+    /// Reports the final score so the caller can record progress.
+    let onComplete: ((Int) -> Void)?
+
+    init(onComplete: ((Int) -> Void)? = nil) {
+        self.onComplete = onComplete
+    }
     @State private var selectedPattern: BreathingPattern = .box
     @State private var isActive: Bool = false
     @State private var phase: BreathPhase = .inhale
@@ -261,7 +268,7 @@ struct BreathingExerciseView: View {
     
     var backgroundGradient: some View {
         LinearGradient(
-            colors: [Color("0A0F1C"), Color("1E293B")],
+            colors: [Color(hex: "0A0F1C"), Color(hex: "1E293B")],
             startPoint: .top,
             endPoint: .bottom
         )
@@ -512,6 +519,7 @@ struct BreathingExerciseView: View {
             Spacer()
             
             Button {
+                onComplete?(cycleCount * 10)
                 dismiss()
             } label: {
                 Text("Done")

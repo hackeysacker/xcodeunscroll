@@ -60,7 +60,10 @@ struct ProfileView: View {
                 
                 // Stats summary
                 statsSection
-                
+
+                // Shop - the only place gems can be spent
+                shopSection
+
                 // Account section
                 accountSection
                 
@@ -154,6 +157,76 @@ struct ProfileView: View {
         }
     }
     
+    var shopSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("Shop")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.white)
+                Spacer()
+                HStack(spacing: 4) {
+                    Image(systemName: "diamond.fill")
+                        .foregroundColor(.cyan)
+                    Text("\(appState.gemBalance)")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(.white)
+                }
+            }
+
+            VStack(spacing: 0) {
+                ShopRow(
+                    icon: "heart.fill",
+                    title: "Refill Hearts",
+                    subtitle: "\(appState.hearts)/\(appState.maxHearts) - \(appState.nextHeartText)",
+                    cost: AppState.heartRefillCost,
+                    color: .red,
+                    isAffordable: appState.gemBalance >= AppState.heartRefillCost,
+                    isAvailable: appState.hearts < appState.maxHearts
+                ) {
+                    purchase { appState.purchaseHeartRefill() }
+                }
+
+                Divider().background(Color.white.opacity(0.1))
+
+                ShopRow(
+                    icon: "heart",
+                    title: "Buy a Heart",
+                    subtitle: "One extra attempt",
+                    cost: AppState.heartCost,
+                    color: .pink,
+                    isAffordable: appState.gemBalance >= AppState.heartCost,
+                    isAvailable: appState.hearts < appState.maxHearts
+                ) {
+                    purchase { appState.purchaseHeart() }
+                }
+
+                Divider().background(Color.white.opacity(0.1))
+
+                ShopRow(
+                    icon: "snowflake",
+                    title: "Streak Freeze",
+                    subtitle: "Protects your streak for a day",
+                    cost: AppState.streakFreezeCost,
+                    color: .cyan,
+                    isAffordable: appState.gemBalance >= AppState.streakFreezeCost,
+                    isAvailable: true
+                ) {
+                    purchase { appState.purchaseStreakFreeze() }
+                }
+            }
+            .background(Color.white.opacity(0.05))
+            .cornerRadius(16)
+        }
+    }
+
+    private func purchase(_ action: () -> Bool) {
+        if action() {
+            AppAudioManager.shared.playReward()
+        } else {
+            AppAudioManager.shared.playInsufficientFunds()
+        }
+    }
+
     var accountSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Account")
@@ -259,6 +332,60 @@ struct ProfileView: View {
 }
 
 // MARK: - Supporting Views
+// MARK: - Shop Row
+struct ShopRow: View {
+    let icon: String
+    let title: String
+    let subtitle: String
+    let cost: Int
+    let color: Color
+    let isAffordable: Bool
+    let isAvailable: Bool
+    let action: () -> Void
+
+    private var isEnabled: Bool { isAffordable && isAvailable }
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 12) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(color.opacity(0.2))
+                        .frame(width: 36, height: 36)
+                    Image(systemName: icon)
+                        .foregroundColor(color)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.white)
+                    Text(isAvailable ? subtitle : "Already full")
+                        .font(.system(size: 12))
+                        .foregroundColor(.gray)
+                }
+
+                Spacer()
+
+                HStack(spacing: 4) {
+                    Image(systemName: "diamond.fill")
+                        .font(.system(size: 12))
+                    Text("\(cost)")
+                        .font(.system(size: 14, weight: .bold))
+                }
+                .foregroundColor(isEnabled ? .cyan : .gray)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(Capsule().fill(Color.white.opacity(isEnabled ? 0.1 : 0.03)))
+            }
+            .padding(16)
+        }
+        .disabled(!isEnabled)
+        .opacity(isEnabled ? 1.0 : 0.5)
+        .accessibilityLabel("\(title), \(cost) gems")
+    }
+}
+
 struct ProfileStatBox: View {
     let title: String
     let value: String

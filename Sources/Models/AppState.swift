@@ -9,21 +9,14 @@ import Network
 @MainActor
 class AppState: ObservableObject {
     private static let logger = Logger(subsystem: "com.unscroll.focusflow", category: "AppState")
-    @Published var isOnboarded: Bool = true
+    @Published var isOnboarded: Bool = false
     @Published var isLoading: Bool = true
     @Published var currentUser: User?
     @Published var progress: GameProgress?
-    // Achievement store - lazy-loaded to improve app launch time
-    @Published private var _achievementStore: AchievementStore?
-    
-    var achievementStore: AchievementStore {
-        if let existing = _achievementStore {
-            return existing
-        }
-        let store = AchievementStore()
-        _achievementStore = store
-        return store
-    }
+    // Achievement store. Built eagerly: the previous lazy getter mutated a @Published
+    // property from inside a view's body, which is a "publishing changes from within
+    // view updates" hazard for a saving of ~30 struct allocations.
+    let achievementStore = AchievementStore()
     @Published var selectedTab: Tab = .home
     @Published var showSettings: Bool = false
     @Published var showLeaderboard: Bool = false
@@ -270,8 +263,8 @@ class AppState: ObservableObject {
                 return self?.progress
             }
             BackgroundTaskManager.shared.scheduleBackgroundSync()
-            
-            await syncFromCloud(userId: session.user.id.uuidString)
+
+            await syncFullProgressFromCloud(userId: session.user.id.uuidString)
         } catch {
             isAuthenticated = false
         }
@@ -386,7 +379,19 @@ class AppState: ObservableObject {
     }
     
     // MARK: - Data Management
-    
+
+    /// Returns the current progress record, creating a default one if it does not exist yet.
+    /// Every reward path funnels through here so progress can never be silently dropped.
+    @discardableResult
+    func ensureProgress() -> GameProgress {
+        if let existing = progress {
+            return existing
+        }
+        let fresh = GameProgress()
+        progress = fresh
+        return fresh
+    }
+
     func loadUserData() {
         // Load notification settings first
         loadNotificationSettings()
@@ -397,21 +402,29 @@ class AppState: ObservableObject {
             currentUser = user
             isOnboarded = user.goal != nil
             
-            // If we have a user, check if authenticated and sync from cloud
-            if let userId = currentUser?.id, !userId.isEmpty {
-                isAuthenticated = true
-                // Sync from cloud in background
-                Task {
-                    await syncFullProgressFromCloud(userId: userId)
-                }
+            // A locally generated guest id is NOT an authenticated session. Supabase RLS
+            // is keyed on auth.uid(), so treating a guest as signed in only produced
+            // rejected writes and a sync queue that could never drain. Guests stay
+            // local-only until a real session exists.
+            Task {
+                await checkAuthStatus()
             }
+        } else {
+            // No stored user - send them through onboarding
+            isOnboarded = false
         }
-        
+
         if let progressData = UserDefaults.standard.data(forKey: "focusflow_progress"),
            let prog = try? JSONDecoder().decode(GameProgress.self, from: progressData) {
             progress = prog
         }
-        
+
+        // An onboarded user must always have a progress record, otherwise every
+        // XP/gem/heart mutation silently no-ops.
+        if isOnboarded {
+            ensureProgress()
+        }
+
         // Check for daily login reward after loading user data
         checkDailyLoginReward()
         
@@ -560,7 +573,7 @@ class AppState: ObservableObject {
     }
     
     func updateStreak() {
-        guard var prog = progress else { return }
+        var prog = ensureProgress()
         
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
@@ -741,14 +754,14 @@ class AppState: ObservableObject {
     // MARK: - Gems System
     
     func addGems(_ amount: Int) {
-        guard var prog = progress else { return }
+        var prog = ensureProgress()
         prog.gems += amount
         progress = prog
         saveData()
     }
     
     func spendGems(_ amount: Int) -> Bool {
-        guard var prog = progress else { return false }
+        var prog = ensureProgress()
         if prog.gems >= amount {
             prog.gems -= amount
             progress = prog
@@ -762,39 +775,37 @@ class AppState: ObservableObject {
     
     /// Purchase streak freeze (protects streak for one day even if user doesn't play)
     func purchaseStreakFreeze() -> Bool {
-        let cost = 25
-        guard spendGems(cost) else { return false }
-        
-        guard var prog = progress else { return false }
+        guard spendGems(Self.streakFreezeCost) else { return false }
+
+        AppAudioManager.shared.playPurchase()
+        var prog = ensureProgress()
         prog.streakFreezeUsed = false  // Reset for new use
         progress = prog
         saveData()
         return true
     }
     
-    /// Purchase hearts with gems
+    static let heartCost = 15
+    static let heartRefillCost = 50
+    static let streakFreezeCost = 25
+
+    /// Purchase a single heart with gems. Refuses (without spending) when already full.
     func purchaseHeart() -> Bool {
-        let cost = 15
-        guard spendGems(cost) else { return false }
-        
-        addHeart()  // Uses existing addHeart method
+        guard hearts < maxHearts else { return false }
+        guard spendGems(Self.heartCost) else { return false }
+
+        addHeart()
+        AppAudioManager.shared.playPurchase()
         return true
     }
-    
-    /// Purchase full heart refill (restore to 5 hearts)
+
+    /// Purchase full heart refill. Refuses (without spending) when already full.
     func purchaseHeartRefill() -> Bool {
-        let cost = 50
-        guard var prog = progress else { return false }
-        
-        let heartsNeeded = 5 - prog.hearts
-        guard heartsNeeded > 0 else { return false }  // Already full
-        
-        let costTotal = cost  // Flat rate for full refill
-        guard spendGems(costTotal) else { return false }
-        
-        prog.hearts = 5
-        progress = prog
-        saveData()
+        guard hearts < maxHearts else { return false }
+        guard spendGems(Self.heartRefillCost) else { return false }
+
+        refillHearts()
+        AppAudioManager.shared.playPurchase()
         return true
     }
     
@@ -804,31 +815,56 @@ class AppState: ObservableObject {
     }
     
     // MARK: - Hearts System
-    
-    func loseHeart() {
-        guard var prog = progress else { return }
-        if prog.hearts > 0 {
-            prog.hearts -= 1
-            progress = prog
-            saveData()
-        }
-    }
-    
-    func addHeart() {
-        guard var prog = progress else { return }
-        if prog.hearts < 5 {
-            prog.hearts += 1
-            progress = prog
-            saveData()
-        }
-    }
-    
-    func refillHearts() {
-        guard var prog = progress else { return }
-        prog.hearts = 5
+    // HeartRefillManager owns the heart clock (regeneration slots, offline catch-up,
+    // persistence). AppState mirrors its count into GameProgress so the UI, the save
+    // blob and the cloud record all agree on one number.
+
+    let heartManager = HeartRefillManager.shared
+
+    var hearts: Int { progress?.hearts ?? heartManager.hearts }
+
+    var maxHearts: Int { heartManager.maxHearts }
+
+    var hasHeartsToPlay: Bool { hearts > 0 }
+
+    /// Copy the manager's authoritative count into progress and persist.
+    private func syncHeartsFromManager() {
+        var prog = ensureProgress()
+        guard prog.hearts != heartManager.hearts else { return }
+        prog.hearts = heartManager.hearts
         progress = prog
         saveData()
     }
+
+    /// Credit hearts earned while the app was backgrounded or closed.
+    /// Call on launch and whenever the app becomes active.
+    func refreshHearts() {
+        heartManager.checkMissedTime()
+        syncHeartsFromManager()
+    }
+
+    @discardableResult
+    func loseHeart() -> Bool {
+        let didUse = heartManager.useHeart()
+        syncHeartsFromManager()
+        if didUse {
+            AppAudioManager.shared.playHeartLoss()
+        }
+        return didUse
+    }
+
+    func addHeart() {
+        heartManager.addHeart()
+        syncHeartsFromManager()
+    }
+
+    func refillHearts() {
+        heartManager.refillAllHearts()
+        syncHeartsFromManager()
+    }
+
+    /// Time until the next heart regenerates, for display.
+    var nextHeartText: String { heartManager.nextRefillText }
     
     // MARK: - Skill Progress
     
@@ -861,7 +897,7 @@ class AppState: ObservableObject {
     // MARK: - XP & Leveling
     
     func addXP(_ amount: Int) {
-        guard var prog = progress else { return }
+        var prog = ensureProgress()
         let previousLevel = prog.level
         
         // Apply weekend bonus if applicable
@@ -890,7 +926,7 @@ class AppState: ObservableObject {
     // MARK: - Challenge Completion
     
     func completeChallenge(type: AllChallengeType, score: Int, xpEarned: Int) {
-        guard var prog = progress else { return }
+        var prog = ensureProgress()
         let previousLevel = prog.level
         
         // Add XP with weekend bonus applied
@@ -949,7 +985,7 @@ class AppState: ObservableObject {
     // MARK: - Daily Challenges
     
     func generateDailyChallengesIfNeeded() {
-        guard var prog = progress else { return }
+        var prog = ensureProgress()
         prog.generateDailyChallenges()
         progress = prog
         saveData()
@@ -961,7 +997,7 @@ class AppState: ObservableObject {
     }
     
     func completeDailyChallenge(_ challengeType: AllChallengeType, score: Int) {
-        guard var prog = progress else { return }
+        var prog = ensureProgress()
         
         // Find and complete the daily challenge
         if let index = prog.dailyChallenges?.firstIndex(where: { $0.challengeType == challengeType && !$0.isCompleted }) {

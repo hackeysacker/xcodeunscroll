@@ -6,6 +6,13 @@ import SwiftUI
 
 struct MultiObjectTrackingView: View {
     @Environment(\.dismiss) var dismiss
+
+    /// Reports the final score so the caller can record progress.
+    let onComplete: ((Int) -> Void)?
+
+    init(onComplete: ((Int) -> Void)? = nil) {
+        self.onComplete = onComplete
+    }
     
     // Game State
     @State private var score: Int = 0
@@ -55,7 +62,7 @@ struct MultiObjectTrackingView: View {
     var body: some View {
         ZStack {
             // Background
-            LinearGradient(colors: [Color("0A0F1C"), Color("1E293B")], startPoint: .top, endPoint: .bottom)
+            LinearGradient(colors: [Color(hex: "0A0F1C"), Color(hex: "1E293B")], startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
@@ -231,6 +238,7 @@ struct MultiObjectTrackingView: View {
                     }
                     
                     Button {
+                        onComplete?(score)
                         dismiss()
                     } label: {
                         Text("Done")

@@ -36,12 +36,20 @@ class HeartRefillManager: ObservableObject {
     // MARK: - Persistence
     
     func loadState() {
-        hearts = UserDefaults.standard.integer(forKey: heartsKey)
-        if hearts == 0 { hearts = maxHearts } // Default to full
-        
-        refillSlots = UserDefaults.standard.integer(forKey: slotsKey)
-        if refillSlots == 0 { refillSlots = maxRefillSlots }
-        
+        // `integer(forKey:)` cannot distinguish "never saved" from a real zero, which
+        // would silently hand back a full set of hearts to a player who just ran out.
+        if let saved = UserDefaults.standard.object(forKey: heartsKey) as? Int {
+            hearts = min(max(saved, 0), maxHearts)
+        } else {
+            hearts = maxHearts
+        }
+
+        if let savedSlots = UserDefaults.standard.object(forKey: slotsKey) as? Int {
+            refillSlots = min(max(savedSlots, 0), maxRefillSlots)
+        } else {
+            refillSlots = maxRefillSlots
+        }
+
         if let nextRefill = UserDefaults.standard.object(forKey: nextRefillKey) as? Date {
             nextRefillTime = nextRefill
         }

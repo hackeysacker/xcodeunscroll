@@ -37,10 +37,16 @@ struct UniversalChallengeView: View {
     @State private var lastTapPosition: CGPoint = .zero
     @State private var showRipple: Bool = false
     @State private var difficulty: Double = 0.0  // Increases with score for harder challenges
+    @State private var mistakes: Int = 0
+    @State private var failedOutOfHearts: Bool = false
+    @State private var challengeTimer: Timer?
 
     enum ReactionState {
         case waiting, ready, go, tooEarly
     }
+
+    /// A run cannot be started without at least one heart.
+    private var canStart: Bool { appState.hasHeartsToPlay }
 
     var body: some View {
         ZStack {
@@ -106,19 +112,72 @@ struct UniversalChallengeView: View {
                 }
             }
 
+            // Hearts you are playing with
+            HStack(spacing: 6) {
+                ForEach(0..<appState.maxHearts, id: \.self) { index in
+                    Image(systemName: index < appState.hearts ? "heart.fill" : "heart")
+                        .foregroundColor(index < appState.hearts ? .red : .white.opacity(0.3))
+                        .font(.system(size: 16))
+                }
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(appState.hearts) of \(appState.maxHearts) hearts")
+
             Spacer()
 
-            Button(action: { startChallenge() }) {
-                Text("Start")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(challenge.color)
-                    .cornerRadius(12)
+            if canStart {
+                Button(action: { startChallenge() }) {
+                    Text("Start")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(challenge.color)
+                        .cornerRadius(12)
+                }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 40)
+            } else {
+                outOfHeartsView
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 40)
             }
-            .padding(.horizontal, 24)
-            .padding(.bottom, 40)
+        }
+    }
+
+    // MARK: - Out of Hearts
+    var outOfHeartsView: some View {
+        VStack(spacing: 12) {
+            Text("Out of hearts")
+                .font(.headline)
+                .foregroundColor(.white)
+
+            Text(appState.nextHeartText)
+                .font(.system(size: 14))
+                .foregroundColor(.gray)
+
+            Button {
+                if appState.purchaseHeartRefill() {
+                    AppAudioManager.shared.playReward()
+                } else {
+                    AppAudioManager.shared.playInsufficientFunds()
+                }
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "diamond.fill")
+                    Text("Refill for \(AppState.heartRefillCost) gems")
+                }
+                .font(.headline)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(appState.gemBalance >= AppState.heartRefillCost ? Color.cyan : Color.gray)
+                .cornerRadius(12)
+            }
+            .disabled(appState.gemBalance < AppState.heartRefillCost)
+
+            Button("Back") { dismiss() }
+                .foregroundColor(.gray)
         }
     }
 
@@ -139,6 +198,16 @@ struct UniversalChallengeView: View {
                 .foregroundColor(timeRemaining < 10 ? .red : .white)
                 Spacer()
                 HStack(spacing: 4) {
+                    Image(systemName: "heart.fill")
+                        .foregroundColor(.red)
+                    Text("\(appState.hearts)")
+                        .foregroundColor(.white)
+                }
+                .font(.system(size: 14, weight: .bold))
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("\(appState.hearts) hearts remaining")
+
+                HStack(spacing: 4) {
                     Image(systemName: "star.fill")
                     Text("\(score)")
                 }
@@ -154,13 +223,15 @@ struct UniversalChallengeView: View {
     }
 
     // MARK: - Save and Dismiss
-    func saveAndDismiss() {
-        // Calculate rewards
-        let gemsEarned = max(1, score / 10)
-        let xpEarned = challenge.xpReward
 
+    /// A run that ended on an empty heart bar still banks partial credit, not full XP.
+    var earnedXP: Int {
+        failedOutOfHearts ? max(1, challenge.xpReward / 2) : challenge.xpReward
+    }
+
+    func saveAndDismiss() {
         // Save progress to AppState (which handles cloud sync)
-        appState.completeChallenge(type: challenge, score: score, xpEarned: xpEarned)
+        appState.completeChallenge(type: challenge, score: score, xpEarned: earnedXP)
 
         // Dismiss the challenge view
         dismiss()
@@ -173,11 +244,11 @@ struct UniversalChallengeView: View {
         return VStack(spacing: 24) {
             Spacer()
 
-            Image(systemName: score >= 50 ? "star.fill" : "arrow.clockwise")
+            Image(systemName: failedOutOfHearts ? "heart.slash.fill" : (score >= 50 ? "star.fill" : "arrow.clockwise"))
                 .font(.system(size: 60))
-                .foregroundColor(score >= 50 ? .yellow : .gray)
+                .foregroundColor(failedOutOfHearts ? .red : (score >= 50 ? .yellow : .gray))
 
-            Text("Challenge Complete!")
+            Text(failedOutOfHearts ? "Out of Hearts" : "Challenge Complete!")
                 .font(.title)
                 .foregroundColor(.white)
 
@@ -185,9 +256,15 @@ struct UniversalChallengeView: View {
                 .font(.title2)
                 .foregroundColor(.yellow)
 
+            if mistakes > 0 {
+                Text("\(mistakes) mistake\(mistakes == 1 ? "" : "s")")
+                    .font(.system(size: 14))
+                    .foregroundColor(.gray)
+            }
+
             HStack(spacing: 24) {
                 VStack {
-                    Text("+\(challenge.xpReward)")
+                    Text("+\(earnedXP)")
                         .font(.headline)
                         .foregroundColor(.green)
                     Text("XP")
@@ -439,6 +516,20 @@ struct UniversalChallengeView: View {
         }
     }
 
+    /// A real mistake: costs a heart, and ends the run when the last one goes.
+    func registerMistake() {
+        guard isActive, !showResults else { return }
+
+        mistakes += 1
+        combo = 0
+        appState.loseHeart()
+
+        if !appState.hasHeartsToPlay {
+            failedOutOfHearts = true
+            endChallenge()
+        }
+    }
+
     func handleMemoryTap(_ index: Int) {
         if index % 2 == 0 && index < level * 2 {
             combo += 1
@@ -446,6 +537,9 @@ struct UniversalChallengeView: View {
             AppAudioManager.shared.lightImpact()
             AppAudioManager.shared.playTap()
         } else {
+            // Score-only penalty: the memory grid's notion of a "wrong" tile is
+            // arbitrary enough that charging a heart per miss would empty the bar
+            // in seconds. Hearts are reserved for unambiguous rule violations.
             combo = 0
             score = max(0, score - 5)
             AppAudioManager.shared.error()
@@ -612,6 +706,7 @@ struct UniversalChallengeView: View {
             gameState = .tooEarly
             AppAudioManager.shared.warning()
             AppAudioManager.shared.playError()
+            registerMistake()
             return
         }
 
@@ -856,6 +951,14 @@ struct UniversalChallengeView: View {
                         .foregroundColor(.white)
                 }
             }
+            // The whole point of the mechanic: giving in has to cost something.
+            .contentShape(Circle())
+            .onTapGesture {
+                score = max(0, score - 10)
+                AppAudioManager.shared.error()
+                AppAudioManager.shared.playError()
+                registerMistake()
+            }
 
             Spacer()
 
@@ -902,10 +1005,14 @@ struct UniversalChallengeView: View {
 
     // MARK: - Timer
     func startChallenge() {
+        guard canStart else { return }
+
         isActive = true
         timeRemaining = Double(challenge.duration)
         score = 0
         combo = 0
+        mistakes = 0
+        failedOutOfHearts = false
         level = 1
         cycleCount = 0
         temptationLevel = 0.3
@@ -922,7 +1029,8 @@ struct UniversalChallengeView: View {
             BreathingGuide.shared.startSession()
         }
 
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
+        challengeTimer?.invalidate()
+        challengeTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
             if self.timeRemaining > 0 {
                 self.timeRemaining -= 0.1
                 self.challengeTime = self.challenge.duration - Int(self.timeRemaining)
@@ -974,6 +1082,8 @@ struct UniversalChallengeView: View {
                 }
             } else {
                 timer.invalidate()
+                self.challengeTimer = nil
+                self.isActive = false
                 self.showResults = true
 
                 // End guided breathing audio if it was a breathing challenge
@@ -991,8 +1101,14 @@ struct UniversalChallengeView: View {
     }
 
     func endChallenge() {
+        challengeTimer?.invalidate()
+        challengeTimer = nil
         isActive = false
         showResults = true
+
+        if challenge.category == .breathing {
+            BreathingGuide.shared.endSession()
+        }
 
         // Play completion sounds
         if score >= 50 {

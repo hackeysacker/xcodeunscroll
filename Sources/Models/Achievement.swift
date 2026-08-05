@@ -136,7 +136,45 @@ extension Achievement {
 @MainActor
 class AchievementStore: ObservableObject {
     @Published var achievements: [Achievement] = Achievement.allAchievements
-    
+
+    private let storageKey = "focusflow_unlocked_achievements"
+
+    init() {
+        loadUnlocks()
+    }
+
+    // MARK: - Persistence
+
+    /// Unlocks are stored as id -> unlock date so the catalogue itself can grow
+    /// between releases without invalidating a player's history.
+    private func loadUnlocks() {
+        guard let data = UserDefaults.standard.data(forKey: storageKey),
+              let unlocked = try? JSONDecoder().decode([String: Date].self, from: data) else {
+            return
+        }
+
+        for index in achievements.indices {
+            if let unlockedAt = unlocked[achievements[index].id] {
+                achievements[index].isUnlocked = true
+                achievements[index].unlockedAt = unlockedAt
+            }
+        }
+    }
+
+    private func saveUnlocks() {
+        var unlocked: [String: Date] = [:]
+        for achievement in achievements where achievement.isUnlocked {
+            unlocked[achievement.id] = achievement.unlockedAt ?? Date()
+        }
+
+        if let data = try? JSONEncoder().encode(unlocked) {
+            UserDefaults.standard.set(data, forKey: storageKey)
+        }
+    }
+
+    /// Achievements unlocked by the most recent `checkAndUnlock` call.
+    @Published private(set) var recentlyUnlocked: [Achievement] = []
+
     func checkAndUnlock(progress: GameProgress) {
         let completedCount = progress.completedChallenges.count
         let streak = progress.streakDays
@@ -145,7 +183,9 @@ class AchievementStore: ObservableObject {
         
         // Calculate perfect days (this would need tracking in a real implementation)
         let perfectDays = 0  // Placeholder - would need to track actual perfect days
-        
+
+        var newlyUnlocked: [Achievement] = []
+
         for i in achievements.indices {
             guard !achievements[i].isUnlocked else { continue }
             
@@ -216,7 +256,15 @@ class AchievementStore: ObservableObject {
             if shouldUnlock {
                 achievements[i].isUnlocked = true
                 achievements[i].unlockedAt = Date()
+                newlyUnlocked.append(achievements[i])
             }
+        }
+
+        recentlyUnlocked = newlyUnlocked
+
+        if !newlyUnlocked.isEmpty {
+            saveUnlocks()
+            AppAudioManager.shared.playAchievement()
         }
     }
     

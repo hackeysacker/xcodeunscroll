@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ProgressView: View {
+struct ProgressTabView: View {
     @EnvironmentObject var appState: AppState
     
     var body: some View {
@@ -303,6 +303,6 @@ struct ActivityRow: View {
 }
 
 #Preview {
-    ProgressView()
+    ProgressTabView()
         .environmentObject(AppState())
 }

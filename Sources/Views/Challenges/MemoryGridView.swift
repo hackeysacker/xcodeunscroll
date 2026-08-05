@@ -5,6 +5,13 @@ import SwiftUI
 
 struct MemoryGridView: View {
     @Environment(\.dismiss) var dismiss
+
+    /// Reports the final score so the caller can record progress.
+    let onComplete: ((Int) -> Void)?
+
+    init(onComplete: ((Int) -> Void)? = nil) {
+        self.onComplete = onComplete
+    }
     @State private var gridSize: Int = 3
     @State private var pattern: [Int] = []
     @State private var userSequence: [Int] = []
@@ -24,7 +31,7 @@ struct MemoryGridView: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(colors: [Color("0A0F1C"), Color("1E293B")], startPoint: .top, endPoint: .bottom)
+            LinearGradient(colors: [Color(hex: "0A0F1C"), Color(hex: "1E293B")], startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
@@ -163,6 +170,7 @@ struct MemoryGridView: View {
                 }
                 
                 Button {
+                    onComplete?(score)
                     dismiss()
                 } label: {
                     Text("Done")

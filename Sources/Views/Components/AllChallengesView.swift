@@ -96,7 +96,9 @@ struct AllChallengesView: View {
             }
         }
         .fullScreenCover(item: $selectedChallenge) { challenge in
-            UniversalChallengeView(challenge: challenge)
+            // Route through ChallengeView so this launcher gets the purpose-built
+            // screens and the heart gate like every other entry point.
+            ChallengeView(challenge: challenge)
                 .environmentObject(appState)
         }
     }

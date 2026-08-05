@@ -5,6 +5,13 @@ import SwiftUI
 
 struct LightningTapView: View {
     @Environment(\.dismiss) var dismiss
+
+    /// Reports the final score so the caller can record progress.
+    let onComplete: ((Int) -> Void)?
+
+    init(onComplete: ((Int) -> Void)? = nil) {
+        self.onComplete = onComplete
+    }
     @State private var score: Int = 0
     @State private var attempts: Int = 0
     @State private var perfectHits: Int = 0
@@ -31,7 +38,7 @@ struct LightningTapView: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(colors: [Color("0A0F1C"), Color("1E293B")], startPoint: .top, endPoint: .bottom)
+            LinearGradient(colors: [Color(hex: "0A0F1C"), Color(hex: "1E293B")], startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
@@ -249,6 +256,7 @@ struct LightningTapView: View {
                     }
                     
                     Button {
+                        onComplete?(score)
                         dismiss()
                     } label: {
                         Text("Done")

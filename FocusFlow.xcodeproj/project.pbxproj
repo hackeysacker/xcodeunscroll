@@ -66,7 +66,7 @@
 		BF858A1D9E2B7475C16A209C /* FocusFlowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F3FFD705639E39B2A2FCF2 /* FocusFlowUITests.swift */; };
 		C23212FB68B36568678423E9 /* FocusFlowWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EC25D1ECC0C84AB57CFBB52 /* FocusFlowWidget.swift */; };
 		C37B7AF8A1BF7813DABF1470 /* MemoryGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0750F6F44C6618E12EB007DF /* MemoryGridView.swift */; };
-		C6ED778AAB986AC145424898 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78BC8B9AB0840EC35907819 /* ProgressView.swift */; };
+		C6ED778AAB986AC145424898 /* ProgressTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78BC8B9AB0840EC35907819 /* ProgressTabView.swift */; };
 		CC1675CD65722B4C03D7E4BF /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B135324C952FCE29E5967D85 /* BackgroundTaskManager.swift */; };
 		CCD1EA47C33F4552AAFFDAB9 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 712E75634EDDF39FE0EC2015 /* LeaderboardView.swift */; };
 		D2CE236CD4C89487E0723264 /* DuolingoPathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E6EF3D646C8DB229A91D0C /* DuolingoPathView.swift */; };
@@ -178,7 +178,7 @@
 		B9FF345F88B9807E1FEF9785 /* CoreChallenges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreChallenges.swift; sourceTree = "<group>"; };
 		BAD6F49FCDB02DBEA3A18B60 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		C18E6DACB2F83EA4DD476994 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		C78BC8B9AB0840EC35907819 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
+		C78BC8B9AB0840EC35907819 /* ProgressTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressTabView.swift; sourceTree = "<group>"; };
 		CDE0AB0ADC3DF2716AE2A02E /* FocusFlowApp.swift.disabled */ = {isa = PBXFileReference; path = FocusFlowApp.swift.disabled; sourceTree = "<group>"; };
 		D0E7607542C76D03EE63312C /* ThemeSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSelectionView.swift; sourceTree = "<group>"; };
 		D10E4CAFC91D2835C9447A93 /* ScreenTimeDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeDashboardView.swift; sourceTree = "<group>"; };
@@ -307,7 +307,7 @@
 			children = (
 				89E6EF3D646C8DB229A91D0C /* DuolingoPathView.swift */,
 				244DE710D7D58E21A83D9BA7 /* ProgressPathView.swift */,
-				C78BC8B9AB0840EC35907819 /* ProgressView.swift */,
+				C78BC8B9AB0840EC35907819 /* ProgressTabView.swift */,
 				32FFCC417859C79EC5C7D41C /* WindingProgressPath.swift */,
 			);
 			path = Progress;
@@ -626,7 +626,7 @@
 				4132BC6DC3055820176E99FE /* ProfileView.swift in Sources */,
 				4AE7045D0594899AC8080295 /* ProgressPath.swift in Sources */,
 				785B546091C2656A825BE2E5 /* ProgressPathView.swift in Sources */,
-				C6ED778AAB986AC145424898 /* ProgressView.swift in Sources */,
+				C6ED778AAB986AC145424898 /* ProgressTabView.swift in Sources */,
 				3C0690F5D14302D8277669FE /* RapidTargetView.swift in Sources */,
 				65108A8E38498A499AF922BE /* ScreenTimeDashboardView.swift in Sources */,
 				8A3C9B44783F971748A2BD1F /* ScreenTimeManager.swift in Sources */,

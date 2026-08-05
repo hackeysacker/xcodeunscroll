@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - "codex/**"
+      - "claude/**"
   pull_request:
 
 jobs:
@@ -23,8 +24,8 @@ jobs:
       - name: Resolve Swift packages
         run: |
           xcodebuild -resolvePackageDependencies \
-            -project Unscroll.xcodeproj \
-            -scheme Unscroll
+            -project FocusFlow.xcodeproj \
+            -scheme FocusFlow
 
       - name: Select simulator destination
         id: simulator
@@ -39,29 +40,20 @@ jobs:
 
       - name: Build app
         run: |
-          xcodebuild -project Unscroll.xcodeproj \
-            -scheme Unscroll \
+          xcodebuild -project FocusFlow.xcodeproj \
+            -scheme FocusFlow \
             -destination '${{ steps.simulator.outputs.destination }}' \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \
             build
 
-      - name: Run tests (if configured)
+      # The FocusFlowTests scheme owns the unit test target. This step must fail
+      # the job when tests fail *or* when the scheme loses its test action - a
+      # silently skipped suite is how this repo used to report green.
+      - name: Run tests
         run: |
-          SHOW_TEST_PLANS_OUTPUT=$(xcodebuild \
-            -project Unscroll.xcodeproj \
-            -scheme Unscroll \
-            -showTestPlans 2>&1 || true)
-
-          echo "$SHOW_TEST_PLANS_OUTPUT"
-
-          if echo "$SHOW_TEST_PLANS_OUTPUT" | grep -qi "not configured"; then
-            echo "Scheme has no configured test action. Skipping tests."
-            exit 0
-          fi
-
-          xcodebuild -project Unscroll.xcodeproj \
-            -scheme Unscroll \
+          xcodebuild -project FocusFlow.xcodeproj \
+            -scheme FocusFlowTests \
             -destination '${{ steps.simulator.outputs.destination }}' \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \

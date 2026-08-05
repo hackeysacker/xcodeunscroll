@@ -10,16 +10,16 @@ struct DuolingoPathView: View {
     
     // Section colors (app theme)
     let sectionColors: [Color] = [
-        Color("8B5CF6"), // Purple - Basics
-        Color("3B82F6"), // Blue - Attention
-        Color("8B5CF6"), // Purple - Memory
-        Color("EF4444"), // Red - Impulse
-        Color("10B981"), // Green - Calm
-        Color("F59E0B"), // Orange - Discipline
-        Color("EC4899"), // Pink - Endurance
-        Color("06B6D4"), // Cyan - Mastery
-        Color("FBBF24"), // Gold - Wisdom
-        Color("EF4444"), // Red - Legend
+        Color(hex: "8B5CF6"), // Purple - Basics
+        Color(hex: "3B82F6"), // Blue - Attention
+        Color(hex: "8B5CF6"), // Purple - Memory
+        Color(hex: "EF4444"), // Red - Impulse
+        Color(hex: "10B981"), // Green - Calm
+        Color(hex: "F59E0B"), // Orange - Discipline
+        Color(hex: "EC4899"), // Pink - Endurance
+        Color(hex: "06B6D4"), // Cyan - Mastery
+        Color(hex: "FBBF24"), // Gold - Wisdom
+        Color(hex: "EF4444"), // Red - Legend
     ]
     
     var sectionNames: [String] {
@@ -40,7 +40,7 @@ struct DuolingoPathView: View {
     var body: some View {
         ZStack {
             // App's dark gradient background
-            LinearGradient(colors: [Color("0A0F1C"), Color("1E293B")], startPoint: .top, endPoint: .bottom)
+            LinearGradient(colors: [Color(hex: "0A0F1C"), Color(hex: "1E293B")], startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
             
             ScrollViewReader { proxy in
@@ -174,13 +174,13 @@ struct DuolingoPathView: View {
             .padding(.vertical, 16)
             .background(
                 LinearGradient(
-                    colors: [Color("8B5CF6"), Color("6366F1")],
+                    colors: [Color(hex: "8B5CF6"), Color(hex: "6366F1")],
                     startPoint: .leading,
                     endPoint: .trailing
                 )
             )
             .cornerRadius(16)
-            .shadow(color: Color("8B5CF6").opacity(0.5), radius: 0, y: 4)
+            .shadow(color: Color(hex: "8B5CF6").opacity(0.5), radius: 0, y: 4)
             .padding(.horizontal, 20)
             .padding(.bottom, 30)
         }
@@ -443,7 +443,7 @@ struct DuolingoLevelDetail: View {
     var body: some View {
         ZStack {
             // App's dark gradient background
-            LinearGradient(colors: [Color("0A0F1C"), Color("1E293B")], startPoint: .top, endPoint: .bottom)
+            LinearGradient(colors: [Color(hex: "0A0F1C"), Color(hex: "1E293B")], startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
             
             VStack(spacing: 24) {
@@ -535,7 +535,7 @@ struct DuolingoLevelDetail: View {
                     .padding(.vertical, 18)
                     .background(
                         LinearGradient(
-                            colors: [Color("8B5CF6"), Color("6366F1")],
+                            colors: [Color(hex: "8B5CF6"), Color(hex: "6366F1")],
                             startPoint: .leading,
                             endPoint: .trailing
                         )

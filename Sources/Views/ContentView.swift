@@ -282,9 +282,12 @@ struct MainTabView: View {
                 HomeView()
                     .tag(AppState.Tab.home)
                 
-                ProgressView()
+                ProgressTabView()
                     .tag(AppState.Tab.progress)
-                
+
+                DuolingoPathView()
+                    .tag(AppState.Tab.path)
+
                 ScreenTimeDashboardView()
                     .tag(AppState.Tab.screenTime)
                 
