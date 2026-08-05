@@ -19,7 +19,6 @@ settings:
     SWIFT_VERSION: "5.9"
     DEVELOPMENT_TEAM: ""
     CODE_SIGN_STYLE: Automatic
-    INFOPLIST_FILE: Sources/App/Info.plist
     CODE_SIGN_IDENTITY: "Apple Development"
 
 targets:
@@ -41,6 +40,7 @@ targets:
         CURRENT_PROJECT_VERSION: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         GENERATE_INFOPLIST_FILE: false
+        INFOPLIST_FILE: Sources/App/Info.plist
         SWIFT_EMIT_LOC_STRINGS: "YES"
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
         CODE_SIGNING_ALLOWED: YES
@@ -62,8 +62,8 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.focusflow.app.widget
         MARKETING_VERSION: "1.0.0"
         CURRENT_PROJECT_VERSION: "1"
-        GENERATE_INFOPLIST_FILE: true
-        INFOPLIST_KEY_NSExtensionPointIdentifier: com.apple.widgetkit-extension
+        GENERATE_INFOPLIST_FILE: false
+        INFOPLIST_FILE: FocusFlowWidget/Info.plist
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
         CODE_SIGNING_ALLOWED: YES
         CODE_SIGNING_REQUIRED: YES
