@@ -10,7 +10,7 @@ struct HeartState: Codable {
     var currentHearts: Int?
     var lastHeartLoss: Date?
     var updatedAt: Date
-    
+
     enum CodingKeys: String, CodingKey {
         case userId = "user_id"
         case currentHearts = "current_hearts"
@@ -27,7 +27,7 @@ struct UserProfile: Codable, Identifiable {
     var avatarURL: String?
     var createdAt: Date
     var updatedAt: Date
-    
+
     // Game stats
     var gems: Int
     var hearts: Int
@@ -35,13 +35,13 @@ struct UserProfile: Codable, Identifiable {
     var xp: Int
     var streak: Int
     var longestStreak: Int
-    
+
     // Settings
     var soundEnabled: Bool
     var hapticEnabled: Bool
     var darkModeEnabled: Bool
     var notificationsEnabled: Bool
-    
+
     init(id: String = UUID().uuidString) {
         self.id = id
         self.email = nil

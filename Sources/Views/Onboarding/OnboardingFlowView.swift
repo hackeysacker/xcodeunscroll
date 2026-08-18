@@ -7,7 +7,7 @@ struct OnboardingFlowView: View {
     @State private var username: String = ""
     @State private var displayName: String = ""
     @State private var selectedAvatar: Int = 0
-    @State private var selectedGoal: GoalType = .improve_focus
+    @State private var selectedGoal: GoalType = .improveFocus
     @State private var dailyMinutes: Int = 30
     @State private var commitmentDays: Int = 5
     @State private var difficulty: Int = 2
@@ -189,7 +189,7 @@ struct GoalSettingPage: View {
             LinearGradient(colors: [Color("0A0F1C"), Color("1E293B")], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
             ScrollView { VStack(spacing: 24) { Text("What's Your Goal?").font(.system(size: 28, weight: .bold)).foregroundColor(.white)
                 VStack(spacing: 12) {
-                    ForEach([GoalType.improve_focus, .reduce_screen_time, .build_discipline, .increase_productivity], id: \.self) { goal in Button(action: { selectedGoal = goal }) { HStack { Text(goal == .improve_focus ? "🎯" : goal == .reduce_screen_time ? "📱" : goal == .build_discipline ? "💪" : "⚡").font(.system(size: 30)); Text(goal.rawValue).foregroundColor(.white); Spacer(); if selectedGoal == goal { Image(systemName: "checkmark.circle.fill").foregroundColor(.purple) } }.padding(20).background(selectedGoal == goal ? Color.purple.opacity(0.2) : Color.white.opacity(0.05)).cornerRadius(16).overlay(RoundedRectangle(cornerRadius: 16).stroke(selectedGoal == goal ? Color.purple : Color.white.opacity(0.1), lineWidth: 2)) } }
+                    ForEach([GoalType.improveFocus, .reduceScreenTime, .buildDiscipline, .increaseProductivity], id: \.self) { goal in Button(action: { selectedGoal = goal }) { HStack { Text(goal == .improveFocus ? "🎯" : goal == .reduceScreenTime ? "📱" : goal == .buildDiscipline ? "💪" : "⚡").font(.system(size: 30)); Text(goal.rawValue).foregroundColor(.white); Spacer(); if selectedGoal == goal { Image(systemName: "checkmark.circle.fill").foregroundColor(.purple) } }.padding(20).background(selectedGoal == goal ? Color.purple.opacity(0.2) : Color.white.opacity(0.05)).cornerRadius(16).overlay(RoundedRectangle(cornerRadius: 16).stroke(selectedGoal == goal ? Color.purple : Color.white.opacity(0.1), lineWidth: 2)) } }
                 }.padding(.horizontal, 24)
                 VStack(spacing: 12) { Text("Daily Practice Time").foregroundColor(.white); HStack { Text("\(dailyMinutes)").font(.system(size: 36, weight: .bold)).foregroundColor(.purple); Text("min").foregroundColor(.gray) }; Slider(value: Binding(get: { Double(dailyMinutes) }, set: { dailyMinutes = Int($0) }), in: 5...120, step: 5).accentColor(.purple) }.padding(24).background(Color.white.opacity(0.05)).cornerRadius(16).padding(.horizontal, 24)
                 Button(action: onNext) { Text("Continue").font(.system(size: 18, weight: .bold)).foregroundColor(.white).frame(maxWidth: .infinity).frame(height: 56).background(Color.purple).cornerRadius(28) }.padding(.horizontal, 32).padding(.bottom, 40) }.padding(.top, 40) }

@@ -5,12 +5,12 @@ struct UnscrollApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var appState = AppState()
     @StateObject private var themeManager = ThemeManager.shared
-    
+
     init() {
         // Initialize AppAudioManager with saved preferences
         let soundEnabled = UserDefaults.standard.object(forKey: "soundEnabled") as? Bool ?? true
         let hapticEnabled = UserDefaults.standard.object(forKey: "hapticEnabled") as? Bool ?? true
-        
+
         // Note: AppAudioManager is a singleton, set defaults
         Task { @MainActor in
             AppAudioManager.shared.soundEnabled = soundEnabled
@@ -18,7 +18,7 @@ struct UnscrollApp: App {
             AppAudioManager.shared.prepareHaptics()
         }
     }
-    
+
     var body: some Scene {
         WindowGroup {
             ContentView()

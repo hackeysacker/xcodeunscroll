@@ -12,26 +12,26 @@ struct User: Codable, Identifiable {
 }
 
 enum GoalType: String, Codable, CaseIterable {
-    case improve_focus = "Improve Focus"
-    case reduce_screen_time = "Reduce Screen Time"
-    case build_discipline = "Build Discipline"
-    case increase_productivity = "Increase Productivity"
-    
+    case improveFocus = "Improve Focus"
+    case reduceScreenTime = "Reduce Screen Time"
+    case buildDiscipline = "Build Discipline"
+    case increaseProductivity = "Increase Productivity"
+
     var description: String {
         switch self {
-        case .improve_focus: return "Train your brain to focus longer"
-        case .reduce_screen_time: return "Spend less time scrolling"
-        case .build_discipline: return "Build daily habits"
-        case .increase_productivity: return "Get more done each day"
+        case .improveFocus: return "Train your brain to focus longer"
+        case .reduceScreenTime: return "Spend less time scrolling"
+        case .buildDiscipline: return "Build daily habits"
+        case .increaseProductivity: return "Get more done each day"
         }
     }
-    
+
     var emoji: String {
         switch self {
-        case .improve_focus: return "🎯"
-        case .reduce_screen_time: return "📵"
-        case .build_discipline: return "💪"
-        case .increase_productivity: return "⚡️"
+        case .improveFocus: return "🎯"
+        case .reduceScreenTime: return "📵"
+        case .buildDiscipline: return "💪"
+        case .increaseProductivity: return "⚡️"
         }
     }
 }
