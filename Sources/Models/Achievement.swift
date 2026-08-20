@@ -138,85 +138,52 @@ class AchievementStore: ObservableObject {
     @Published var achievements: [Achievement] = Achievement.allAchievements
     
     func checkAndUnlock(progress: GameProgress) {
+        for index in achievements.indices {
+            guard !achievements[index].isUnlocked else { continue }
+            
+            if shouldUnlockAchievement(achievements[index].id, progress: progress) {
+                achievements[index].isUnlocked = true
+                achievements[index].unlockedAt = Date()
+            }
+        }
+    }
+    
+    private func shouldUnlockAchievement(_ id: String, progress: GameProgress) -> Bool {
         let completedCount = progress.completedChallenges.count
         let streak = progress.streakDays
         let level = progress.level
         let totalXP = progress.totalXP
         
-        // Calculate perfect days (this would need tracking in a real implementation)
-        let perfectDays = 0  // Placeholder - would need to track actual perfect days
-        
-        for i in achievements.indices {
-            guard !achievements[i].isUnlocked else { continue }
-            
-            var shouldUnlock = false
-            
-            switch achievements[i].id {
-            case "first_challenge":
-                shouldUnlock = completedCount >= 1
-            case "ten_challenges":
-                shouldUnlock = completedCount >= 10
-            case "fifty_challenges":
-                shouldUnlock = completedCount >= 50
-            case "hundred_challenges":
-                shouldUnlock = completedCount >= 100
-            case "five_hundred":
-                shouldUnlock = completedCount >= 500
-            case "streak_3":
-                shouldUnlock = streak >= 3
-            case "streak_7":
-                shouldUnlock = streak >= 7
-            case "streak_14":
-                shouldUnlock = streak >= 14
-            case "streak_30":
-                shouldUnlock = streak >= 30
-            case "streak_60":
-                shouldUnlock = streak >= 60
-            case "streak_100":
-                shouldUnlock = streak >= 100
-            case "streak_365":
-                shouldUnlock = streak >= 365
-            case "level_5":
-                shouldUnlock = level >= 5
-            case "level_10":
-                shouldUnlock = level >= 10
-            case "level_25":
-                shouldUnlock = level >= 25
-            case "level_50":
-                shouldUnlock = level >= 50
-            case "xp_1000":
-                shouldUnlock = totalXP >= 1000
-            case "xp_5000":
-                shouldUnlock = totalXP >= 5000
-            case "xp_10000":
-                shouldUnlock = totalXP >= 10000
-            case "xp_50000":
-                shouldUnlock = totalXP >= 50000
-            case "xp_100000":
-                shouldUnlock = totalXP >= 100000
-            case "skill_focus_50":
-                shouldUnlock = progress.focusScore >= 50
-            case "skill_focus_80":
-                shouldUnlock = progress.focusScore >= 80
-            case "skill_impulse_50":
-                shouldUnlock = progress.impulseControlScore >= 50
-            case "skill_impulse_80":
-                shouldUnlock = progress.impulseControlScore >= 80
-            case "perfect_day":
-                shouldUnlock = progress.allDailyChallengesCompleted
-            case "perfect_week":
-                shouldUnlock = perfectDays >= 7
-            case "comeback":
-                // This would need additional tracking - placeholder
-                shouldUnlock = false
-            default:
-                break
-            }
-            
-            if shouldUnlock {
-                achievements[i].isUnlocked = true
-                achievements[i].unlockedAt = Date()
-            }
+        switch id {
+        case "first_challenge": return completedCount >= 1
+        case "ten_challenges": return completedCount >= 10
+        case "fifty_challenges": return completedCount >= 50
+        case "hundred_challenges": return completedCount >= 100
+        case "five_hundred": return completedCount >= 500
+        case "streak_3": return streak >= 3
+        case "streak_7": return streak >= 7
+        case "streak_14": return streak >= 14
+        case "streak_30": return streak >= 30
+        case "streak_60": return streak >= 60
+        case "streak_100": return streak >= 100
+        case "streak_365": return streak >= 365
+        case "level_5": return level >= 5
+        case "level_10": return level >= 10
+        case "level_25": return level >= 25
+        case "level_50": return level >= 50
+        case "xp_1000": return totalXP >= 1000
+        case "xp_5000": return totalXP >= 5000
+        case "xp_10000": return totalXP >= 10000
+        case "xp_50000": return totalXP >= 50000
+        case "xp_100000": return totalXP >= 100000
+        case "skill_focus_50": return progress.focusScore >= 50
+        case "skill_focus_80": return progress.focusScore >= 80
+        case "skill_impulse_50": return progress.impulseControlScore >= 50
+        case "skill_impulse_80": return progress.impulseControlScore >= 80
+        case "perfect_day": return progress.allDailyChallengesCompleted
+        case "perfect_week": return false  // Placeholder
+        case "comeback": return false  // Placeholder
+        default: return false
         }
     }
     

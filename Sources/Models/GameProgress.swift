@@ -106,11 +106,11 @@ struct GameProgress: Codable {
     }
     
     var currentLevelXP: Int {
-        var xp = 0
-        for i in 1..<level {
-            xp += i * 100 + (i - 1) * 50
+        var accumulatedXP = 0
+        for levelIndex in 1..<level {
+            accumulatedXP += levelIndex * 100 + (levelIndex - 1) * 50
         }
-        return totalXP - xp
+        return totalXP - accumulatedXP
     }
     
     var progressToNextLevel: Double {

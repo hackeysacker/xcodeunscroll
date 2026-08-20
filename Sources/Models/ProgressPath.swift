@@ -24,8 +24,8 @@ struct ProgressPath {
     
     static func totalXpToReach(level: Int) -> Int {
         var total = 0
-        for i in 1...level {
-            total += xpRequiredFor(level: i)
+        for levelIndex in 1...level {
+            total += xpRequiredFor(level: levelIndex)
         }
         return total
     }
