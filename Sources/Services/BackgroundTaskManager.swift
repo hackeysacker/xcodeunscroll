@@ -38,7 +38,11 @@ class BackgroundTaskManager {
             forTaskWithIdentifier: Self.refreshTaskIdentifier,
             using: nil
         ) { task in
-            self.handleAppRefresh(task: task as! BGAppRefreshTask)
+            guard let refreshTask = task as? BGAppRefreshTask else {
+                Self.logger.error("Invalid task type for refresh")
+                return
+            }
+            self.handleAppRefresh(task: refreshTask)
         }
         
         // Register background processing task for data sync
@@ -46,7 +50,11 @@ class BackgroundTaskManager {
             forTaskWithIdentifier: Self.syncTaskIdentifier,
             using: nil
         ) { task in
-            self.handleBackgroundSync(task: task as! BGProcessingTask)
+            guard let syncTask = task as? BGProcessingTask else {
+                Self.logger.error("Invalid task type for sync")
+                return
+            }
+            self.handleBackgroundSync(task: syncTask)
         }
     }
     
