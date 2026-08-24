@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import SwiftUI
 import UserNotifications
+import os
 
 /// Manages focus timer sessions with countdown, breaks, and tracking
 @MainActor
@@ -223,7 +224,7 @@ class FocusTimerManager: ObservableObject {
         
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("Failed to send session complete notification: \(error)")
+                os_log("Failed to send session complete notification: %{public}@", log: .default, type: .error, error.localizedDescription)
             }
         }
     }
@@ -243,7 +244,7 @@ class FocusTimerManager: ObservableObject {
         
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("Failed to send break end notification: \(error)")
+                os_log("Failed to send break end notification: %{public}@", log: .default, type: .error, error.localizedDescription)
             }
         }
     }
