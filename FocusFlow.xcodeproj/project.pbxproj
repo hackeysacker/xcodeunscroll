@@ -23,6 +23,7 @@
 		2E8D047A6A18C937ACE3512C /* PracticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CE7EE6E98670688195C325 /* PracticeView.swift */; };
 		364BF0C5989547DB6EA0AB8B /* FocusTimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F74312BB5A38BF9015F90D /* FocusTimerManager.swift */; };
 		39891FD0930F77D0F3D51734 /* FocusTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE5BE55FC3EC6268A047408 /* FocusTimerView.swift */; };
+		F0C111111111111111111111 /* FocusHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C222222222222222222222 /* FocusHistoryView.swift */; };
 		39B63691E8B5EA760550E8DD /* UserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24149BAB02C874F10BA73B0D /* UserTests.swift */; };
 		3C0690F5D14302D8277669FE /* RapidTargetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 811988AD8805B57941182496 /* RapidTargetView.swift */; };
 		4132BC6DC3055820176E99FE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAD6F49FCDB02DBEA3A18B60 /* ProfileView.swift */; };
@@ -121,6 +122,7 @@
 		14B35B0250244FC90DF26929 /* ChallengeExercises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeExercises.swift; sourceTree = "<group>"; };
 		18F74312BB5A38BF9015F90D /* FocusTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusTimerManager.swift; sourceTree = "<group>"; };
 		1DE5BE55FC3EC6268A047408 /* FocusTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusTimerView.swift; sourceTree = "<group>"; };
+		F0C222222222222222222222 /* FocusHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusHistoryView.swift; sourceTree = "<group>"; };
 		1DEE8CD59B8FC4A434236DAB /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		21F3FFD705639E39B2A2FCF2 /* FocusFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusFlowUITests.swift; sourceTree = "<group>"; };
 		22B17CFB71EB878207A67E7B /* AllChallengesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChallengesView.swift; sourceTree = "<group>"; };
@@ -234,6 +236,7 @@
 			isa = PBXGroup;
 			children = (
 				1DE5BE55FC3EC6268A047408 /* FocusTimerView.swift */,
+				F0C222222222222222222222 /* FocusHistoryView.swift */,
 			);
 			path = Focus;
 			sourceTree = "<group>";
@@ -607,6 +610,7 @@
 				EF321A8CE43CF65B58890B1A /* FakeNotificationsChallengeView.swift in Sources */,
 				364BF0C5989547DB6EA0AB8B /* FocusTimerManager.swift in Sources */,
 				39891FD0930F77D0F3D51734 /* FocusTimerView.swift in Sources */,
+				F0C111111111111111111111 /* FocusHistoryView.swift in Sources */,
 				9DC5D40EFD2626DFAF890B25 /* GameProgress.swift in Sources */,
 				9ADCD3AC269A5376C52850D6 /* GazeHoldView.swift in Sources */,
 				A57123486EA5104C10DA6230 /* GlassComponents.swift in Sources */,

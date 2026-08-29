@@ -54,6 +54,12 @@ struct ContentView: View {
             ThemeSelectionView()
                 .environmentObject(appState)
         }
+        .sheet(isPresented: $appState.showFocusHistory) {
+            NavigationStack {
+                FocusHistoryView()
+                    .environmentObject(appState)
+            }
+        }
     }
 }
 

@@ -63,6 +63,15 @@ struct FocusTimerView: View {
             Spacer()
             
             Button {
+                appState.showFocusHistory = true
+            } label: {
+                Image(systemName: "clock.arrow.circlepath")
+                    .font(.system(size: 18))
+                    .foregroundColor(.white)
+                    .frame(width: 44, height: 44)
+            }
+            
+            Button {
                 showSettings = true
             } label: {
                 Image(systemName: "gearshape.fill")
