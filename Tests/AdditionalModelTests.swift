@@ -145,7 +145,7 @@ final class AdditionalModelTests: XCTestCase {
             id: "test-id",
             email: "test@test.com",
             createdAt: Date(),
-            goal: .improve_focus,
+            goal: .improveFocus,
             isPremium: true,
             onboardingData: nil,
             displayName: "TestUser",
@@ -238,10 +238,10 @@ final class AdditionalModelTests: XCTestCase {
     
     func testAllGoalTypes() {
         let goals: [GoalType] = [
-            .improve_focus,
-            .reduce_screen_time,
-            .build_discipline,
-            .increase_productivity
+            .improveFocus,
+            .reduceScreenTime,
+            .buildDiscipline,
+            .increaseProductivity
         ]
         
         XCTAssertEqual(goals.count, 4, "There should be 4 goal types")

@@ -10,7 +10,7 @@ final class UserTests: XCTestCase {
             id: "test-user-id",
             email: "test@example.com",
             createdAt: Date(),
-            goal: .improve_focus,
+            goal: .improveFocus,
             isPremium: false,
             onboardingData: nil,
             displayName: "Test User",
@@ -19,7 +19,7 @@ final class UserTests: XCTestCase {
         
         XCTAssertEqual(user.id, "test-user-id")
         XCTAssertEqual(user.email, "test@example.com")
-        XCTAssertEqual(user.goal, .improve_focus)
+        XCTAssertEqual(user.goal, .improveFocus)
         XCTAssertFalse(user.isPremium)
         XCTAssertNil(user.onboardingData)
         XCTAssertEqual(user.displayName, "Test User")
@@ -31,7 +31,7 @@ final class UserTests: XCTestCase {
             screenTime: 4.5,
             baselineScore: 50,
             commitmentLevel: 7,
-            selectedGoal: .increase_productivity
+            selectedGoal: .increaseProductivity
         )
         
         let user = User(
@@ -49,32 +49,32 @@ final class UserTests: XCTestCase {
         XCTAssertEqual(user.onboardingData?.screenTime, 4.5)
         XCTAssertEqual(user.onboardingData?.baselineScore, 50)
         XCTAssertEqual(user.onboardingData?.commitmentLevel, 7)
-        XCTAssertEqual(user.onboardingData?.selectedGoal, .increase_productivity)
+        XCTAssertEqual(user.onboardingData?.selectedGoal, .increaseProductivity)
     }
     
     // MARK: - GoalType Tests
     
     func testGoalTypeDescriptions() {
-        XCTAssertEqual(GoalType.improve_focus.description, "Train your brain to focus longer")
-        XCTAssertEqual(GoalType.reduce_screen_time.description, "Spend less time scrolling")
-        XCTAssertEqual(GoalType.build_discipline.description, "Build daily habits")
-        XCTAssertEqual(GoalType.increase_productivity.description, "Get more done each day")
+        XCTAssertEqual(GoalType.improveFocus.description, "Train your brain to focus longer")
+        XCTAssertEqual(GoalType.reduceScreenTime.description, "Spend less time scrolling")
+        XCTAssertEqual(GoalType.buildDiscipline.description, "Build daily habits")
+        XCTAssertEqual(GoalType.increaseProductivity.description, "Get more done each day")
     }
     
     func testGoalTypeEmojis() {
-        XCTAssertEqual(GoalType.improve_focus.emoji, "🎯")
-        XCTAssertEqual(GoalType.reduce_screen_time.emoji, "📵")
-        XCTAssertEqual(GoalType.build_discipline.emoji, "💪")
-        XCTAssertEqual(GoalType.increase_productivity.emoji, "⚡️")
+        XCTAssertEqual(GoalType.improveFocus.emoji, "🎯")
+        XCTAssertEqual(GoalType.reduceScreenTime.emoji, "📵")
+        XCTAssertEqual(GoalType.buildDiscipline.emoji, "💪")
+        XCTAssertEqual(GoalType.increaseProductivity.emoji, "⚡️")
     }
     
     func testGoalTypeAllCases() {
         let allGoals = GoalType.allCases
         XCTAssertEqual(allGoals.count, 4)
-        XCTAssertTrue(allGoals.contains(.improve_focus))
-        XCTAssertTrue(allGoals.contains(.reduce_screen_time))
-        XCTAssertTrue(allGoals.contains(.build_discipline))
-        XCTAssertTrue(allGoals.contains(.increase_productivity))
+        XCTAssertTrue(allGoals.contains(.improveFocus))
+        XCTAssertTrue(allGoals.contains(.reduceScreenTime))
+        XCTAssertTrue(allGoals.contains(.buildDiscipline))
+        XCTAssertTrue(allGoals.contains(.increaseProductivity))
     }
     
     // MARK: - OnboardingData Tests
@@ -84,13 +84,13 @@ final class UserTests: XCTestCase {
             screenTime: 6.0,
             baselineScore: 30,
             commitmentLevel: 5,
-            selectedGoal: .build_discipline
+            selectedGoal: .buildDiscipline
         )
         
         XCTAssertEqual(data.screenTime, 6.0)
         XCTAssertEqual(data.baselineScore, 30)
         XCTAssertEqual(data.commitmentLevel, 5)
-        XCTAssertEqual(data.selectedGoal, .build_discipline)
+        XCTAssertEqual(data.selectedGoal, .buildDiscipline)
     }
     
     func testOnboardingDataOptionalGoal() {

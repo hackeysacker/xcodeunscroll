@@ -23,7 +23,7 @@ final class FocusFlowUITests: XCTestCase {
             id: UUID().uuidString,
             email: "test@example.com",
             createdAt: Date(),
-            goal: .improve_focus,
+            goal: .improveFocus,
             isPremium: false,
             onboardingData: nil,
             displayName: "testuser",
@@ -32,14 +32,14 @@ final class FocusFlowUITests: XCTestCase {
         
         XCTAssertEqual(user.email, "test@example.com")
         XCTAssertEqual(user.displayName, "testuser")
-        XCTAssertEqual(user.goal, .improve_focus)
+        XCTAssertEqual(user.goal, .improveFocus)
     }
     
     func testGoalTypeDescriptions() {
-        XCTAssertFalse(GoalType.improve_focus.description.isEmpty)
-        XCTAssertFalse(GoalType.reduce_screen_time.description.isEmpty)
-        XCTAssertFalse(GoalType.build_discipline.description.isEmpty)
-        XCTAssertFalse(GoalType.increase_productivity.description.isEmpty)
+        XCTAssertFalse(GoalType.improveFocus.description.isEmpty)
+        XCTAssertFalse(GoalType.reduceScreenTime.description.isEmpty)
+        XCTAssertFalse(GoalType.buildDiscipline.description.isEmpty)
+        XCTAssertFalse(GoalType.increaseProductivity.description.isEmpty)
     }
     
     // MARK: - Game Progress Tests
