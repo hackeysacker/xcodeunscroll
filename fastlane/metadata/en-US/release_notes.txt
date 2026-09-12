@@ -1,1 +1,16 @@
-FocusFlow 1.0.0 - Initial TestFlight beta release. Focus, track, and level up your productivity with gamified focus sessions, challenges, and achievements.
+FocusFlow 1.0.0 - Daily Challenges & Achievements Update
+
+NEW FEATURES:
+• Daily Challenges - Complete fresh challenges every day for bonus gems
+• Achievements System - 35+ achievements across Bronze, Silver, Gold, and Platinum tiers
+• XP & Leveling - Earn XP from focus sessions, level up to 100
+• Difficulty Progression - Choose Easy, Medium, Hard, or Insane sessions
+• Streak System - Maintain daily streaks for bonus rewards
+
+IMPROVEMENTS:
+• Sound Effects - 20+ sound effects for sessions, achievements, and interactions
+• Haptic Feedback - Enhanced tactile responses throughout the app
+• Widget Extension - Track progress from your home screen
+• Background Tasks - Sync data seamlessly in the background
+
+The ultimate gamified focus timer for productivity. Start your journey today!
