@@ -3,6 +3,7 @@ import os.log
 import Combine
 import Supabase
 import Network
+import WidgetKit
 
 
 
@@ -633,6 +634,9 @@ class AppState: ObservableObject {
         
         // Configure notifications based on settings
         configureNotifications()
+        
+        // Sync widget data
+        syncWidgetData()
     }
     
     /// Load notification settings from UserDefaults
@@ -1013,5 +1017,26 @@ class AppState: ObservableObject {
     
     var allDailyChallengesCompleted: Bool {
         progress?.allDailyChallengesCompleted ?? false
+    }
+    
+    /// Sync progress data to widget via shared UserDefaults
+    func syncWidgetData() {
+        guard let prog = progress else { return }
+        
+        let widgetDefaults = UserDefaults(suiteName: "group.com.focusflow.app")
+        widgetDefaults?.set(prog.gems, forKey: "gems")
+        widgetDefaults?.set(prog.hearts, forKey: "hearts")
+        widgetDefaults?.set(prog.streakDays, forKey: "currentStreak")
+        widgetDefaults?.set(prog.streakDays, forKey: "longestStreak")  // Using current streak as best for now
+        widgetDefaults?.set(prog.todayFocusMinutes, forKey: "dailyFocusMinutes")
+        widgetDefaults?.set(prog.dailyFocusGoalMinutes, forKey: "dailyGoalMinutes")
+        
+        // Set last focus date if there's any focus time
+        if prog.todayFocusMinutes > 0 {
+            widgetDefaults?.set(Date(), forKey: "lastFocusDate")
+        }
+        
+        // Trigger widget refresh
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }
