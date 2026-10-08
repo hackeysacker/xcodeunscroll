@@ -332,24 +332,74 @@ enum ChallengeCategory: String, CaseIterable, Identifiable {
 
 extension AllChallengeType {
     /// Returns daily challenges based on the current date
-    /// Each day gets 3 different challenges (one from each category)
+    /// Each day gets 4 different challenges (one from each main category)
     static func dailyChallenges() -> [AllChallengeType] {
         let calendar = Calendar.current
         let dayOfYear = calendar.ordinality(of: .day, in: .year, for: Date()) ?? 1
         
-        // Rotate through challenges based on day
-        let focusChallenges: [AllChallengeType] = [.movingTarget, .multiObjectTracking, .gazeHold, .focusSprint, .focusHold]
-        let memoryChallenges: [AllChallengeType] = [.memoryFlash, .numberSequence, .patternMatching, .colorPattern, .tapPattern, .spatialPuzzle]
-        let reactionChallenges: [AllChallengeType] = [.reactionInhibition, .rhythmTap, .delayUnlock, .resetChallenge, .impulseSpikeTest]
+        // Expanded challenge pools for more variety
+        let focusChallenges: [AllChallengeType] = [
+            .movingTarget, .multiObjectTracking, .gazeHold, .focusSprint, 
+            .focusHold, .stillnessTest, .slowTracking, .focusEndurance
+        ]
+        let memoryChallenges: [AllChallengeType] = [
+            .memoryFlash, .numberSequence, .patternMatching, 
+            .colorPattern, .tapPattern, .spatialPuzzle, .memoryPuzzle
+        ]
+        let reactionChallenges: [AllChallengeType] = [
+            .reactionInhibition, .rhythmTap, .delayUnlock, 
+            .resetChallenge, .impulseSpikeTest
+        ]
+        let breathingChallenges: [AllChallengeType] = [
+            .boxBreathing, .controlledBreathing, .breathPacing, 
+            .slowBreathing, .calmFocus, .stressRelief, .deepBreath
+        ]
         
         let focusIdx = (dayOfYear - 1) % focusChallenges.count
         let memoryIdx = (dayOfYear - 1) % memoryChallenges.count
         let reactionIdx = (dayOfYear - 1) % reactionChallenges.count
+        let breathingIdx = (dayOfYear - 1) % breathingChallenges.count
         
         return [
             focusChallenges[focusIdx],
             memoryChallenges[memoryIdx],
-            reactionChallenges[reactionIdx]
+            reactionChallenges[reactionIdx],
+            breathingChallenges[breathingIdx]
+        ]
+    }
+    
+    /// Returns daily challenges for a specific date (for history/tracking)
+    static func dailyChallenges(for date: Date) -> [AllChallengeType] {
+        let calendar = Calendar.current
+        let dayOfYear = calendar.ordinality(of: .day, in: .year, for: date) ?? 1
+        
+        let focusChallenges: [AllChallengeType] = [
+            .movingTarget, .multiObjectTracking, .gazeHold, .focusSprint, 
+            .focusHold, .stillnessTest, .slowTracking, .focusEndurance
+        ]
+        let memoryChallenges: [AllChallengeType] = [
+            .memoryFlash, .numberSequence, .patternMatching, 
+            .colorPattern, .tapPattern, .spatialPuzzle, .memoryPuzzle
+        ]
+        let reactionChallenges: [AllChallengeType] = [
+            .reactionInhibition, .rhythmTap, .delayUnlock, 
+            .resetChallenge, .impulseSpikeTest
+        ]
+        let breathingChallenges: [AllChallengeType] = [
+            .boxBreathing, .controlledBreathing, .breathPacing, 
+            .slowBreathing, .calmFocus, .stressRelief, .deepBreath
+        ]
+        
+        let focusIdx = (dayOfYear - 1) % focusChallenges.count
+        let memoryIdx = (dayOfYear - 1) % memoryChallenges.count
+        let reactionIdx = (dayOfYear - 1) % reactionChallenges.count
+        let breathingIdx = (dayOfYear - 1) % breathingChallenges.count
+        
+        return [
+            focusChallenges[focusIdx],
+            memoryChallenges[memoryIdx],
+            reactionChallenges[reactionIdx],
+            breathingChallenges[breathingIdx]
         ]
     }
     
@@ -357,6 +407,17 @@ extension AllChallengeType {
     static func isDailyChallenge(_ challenge: AllChallengeType) -> Bool {
         let today = dailyChallenges()
         return today.contains(challenge)
+    }
+    
+    /// Get the category for a daily challenge by index (0-3)
+    static func dailyChallengeCategory(for index: Int) -> ChallengeCategory? {
+        switch index {
+        case 0: return .focus
+        case 1: return .memory
+        case 2: return .reaction
+        case 3: return .breathing
+        default: return nil
+        }
     }
 }
 

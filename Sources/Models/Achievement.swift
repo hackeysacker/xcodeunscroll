@@ -126,9 +126,28 @@ extension Achievement {
         // Perfect day achievements
         Achievement(id: "perfect_day", title: "Perfect Day", description: "Complete all daily challenges", icon: "checkmark.circle.fill", category: .progress, requirement: 1),
         Achievement(id: "perfect_week", title: "Perfect Week", description: "7 perfect days in a row", icon: "calendar", category: .progress, requirement: 7),
+        Achievement(id: "perfect_month", title: "Month Master", description: "30 perfect days in a row", icon: "calendar.badge.checkmark", category: .progress, requirement: 30),
+        
+        // Daily streak achievements
+        Achievement(id: "daily_streak_3", title: "Daily Starter", description: "Complete daily challenges 3 days in a row", icon: "flame", category: .streak, requirement: 3, tier: .bronze),
+        Achievement(id: "daily_streak_7", title: "Weekly Warrior", description: "Complete daily challenges 7 days in a row", icon: "flame.circle", category: .streak, requirement: 7, tier: .bronze),
+        Achievement(id: "daily_streak_14", title: "Fortnight Focus", description: "Complete daily challenges 14 days in a row", icon: "flame.fill", category: .streak, requirement: 14, tier: .silver),
+        Achievement(id: "daily_streak_30", title: "Daily Dedication", description: "Complete daily challenges 30 days in a row", icon: "star.circle.fill", category: .streak, requirement: 30, tier: .silver),
+        Achievement(id: "daily_streak_100", title: "Century Club", description: "Complete daily challenges 100 days in a row", icon: "crown.circle.fill", category: .streak, requirement: 100, tier: .gold),
+        Achievement(id: "daily_streak_365", title: "Year of Daily", description: "Complete daily challenges 365 days in a row", icon: "sparkles.circle.fill", category: .streak, requirement: 365, tier: .gold),
+        
+        // Category mastery achievements
+        Achievement(id: "focus_master", title: "Focus Master", description: "Complete 50 focus challenges", icon: "eye.circle.fill", category: .mastery, requirement: 50, tier: .bronze),
+        Achievement(id: "memory_master", title: "Memory Master", description: "Complete 50 memory challenges", icon: "brain.circle.fill", category: .mastery, requirement: 50, tier: .bronze),
+        Achievement(id: "breathing_master", title: "Breath Master", description: "Complete 50 breathing challenges", icon: "wind.circle.fill", category: .mastery, requirement: 50, tier: .bronze),
+        Achievement(id: "discipline_master", title: "Discipline Master", description: "Complete 50 discipline challenges", icon: "hand.raised.circle.fill", category: .mastery, requirement: 50, tier: .bronze),
         
         // Comeback achievements
         Achievement(id: "comeback", title: "Comeback Kid", description: "Rebuild streak after losing it", icon: "flame.fill", category: .special, requirement: 1),
+        
+        // Multi-challenge achievements
+        Achievement(id: "challenges_250", title: "Quarter Centurion", description: "Complete 250 challenges", icon: "star.square.fill", category: .progress, requirement: 250, tier: .silver),
+        Achievement(id: "challenges_1000", title: "Challenge Champion", description: "Complete 1000 challenges", icon: "star.square.stack.fill", category: .progress, requirement: 1000, tier: .gold),
     ]
 }
 
@@ -153,6 +172,7 @@ class AchievementStore: ObservableObject {
         let streak = progress.streakDays
         let level = progress.level
         let totalXP = progress.totalXP
+        let dailyStreak = progress.dailyChallengeStreak
         
         switch id {
         case "first_challenge": return completedCount >= 1
@@ -160,6 +180,8 @@ class AchievementStore: ObservableObject {
         case "fifty_challenges": return completedCount >= 50
         case "hundred_challenges": return completedCount >= 100
         case "five_hundred": return completedCount >= 500
+        case "challenges_250": return completedCount >= 250
+        case "challenges_1000": return completedCount >= 1000
         case "streak_3": return streak >= 3
         case "streak_7": return streak >= 7
         case "streak_14": return streak >= 14
@@ -181,8 +203,19 @@ class AchievementStore: ObservableObject {
         case "skill_impulse_50": return progress.impulseControlScore >= 50
         case "skill_impulse_80": return progress.impulseControlScore >= 80
         case "perfect_day": return progress.allDailyChallengesCompleted
-        case "perfect_week": return false  // Placeholder
-        case "comeback": return false  // Placeholder
+        case "perfect_week": return progress.perfectDaysStreak >= 7
+        case "perfect_month": return progress.perfectDaysStreak >= 30
+        case "daily_streak_3": return dailyStreak >= 3
+        case "daily_streak_7": return dailyStreak >= 7
+        case "daily_streak_14": return dailyStreak >= 14
+        case "daily_streak_30": return dailyStreak >= 30
+        case "daily_streak_100": return dailyStreak >= 100
+        case "daily_streak_365": return dailyStreak >= 365
+        case "focus_master": return progress.focusChallengeCount >= 50
+        case "memory_master": return progress.memoryChallengeCount >= 50
+        case "breathing_master": return progress.breathingChallengeCount >= 50
+        case "discipline_master": return progress.disciplineChallengeCount >= 50
+        case "comeback": return progress.rebuiltStreakAfterLoss
         default: return false
         }
     }

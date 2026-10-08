@@ -19,8 +19,21 @@ struct GameProgress: Codable {
     var dailyChallenges: [DailyChallenge]?
     var lastDailyRefreshDate: Date?
     
+    // Daily challenge tracking
+    var dailyChallengeStreak: Int  // Consecutive days completing all daily challenges
+    var perfectDaysStreak: Int  // Consecutive days with all daily challenges completed
+    var lastPerfectDayDate: Date?  // Last date all daily challenges were completed
+    
+    // Category-specific challenge counts
+    var focusChallengeCount: Int
+    var memoryChallengeCount: Int
+    var breathingChallengeCount: Int
+    var disciplineChallengeCount: Int
+    var reactionChallengeCount: Int
+    
     // Streak protection
     var streakFreezeUsed: Bool  // True if streak freeze was used today
+    var rebuiltStreakAfterLoss: Bool  // True if user rebuilt streak after losing it
     
     // Focus Timer / Sessions
     var totalFocusMinutes: Int  // Total accumulated focus time in minutes
@@ -48,7 +61,16 @@ struct GameProgress: Codable {
         self.distractionResistanceScore = Self.defaultDistractionResistanceScore
         self.dailyChallenges = nil
         self.lastDailyRefreshDate = nil
+        self.dailyChallengeStreak = 0
+        self.perfectDaysStreak = 0
+        self.lastPerfectDayDate = nil
+        self.focusChallengeCount = 0
+        self.memoryChallengeCount = 0
+        self.breathingChallengeCount = 0
+        self.disciplineChallengeCount = 0
+        self.reactionChallengeCount = 0
         self.streakFreezeUsed = false
+        self.rebuiltStreakAfterLoss = false
         self.totalFocusMinutes = 0
         self.focusSessions = []
         self.dailyFocusGoalMinutes = 30
@@ -56,7 +78,7 @@ struct GameProgress: Codable {
     }
     
     // Memberwise initializer
-    init(level: Int, totalXP: Int, streakDays: Int, lastActivityDate: Date? = nil, hearts: Int, gems: Int, completedChallenges: [ChallengeAttempt], skills: [String: Int], focusScore: Int, impulseControlScore: Int, distractionResistanceScore: Int, dailyChallenges: [DailyChallenge]? = nil, lastDailyRefreshDate: Date? = nil, streakFreezeUsed: Bool, totalFocusMinutes: Int = 0, focusSessions: [FocusSession] = [], dailyFocusGoalMinutes: Int = 30, todayFocusMinutes: Int = 0) {
+    init(level: Int, totalXP: Int, streakDays: Int, lastActivityDate: Date? = nil, hearts: Int, gems: Int, completedChallenges: [ChallengeAttempt], skills: [String: Int], focusScore: Int, impulseControlScore: Int, distractionResistanceScore: Int, dailyChallenges: [DailyChallenge]? = nil, lastDailyRefreshDate: Date? = nil, dailyChallengeStreak: Int = 0, perfectDaysStreak: Int = 0, lastPerfectDayDate: Date? = nil, focusChallengeCount: Int = 0, memoryChallengeCount: Int = 0, breathingChallengeCount: Int = 0, disciplineChallengeCount: Int = 0, reactionChallengeCount: Int = 0, streakFreezeUsed: Bool = false, rebuiltStreakAfterLoss: Bool = false, totalFocusMinutes: Int = 0, focusSessions: [FocusSession] = [], dailyFocusGoalMinutes: Int = 30, todayFocusMinutes: Int = 0) {
         self.level = level
         self.totalXP = totalXP
         self.streakDays = streakDays
@@ -70,7 +92,16 @@ struct GameProgress: Codable {
         self.distractionResistanceScore = distractionResistanceScore
         self.dailyChallenges = dailyChallenges
         self.lastDailyRefreshDate = lastDailyRefreshDate
+        self.dailyChallengeStreak = dailyChallengeStreak
+        self.perfectDaysStreak = perfectDaysStreak
+        self.lastPerfectDayDate = lastPerfectDayDate
+        self.focusChallengeCount = focusChallengeCount
+        self.memoryChallengeCount = memoryChallengeCount
+        self.breathingChallengeCount = breathingChallengeCount
+        self.disciplineChallengeCount = disciplineChallengeCount
+        self.reactionChallengeCount = reactionChallengeCount
         self.streakFreezeUsed = streakFreezeUsed
+        self.rebuiltStreakAfterLoss = rebuiltStreakAfterLoss
         self.totalFocusMinutes = totalFocusMinutes
         self.focusSessions = focusSessions
         self.dailyFocusGoalMinutes = dailyFocusGoalMinutes
