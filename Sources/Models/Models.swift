@@ -2,7 +2,6 @@
 // Consolidated unique types only - duplicates removed
 
 import Foundation
-import Supabase
 
 // MARK: - Heart State (local)
 struct HeartState: Codable {
