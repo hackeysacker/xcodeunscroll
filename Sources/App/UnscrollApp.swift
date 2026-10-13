@@ -32,7 +32,7 @@ struct UnscrollApp: App {
                     }
                 }
         }
-        .onChange(of: scenePhase) { _, newPhase in
+        .onChange(of: scenePhase) { _, _ in
             // Handle scene phase changes if needed
         }
     }
