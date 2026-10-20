@@ -234,12 +234,6 @@ struct FocusShieldOverlay: View {
     @State private var breathPhase: BreathPhase = .inhale
     @State private var breathProgress: Double = 0
     
-    enum BreathPhase: String {
-        case inhale = "Breathe In"
-        case hold = "Hold"
-        case exhale = "Breathe Out"
-    }
-    
     var body: some View {
         ZStack {
             Color.black.opacity(0.9)

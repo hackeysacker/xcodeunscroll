@@ -97,6 +97,7 @@ struct BreathingExerciseView: View {
                 switch phase {
                 case .inhale: return 4
                 case .holdAfterInhale: return 4
+                case .hold: return 0
                 case .exhale: return 4
                 case .holdAfterExhale: return 4
                 }
@@ -104,6 +105,7 @@ struct BreathingExerciseView: View {
                 switch phase {
                 case .inhale: return 4
                 case .holdAfterInhale: return 7
+                case .hold: return 0
                 case .exhale: return 8
                 case .holdAfterExhale: return 0
                 }
@@ -111,6 +113,7 @@ struct BreathingExerciseView: View {
                 switch phase {
                 case .inhale: return 4
                 case .holdAfterInhale: return 2
+                case .hold: return 0
                 case .exhale: return 4
                 case .holdAfterExhale: return 0
                 }
@@ -118,18 +121,12 @@ struct BreathingExerciseView: View {
                 switch phase {
                 case .inhale: return 5
                 case .holdAfterInhale: return 0
+                case .hold: return 0
                 case .exhale: return 5
                 case .holdAfterExhale: return 0
                 }
             }
         }
-    }
-    
-    enum BreathPhase: String {
-        case inhale = "Breathe In"
-        case holdAfterInhale = "Hold after inhale"
-        case exhale = "Breathe Out"
-        case holdAfterExhale = "Hold after exhale"
     }
     
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
@@ -280,7 +277,7 @@ struct BreathingExerciseView: View {
         switch phase {
         case .inhale:
             return LinearGradient(colors: [.blue, .cyan], startPoint: .top, endPoint: .bottom)
-        case .holdAfterInhale:
+        case .holdAfterInhale, .hold:
             return LinearGradient(colors: [.purple, .indigo], startPoint: .top, endPoint: .bottom)
         case .exhale:
             return LinearGradient(colors: [.green, .teal], startPoint: .top, endPoint: .bottom)
@@ -609,6 +606,8 @@ struct BreathingExerciseView: View {
             return base + (maxSize - base) * progress
         case .holdAfterInhale:
             return maxSize
+        case .hold:
+            return maxSize
         case .exhale:
             return maxSize - (maxSize - minSize) * progress
         case .holdAfterExhale:
@@ -620,6 +619,7 @@ struct BreathingExerciseView: View {
         switch phase {
         case .inhale: return .cyan
         case .holdAfterInhale: return .purple
+        case .hold: return .purple
         case .exhale: return .green
         case .holdAfterExhale: return .orange
         }
@@ -672,7 +672,7 @@ struct BreathingExerciseView: View {
             } else {
                 phase = .exhale
             }
-        case .holdAfterInhale:
+        case .holdAfterInhale, .hold:
             phase = .exhale
         case .exhale:
             if selectedPattern.phaseTime(for: .holdAfterExhale) > 0 {
