@@ -303,6 +303,13 @@ struct FocusFlowWidget: Widget {
     }
 }
 
+@main
+struct FocusFlowWidgetBundle: WidgetBundle {
+    var body: some Widget {
+        FocusFlowWidget()
+    }
+}
+
 #Preview(as: .systemSmall) {
     FocusFlowWidget()
 } timeline: {

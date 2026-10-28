@@ -828,7 +828,8 @@
 				CODE_SIGN_ENTITLEMENTS = FocusFlowWidget/FocusFlowWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FocusFlowWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -851,7 +852,8 @@
 				CODE_SIGN_ENTITLEMENTS = FocusFlowWidget/FocusFlowWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FocusFlowWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
