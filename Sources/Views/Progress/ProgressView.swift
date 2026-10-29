@@ -60,7 +60,7 @@ struct ProgressView: View {
                     .font(.headline)
                     .foregroundColor(.yellow)
                 
-                Text("\(xpToNextLevel - (appState.progress?.totalXP ?? 0)) XP to next level")
+                Text("\(max(0, xpToNextLevel)) XP to next level")
                     .font(.caption)
                     .foregroundColor(.gray)
             }
@@ -194,14 +194,19 @@ struct ProgressView: View {
     }
     
     var xpProgress: CGFloat {
-        let current = appState.progress?.totalXP ?? 0
-        let needed = xpToNextLevel
+        let progress = appState.progress
+        let current = progress?.currentLevelXP ?? 0
+        let needed = progress?.xpForNextLevel ?? 1
+        guard needed > 0 else { return 0 }
         return min(CGFloat(current) / CGFloat(needed), 1.0)
     }
-    
+
+    /// XP still needed to reach the next level.
     var xpToNextLevel: Int {
-        let level = appState.progress?.level ?? 1
-        return level * 100
+        let progress = appState.progress
+        // `xpThresholdForNextLevel` is the cumulative total XP needed for the next
+        // level; subtracting `totalXP` gives the amount still required.
+        return max(0, (progress?.xpThresholdForNextLevel ?? 0) - (progress?.totalXP ?? 0))
     }
 }
 

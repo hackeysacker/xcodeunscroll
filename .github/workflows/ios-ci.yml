@@ -20,11 +20,23 @@ jobs:
         with:
           xcode-version: latest-stable
 
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        # FocusFlow.xcodeproj is generated from project.yml by XcodeGen.
+        # Regenerating in CI guarantees the project under test matches the
+        # source of truth, and catches any drift between the two.
+        run: |
+          xcodegen generate
+          git diff --exit-code FocusFlow.xcodeproj \
+            || (echo "::error::FocusFlow.xcodeproj is out of sync with project.yml. Run 'xcodegen generate' and commit." && exit 1)
+
       - name: Resolve Swift packages
         run: |
           xcodebuild -resolvePackageDependencies \
-            -project Unscroll.xcodeproj \
-            -scheme Unscroll
+            -project FocusFlow.xcodeproj \
+            -scheme FocusFlow
 
       - name: Select simulator destination
         id: simulator
@@ -39,29 +51,17 @@ jobs:
 
       - name: Build app
         run: |
-          xcodebuild -project Unscroll.xcodeproj \
-            -scheme Unscroll \
+          xcodebuild -project FocusFlow.xcodeproj \
+            -scheme FocusFlow \
             -destination '${{ steps.simulator.outputs.destination }}' \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \
             build
 
-      - name: Run tests (if configured)
+      - name: Run tests
         run: |
-          SHOW_TEST_PLANS_OUTPUT=$(xcodebuild \
-            -project Unscroll.xcodeproj \
-            -scheme Unscroll \
-            -showTestPlans 2>&1 || true)
-
-          echo "$SHOW_TEST_PLANS_OUTPUT"
-
-          if echo "$SHOW_TEST_PLANS_OUTPUT" | grep -qi "not configured"; then
-            echo "Scheme has no configured test action. Skipping tests."
-            exit 0
-          fi
-
-          xcodebuild -project Unscroll.xcodeproj \
-            -scheme Unscroll \
+          xcodebuild -project FocusFlow.xcodeproj \
+            -scheme FocusFlow \
             -destination '${{ steps.simulator.outputs.destination }}' \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \

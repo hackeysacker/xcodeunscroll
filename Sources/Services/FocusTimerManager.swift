@@ -266,17 +266,7 @@ class FocusTimerManager: ObservableObject {
     }
     
     private func calculateLevel(from xp: Int) -> Int {
-        var level = 1
-        var xpNeeded = 100
-        var totalXpForLevel = 0
-        
-        while totalXpForLevel + xpNeeded <= xp {
-            totalXpForLevel += xpNeeded
-            level += 1
-            xpNeeded = level * 100 + (level - 1) * 50
-        }
-        
-        return level
+        GameProgress.level(forTotalXP: xp)
     }
     
     // MARK: - Reset Daily

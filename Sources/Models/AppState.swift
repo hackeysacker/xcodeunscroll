@@ -873,19 +873,16 @@ class AppState: ObservableObject {
         let finalXP = prog.calculateXPWithBonus(baseXP: amount)
         prog.totalXP += finalXP
         
-        // Check for level up
-        let xpForNextLevel = prog.level * 100
-        if prog.totalXP >= xpForNextLevel {
-            prog.level += 1
+        // Check for level up — compares against the CUMULATIVE threshold.
+        let levelsGained = prog.applyLevelUps()
+        if levelsGained > 0 {
             // Bonus gems on level up
-            prog.gems += 10
+            prog.gems += 10 * levelsGained
             // Trigger level up celebration
-            if prog.level > previousLevel {
-                levelUpFrom = previousLevel
-                showLevelUpCelebration = true
-                // Trigger level up notification
-                notificationManager.scheduleLevelUpNotification(newLevel: prog.level)
-            }
+            levelUpFrom = previousLevel
+            showLevelUpCelebration = true
+            // Trigger level up notification
+            notificationManager.scheduleLevelUpNotification(newLevel: prog.level)
         }
         
         progress = prog
@@ -902,16 +899,13 @@ class AppState: ObservableObject {
         let finalXP = prog.calculateXPWithBonus(baseXP: xpEarned)
         prog.totalXP += finalXP
         
-        // Check level up
-        let xpForNextLevel = prog.xpForNextLevel
-        if prog.totalXP >= xpForNextLevel {
-            prog.level += 1
-            prog.gems += 10 // Level up bonus
+        // Check level up — compares against the CUMULATIVE threshold.
+        let levelsGained = prog.applyLevelUps()
+        if levelsGained > 0 {
+            prog.gems += 10 * levelsGained // Level up bonus
             // Trigger level up celebration
-            if prog.level > previousLevel {
-                levelUpFrom = previousLevel
-                showLevelUpCelebration = true
-            }
+            levelUpFrom = previousLevel
+            showLevelUpCelebration = true
         }
         
         // Add to completed challenges
@@ -980,16 +974,14 @@ class AppState: ObservableObject {
             prog.totalXP += xpReward
             prog.gems += gemReward
             
-            // Check level up
+            // Check level up — compares against the CUMULATIVE threshold.
             let previousLevel = prog.level
-            if prog.totalXP >= prog.xpForNextLevel {
-                prog.level += 1
-                prog.gems += 10
+            let levelsGained = prog.applyLevelUps()
+            if levelsGained > 0 {
+                prog.gems += 10 * levelsGained
                 // Trigger level up celebration
-                if prog.level > previousLevel {
-                    levelUpFrom = previousLevel
-                    showLevelUpCelebration = true
-                }
+                levelUpFrom = previousLevel
+                showLevelUpCelebration = true
             }
             
             // Update streak

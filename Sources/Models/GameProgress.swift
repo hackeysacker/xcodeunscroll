@@ -132,16 +132,57 @@ struct GameProgress: Codable {
         return "\(minutes)m"
     }
     
+    /// XP required to advance from `level` to `level + 1` (a per-level *delta*).
+    ///
+    /// - Important: this is NOT the total XP threshold. To advance a level you must
+    ///   have accumulated `cumulativeXPRequired(forLevel: level + 1)` **total** XP.
+    ///   Comparing `totalXP` against this delta is the bug that made levels
+    ///   over-increment and `currentLevelXP` go negative.
     var xpForNextLevel: Int {
         return level * 100 + (level - 1) * 50
     }
-    
-    var currentLevelXP: Int {
-        var accumulatedXP = 0
+
+    /// Cumulative **total** XP required to reach `level` from level 1.
+    ///
+    /// Level 1 → 0 XP, level 2 → 100 XP, level 3 → 350 XP, level 4 → 750 XP, …
+    static func cumulativeXPRequired(forLevel level: Int) -> Int {
+        guard level > 1 else { return 0 }
+        var total = 0
         for levelIndex in 1..<level {
-            accumulatedXP += levelIndex * 100 + (levelIndex - 1) * 50
+            total += levelIndex * 100 + (levelIndex - 1) * 50
         }
-        return totalXP - accumulatedXP
+        return total
+    }
+
+    /// The level a player should be at given a cumulative XP total.
+    static func level(forTotalXP totalXP: Int) -> Int {
+        var level = 1
+        while cumulativeXPRequired(forLevel: level + 1) <= totalXP {
+            level += 1
+        }
+        return level
+    }
+
+    /// Cumulative XP total required to advance from the current level to the next.
+    var xpThresholdForNextLevel: Int {
+        Self.cumulativeXPRequired(forLevel: level + 1)
+    }
+
+    /// Recomputes `level` from `totalXP` using the canonical curve.
+    ///
+    /// The level only ever moves up — a player is never de-leveled, even if
+    /// `level` and `totalXP` were persisted out of sync (e.g. cloud merge).
+    ///
+    /// - Returns: the number of levels gained (0 when no level up occurred).
+    @discardableResult
+    mutating func applyLevelUps() -> Int {
+        let previousLevel = level
+        level = max(level, Self.level(forTotalXP: totalXP))
+        return level - previousLevel
+    }
+
+    var currentLevelXP: Int {
+        totalXP - Self.cumulativeXPRequired(forLevel: level)
     }
     
     var progressToNextLevel: Double {
