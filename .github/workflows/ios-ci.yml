@@ -27,10 +27,12 @@ jobs:
         # FocusFlow.xcodeproj is generated from project.yml by XcodeGen.
         # Regenerating in CI guarantees the project under test matches the
         # source of truth, and catches any drift between the two.
-        run: |
-          xcodegen generate
-          git diff --exit-code FocusFlow.xcodeproj \
-            || (echo "::error::FocusFlow.xcodeproj is out of sync with project.yml. Run 'xcodegen generate' and commit." && exit 1)
+        #
+        # The comparison normalises list ordering: XcodeGen emits target lists
+        # in a non-deterministic order and different XcodeGen versions order
+        # them differently. Ordering has no effect on the build, so a raw byte
+        # diff produces false failures.
+        run: python3 scripts/check_project_sync.py
 
       - name: Resolve Swift packages
         run: |
