@@ -34,7 +34,6 @@
 		5586DECD5B4FE3FAE457F91A /* AllChallengesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B17CFB71EB878207A67E7B /* AllChallengesView.swift */; };
 		5AAAF25C8CF481328351CF55 /* AllChallenges.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64762F4DEDF251A68EC83208 /* AllChallenges.swift */; };
 		5ACEA234ED350B82E929BF09 /* BreathingGuideTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F767AF28058D78DB27C828 /* BreathingGuideTests.swift */; };
-		5DA1F616CCF465A85380D743 /* FocusFlowApp.swift.disabled in Resources */ = {isa = PBXBuildFile; fileRef = CDE0AB0ADC3DF2716AE2A02E /* FocusFlowApp.swift.disabled */; };
 		6171F9AAF71B5AA23103A17E /* BreathingGuide.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7CDCB6FA66F659CA26F3990 /* BreathingGuide.swift */; };
 		63AB7E0FB37DB07D097480BE /* SyncQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45ED9A3D1FBDB0285F1E077 /* SyncQueue.swift */; };
 		65108A8E38498A499AF922BE /* ScreenTimeDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10E4CAFC91D2835C9447A93 /* ScreenTimeDashboardView.swift */; };
@@ -185,7 +184,6 @@
 		C18E6DACB2F83EA4DD476994 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C78BC8B9AB0840EC35907819 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		CC9A3CC9F314DC4C08304A3E /* XPProgressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPProgressionTests.swift; sourceTree = "<group>"; };
-		CDE0AB0ADC3DF2716AE2A02E /* FocusFlowApp.swift.disabled */ = {isa = PBXFileReference; path = FocusFlowApp.swift.disabled; sourceTree = "<group>"; };
 		D0E7607542C76D03EE63312C /* ThemeSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSelectionView.swift; sourceTree = "<group>"; };
 		D10E4CAFC91D2835C9447A93 /* ScreenTimeDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeDashboardView.swift; sourceTree = "<group>"; };
 		D3DCE37315B42E2CAA191DC1 /* UniversalChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalChallengeView.swift; sourceTree = "<group>"; };
@@ -356,7 +354,6 @@
 			children = (
 				6D40CB4BE7CF1F995E25536E /* AppConfig.swift */,
 				8B7534EBF1F29EF3901E3D5F /* FocusFlow.entitlements */,
-				CDE0AB0ADC3DF2716AE2A02E /* FocusFlowApp.swift.disabled */,
 				E2F6BD8E296AF1A9E065D31E /* Info.plist */,
 				31ADB81C0A62EF28F2216170 /* PrivacyInfo.xcprivacy */,
 				A0F80EE269C7BAF23EE1B90C /* Unscroll.entitlements */,
@@ -567,7 +564,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5DA1F616CCF465A85380D743 /* FocusFlowApp.swift.disabled in Resources */,
 				8E3DC4E4D7A142F38BF1D76F /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
