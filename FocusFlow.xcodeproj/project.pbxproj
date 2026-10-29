@@ -39,7 +39,6 @@
 		65108A8E38498A499AF922BE /* ScreenTimeDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10E4CAFC91D2835C9447A93 /* ScreenTimeDashboardView.swift */; };
 		6ABA2FE002C97BB9844645BD /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18E6DACB2F83EA4DD476994 /* SettingsView.swift */; };
 		6D6691C47DAEF0CF3D2FB202 /* ThemeManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097A72EAF5EAEA8FE05F1FDD /* ThemeManagerTests.swift */; };
-		70EBEAD3E6F9559538E003CA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A6A6E5992A0C54A5E41ABEE /* Assets.xcassets */; };
 		72EC4BF242F912EC1C6F6655 /* ChallengeExercises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B35B0250244FC90DF26929 /* ChallengeExercises.swift */; };
 		785B546091C2656A825BE2E5 /* ProgressPathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244DE710D7D58E21A83D9BA7 /* ProgressPathView.swift */; };
 		7E050C5B7318A5039543066C /* WindingProgressPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32FFCC417859C79EC5C7D41C /* WindingProgressPath.swift */; };
@@ -140,7 +139,6 @@
 		52666F0B05379E2670AC6932 /* BreathingExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathingExerciseView.swift; sourceTree = "<group>"; };
 		540BBB8BF12D28FA1EF16668 /* FocusFlowWidgetExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = FocusFlowWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		545230256D5F2A71262515B7 /* BiometricTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricTrackingView.swift; sourceTree = "<group>"; };
-		5A6A6E5992A0C54A5E41ABEE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		619652A96ED7FC53389BB8EA /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
 		64762F4DEDF251A68EC83208 /* AllChallenges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChallenges.swift; sourceTree = "<group>"; };
 		65952119518689B462E25E6E /* MultiObjectTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiObjectTrackingView.swift; sourceTree = "<group>"; };
@@ -257,7 +255,6 @@
 		47737DA972F943B2CE5710B4 /* FocusFlowWidget */ = {
 			isa = PBXGroup;
 			children = (
-				5A6A6E5992A0C54A5E41ABEE /* Assets.xcassets */,
 				7EC25D1ECC0C84AB57CFBB52 /* FocusFlowWidget.swift */,
 				DC17A369A14FA9A14073F982 /* FocusFlowWidgetExtension.entitlements */,
 				7374C288517EA66734DB1327 /* Info.plist */,
@@ -467,7 +464,6 @@
 			buildConfigurationList = AC21A226CA10C06A03B31DE3 /* Build configuration list for PBXNativeTarget "FocusFlowWidgetExtension" */;
 			buildPhases = (
 				BE2E76D0A8671D3381D822BA /* Sources */,
-				01790AF7AE089809D056B607 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -552,14 +548,6 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		01790AF7AE089809D056B607 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				70EBEAD3E6F9559538E003CA /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C5D0118D9E2806C109D9CAAD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
